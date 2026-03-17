@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<!-- saved from url=(0077)file:///C:/Users/Katina%20Person/Downloads/soft-start-budget%20(1)%20(2).html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A1A18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Soft Start Budget">
+<meta name="description" content="A simple, shame-free budget tracker. See what&#39;s coming in, going out, coming up, and what you spent today.">
+<title>Soft Start Budget</title>
+<link href="./Soft Start Budget2_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg:#F8F7F4; --surface:#FFFFFF; --border:#E8E4DC;
+  --ink:#1A1A18; --ink-mid:#4A4A44; --ink-lt:#8A8880;
+  --teal:#2A7B6F; --teal-lt:#E8F4F2; --teal-mid:#4A9B8E;
+  --amber:#C4872A; --amber-lt:#FDF3E3;
+  --rose:#C4546A; --rose-lt:#FDE8EC;
+  --slate:#3A4A5C; --slate-lt:#EAF0F8;
+  --accent:#4AB8A8; --accent-text:#7DD3C8;
+  --header-bg:#1A1A18; --nav-bg:#1E1E1C;
+  --radius:8px; --shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+body.dark-mode {
+  --bg:#161614; --surface:#1E1E1C; --border:#2E2E2A;
+  --ink:#F0EFEC; --ink-mid:#C8C6C0; --ink-lt:#888680;
+  --teal:#4AB8A8; --teal-lt:#0E2420; --teal-mid:#5AC8B8;
+  --amber:#D4982A; --amber-lt:#2A1E08;
+  --rose:#E06880; --rose-lt:#2A1018;
+  --slate:#6A8AAC; --slate-lt:#0E1A28;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;}
+
+/* ── HEADER ── */
+.header{background:var(--header-bg);border-bottom:3px solid var(--accent);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px;}
+.logo-wrap{display:flex;align-items:center;gap:14px;}
+.logo{font-family:'DM Serif Display',serif;font-size:2rem;color:white;letter-spacing:0.02em;line-height:1;}
+.logo span{color:#7DD3C8;}
+.logo-sub{font-size:0.58rem;color:rgba(255,255,255,0.32);letter-spacing:0.16em;text-transform:uppercase;margin-top:5px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.hbtn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.65);font-family:'DM Sans',sans-serif;font-size:0.7rem;padding:8px 14px;border-radius:4px;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;}
+.hbtn:hover{background:rgba(255,255,255,0.14);color:white;}
+.month-nav{display:flex;align-items:center;gap:6px;}
+.mnav-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);font-size:0.68rem;padding:7px 12px;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.mnav-btn:hover{background:rgba(255,255,255,0.14);color:white;}
+.month-label{font-family:'DM Serif Display',serif;font-size:1.1rem;color:white;min-width:140px;text-align:center;}
+
+/* ── NAV ── */
+.nav{background:var(--nav-bg);border-bottom:1px solid #2A2A28;padding:0 20px;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.nav-tab{padding:12px 16px;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:#585650;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.15s;}
+.nav-tab:hover{color:#888680;}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── MAIN ── */
+.main{padding:20px;max-width:900px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── PAGE HEADER ── */
+.page-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--ink);margin-bottom:3px;}
+.page-sub{font-size:0.68rem;color:var(--ink-lt);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;}
+.accent-line{width:32px;height:2px;background:var(--accent);margin-bottom:20px;}
+
+/* ── SNAPSHOT CARDS (dashboard top) ── */
+.snapshot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+.snap-card{background:var(--surface);border:1px solid var(--border);border-top:3px solid transparent;border-radius:var(--radius);padding:16px;cursor:pointer;transition:box-shadow 0.15s;}
+.snap-card:hover{box-shadow:0 2px 10px rgba(42,123,111,0.12);}
+.snap-card.teal{border-top-color:var(--teal);}
+.snap-card.amber{border-top-color:var(--amber);}
+.snap-card.rose{border-top-color:var(--rose);}
+.snap-card.slate{border-top-color:var(--slate);}
+.snap-num{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--ink);line-height:1;margin-bottom:4px;}
+.snap-num.positive{color:var(--teal);}
+.snap-num.negative{color:var(--rose);}
+.snap-label{font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);}
+.snap-sub{font-size:0.65rem;color:var(--ink-lt);margin-top:4px;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow);}
+.card-title{font-size:0.68rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;margin-right:6px;flex-shrink:0;}
+.card-dot.amber{background:var(--amber);}
+.card-dot.rose{background:var(--rose);}
+.card-dot.slate{background:var(--slate);}
+
+/* ── CATEGORY ROWS ── */
+.cat-section{margin-bottom:18px;}
+.cat-section-label{font-size:0.6rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-lt);padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.cat-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);gap:8px;}
+.cat-row:last-child{border-bottom:none;}
+.cat-left{display:flex;align-items:center;gap:8px;flex:1;}
+.cat-icon{font-size:1rem;width:24px;text-align:center;flex-shrink:0;}
+.cat-name{font-size:0.82rem;color:var(--ink);font-weight:500;}
+.cat-right{display:flex;align-items:center;gap:8px;}
+.cat-amount{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ink-mid);min-width:70px;text-align:right;}
+.cat-input{width:90px;text-align:right;font-family:'DM Serif Display',serif;font-size:0.95rem;padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--ink);}
+.cat-input:focus{outline:none;border-color:var(--accent);}
+
+/* ── SECTION TOTALS ── */
+.section-total{display:flex;justify-content:space-between;align-items:center;padding:10px 0;margin-top:4px;border-top:2px solid var(--border);}
+.section-total-label{font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-lt);}
+.section-total-amount{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--ink);}
+.section-total-amount.positive{color:var(--teal);}
+.section-total-amount.negative{color:var(--rose);}
+
+/* ── BILLS ── */
+.bill-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:6px;border:1px solid var(--border);margin-bottom:6px;background:var(--surface);gap:10px;}
+.bill-left{flex:1;}
+.bill-name{font-size:0.84rem;font-weight:500;color:var(--ink);}
+.bill-due{font-size:0.62rem;color:var(--ink-lt);margin-top:2px;}
+.bill-right{display:flex;align-items:center;gap:10px;}
+.bill-amount{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ink);}
+.paid-toggle{font-size:0.6rem;padding:3px 10px;border-radius:10px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;transition:all 0.15s;}
+.paid-toggle.unpaid{background:var(--amber-lt);color:var(--amber);}
+.paid-toggle.paid{background:var(--teal-lt);color:var(--teal);}
+
+/* ── DAILY SPEND ── */
+.spend-entry{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.spend-entry:last-child{border-bottom:none;}
+.spend-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--rose);}
+.spend-desc{flex:1;font-size:0.82rem;color:var(--ink);}
+.spend-cat-label{font-size:0.62rem;color:var(--ink-lt);}
+.spend-amount{font-family:'DM Serif Display',serif;font-size:0.95rem;color:var(--rose);font-weight:500;white-space:nowrap;}
+.spend-date{font-size:0.62rem;color:var(--ink-lt);white-space:nowrap;}
+
+/* ── LEAK WATCHER ── */
+.leak-bar-wrap{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:6px 0 14px;}
+.leak-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--rose));transition:width 0.5s ease;}
+.leak-label{font-size:0.58rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--rose);display:flex;align-items:center;justify-content:space-between;}
+.leak-badge{font-size:0.55rem;padding:2px 7px;border-radius:8px;background:var(--rose-lt);color:var(--rose);border:1px solid var(--rose);}
+
+/* ── FORMS ── */
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.field label{font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-lt);}
+.field-row{display:grid;gap:12px;}
+.field-row.c2{grid-template-columns:1fr 1fr;}
+.field-row.c3{grid-template-columns:repeat(3,1fr);}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--ink);transition:border-color 0.15s;}
+input:focus,select:focus{outline:none;border-color:var(--accent);}
+body.dark-mode input,body.dark-mode select{color:var(--ink);}
+body.dark-mode input::placeholder{color:var(--ink-lt);}
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.btn{background:var(--bg);border:1px solid var(--border);color:var(--ink-mid);font-family:'DM Sans',sans-serif;font-size:0.72rem;padding:8px 16px;border-radius:5px;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;}
+.btn:hover{border-color:var(--ink-lt);}
+.btn-primary{background:var(--teal);border-color:var(--teal);color:white;}
+.btn-primary:hover{background:var(--teal-mid);border-color:var(--teal-mid);}
+.btn-sm{padding:4px 10px;font-size:0.62rem;}
+.remove-btn{background:none;border:none;color:var(--ink-lt);cursor:pointer;font-size:1rem;padding:0 2px;line-height:1;flex-shrink:0;}
+.remove-btn:hover{color:var(--rose);}
+.empty-state{font-size:0.75rem;color:var(--ink-lt);text-align:center;padding:14px 0;font-style:italic;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:white;font-size:0.75rem;padding:8px 18px;border-radius:20px;opacity:0;transition:all 0.2s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── INSTALL BANNER ── */
+.install-banner{background:linear-gradient(135deg,#1A1A18,#2A2A28);border-bottom:1px solid #3A3A38;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.install-text{font-size:0.72rem;color:rgba(255,255,255,0.6);}
+.install-text strong{color:white;}
+.install-btn{background:var(--accent);border:none;color:#1A1A18;font-family:'DM Sans',sans-serif;font-size:0.68rem;font-weight:600;padding:6px 14px;border-radius:4px;cursor:pointer;white-space:nowrap;}
+
+/* ── PROGRESS BARS ── */
+.prog-wrap{margin-bottom:10px;}
+.prog-label{display:flex;justify-content:space-between;font-size:0.62rem;color:var(--ink-lt);margin-bottom:4px;}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:var(--teal);transition:width 0.4s ease;}
+.prog-fill.amber{background:var(--amber);}
+.prog-fill.rose{background:var(--rose);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .snapshot-grid{grid-template-columns:1fr 1fr;}
+  .field-row.c2,.field-row.c3{grid-template-columns:1fr;}
+  .main{padding:14px;}
+  .logo{font-size:1.3rem;}
+}
+@media(min-width:601px){
+  .snapshot-grid{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- INSTALL BANNER (shown when PWA installable) -->
+<div class="install-banner" id="install-banner" style="display:none;">
+  <div class="install-text"><strong>Add to Home Screen</strong> — use Soft Start Budget like an app, anytime.</div>
+  <button class="install-btn" id="install-btn">Install</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-wrap">
+    <svg width="42" height="42" viewBox="0 0 44 44" fill="none">
+      <rect x="2" y="2" width="18" height="18" rx="3" fill="#4AB8A8"></rect>
+      <rect x="24" y="2" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.8"></rect>
+      <rect x="2" y="24" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.8"></rect>
+      <rect x="24" y="24" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.55"></rect>
+      <circle cx="22" cy="22" r="3" fill="#7DD3C8"></circle>
+    </svg>
+    <div>
+      <div class="logo">Soft<span>Start</span></div>
+      <div class="logo-sub">Budget · by OneView Studio</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="month-nav">
+      <button class="mnav-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="month-label" id="month-label">March 2026</div>
+      <button class="mnav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+    <button class="hbtn" id="dark-btn" onclick="toggleDark()">🌙</button>
+    <button class="hbtn" onclick="exportData()">⬇ Backup</button>
+    <label class="hbtn" style="cursor:pointer;">⬆ Restore <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"></label>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-tab active" onclick="switchTab(&#39;dashboard&#39;)">Overview</div>
+  <div class="nav-tab" onclick="switchTab(&#39;coming-in&#39;)">Coming In</div>
+  <div class="nav-tab" onclick="switchTab(&#39;going-out&#39;)">Going Out</div>
+  <div class="nav-tab" onclick="switchTab(&#39;coming-up&#39;)">Coming Up</div>
+  <div class="nav-tab" onclick="switchTab(&#39;today&#39;)">Spent Today</div>
+</nav>
+
+<div class="main">
+
+<!-- ══ OVERVIEW / DASHBOARD ══ -->
+<div id="tab-dashboard" class="tab-panel active">
+  <div class="page-title">Here's where you stand.</div>
+  <div class="page-sub" id="dash-month-sub">March 2026</div>
+  <div class="accent-line"></div>
+
+  <div class="snapshot-grid">
+    <div class="snap-card teal" onclick="switchTab(&#39;coming-in&#39;)">
+      <div class="snap-num positive" id="snap-in">$0</div>
+      <div class="snap-label">Coming In</div>
+      <div class="snap-sub">This month's income</div>
+    </div>
+    <div class="snap-card amber" onclick="switchTab(&#39;going-out&#39;)">
+      <div class="snap-num" id="snap-out">$0</div>
+      <div class="snap-label">Going Out</div>
+      <div class="snap-sub">Budgeted expenses</div>
+    </div>
+    <div class="snap-card rose" onclick="switchTab(&#39;coming-up&#39;)">
+      <div class="snap-num" id="snap-bills">0</div>
+      <div class="snap-label">Coming Up</div>
+      <div class="snap-sub">Bills still unpaid</div>
+    </div>
+    <div class="snap-card slate" onclick="switchTab(&#39;today&#39;)">
+      <div class="snap-num" id="snap-today">$0</div>
+      <div class="snap-label">Spent Today</div>
+      <div class="snap-sub" id="snap-today-sub">nothing logged yet</div>
+    </div>
+  </div>
+
+  <!-- Left vs what's going out -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot"></span>What's Left This Month</span></div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px;">
+      <div>
+        <div style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-lt);margin-bottom:4px;">Income minus expenses</div>
+        <div class="snap-num positive" id="dash-left" style="font-size:2.2rem;">$0.00</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-lt);margin-bottom:4px;">of income budgeted</div>
+        <div style="font-family:&#39;DM Serif Display&#39;,serif;font-size:1.4rem;color:var(--ink-mid);" id="dash-pct">0%</div>
+      </div>
+    </div>
+    <div class="prog-bar" style="height:8px;margin-bottom:8px;">
+      <div class="prog-fill" id="dash-prog-fill" style="width:0%;height:100%;"></div>
+    </div>
+    <div style="font-size:0.68rem;color:var(--ink-lt);" id="dash-message">Add your income and expenses to see your picture.</div>
+  </div>
+
+  <!-- Spending breakdown -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot amber"></span>Where It's Going</span></div>
+    <div id="dash-breakdown"><div class="empty-state">Add amounts in Going Out to see the breakdown.</div></div>
+  </div>
+
+  <!-- Bills due soon -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot rose"></span>Bills Due Soon</span> <button class="btn btn-sm" onclick="switchTab(&#39;coming-up&#39;)">See All →</button></div>
+    <div id="dash-bills-soon"><div class="empty-state">No bills due in the next 10 days.</div></div>
+  </div>
+
+  <!-- Today's spend preview -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot slate"></span>Today's Spending</span> <button class="btn btn-sm" onclick="switchTab(&#39;today&#39;)">Log Spend →</button></div>
+    <div id="dash-today-preview"><div class="empty-state">Nothing logged today. Every dollar counts — tap Log Spend to start.</div></div>
+  </div>
+</div>
+
+<!-- ══ COMING IN ══ -->
+<div id="tab-coming-in" class="tab-panel">
+  <div class="page-title">Coming In</div>
+  <div class="page-sub">Your income this month — all sources</div>
+  <div class="accent-line"></div>
+
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot"></span>Add Income</span></div>
+    <div class="field-row c3">
+      <div class="field"><label>Source</label><input type="text" id="inc-name" placeholder="e.g. Paycheck, Etsy, Tips" onkeydown="if(event.key===&#39;Enter&#39;)addIncome()"></div>
+      <div class="field"><label>Amount ($)</label><input type="number" id="inc-amount" placeholder="0.00" step="0.01"></div>
+      <div class="field"><label>Type</label>
+        <select id="inc-type">
+          <option value="salary">Salary / Main Job</option>
+          <option value="side">Side Income</option>
+          <option value="parttime">Part-Time Job</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="addIncome()">Add</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot"></span>Income This Month</span></div>
+    <div id="income-list"><div class="empty-state">No income added yet.</div></div>
+    <div class="section-total" id="income-total-row" style="display:none;">
+      <span class="section-total-label">Total Coming In</span>
+      <span class="section-total-amount positive" id="income-total">$0.00</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GOING OUT ══ -->
+<div id="tab-going-out" class="tab-panel">
+  <div class="page-title">Going Out</div>
+  <div class="page-sub">What you plan to spend — category by category</div>
+  <div class="accent-line"></div>
+
+  <div style="background:var(--teal-lt);border:1px solid var(--teal);border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:0.78rem;color:var(--teal);line-height:1.6;">
+    <strong>How this works:</strong> Each category shows what you've budgeted. Tap the amount to edit it. The totals update automatically on your Overview.
+  </div>
+
+  <!-- NEEDS -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot"></span>Needs — The Essentials</span></div>
+    <div id="cat-needs"><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🏠</span><span class="cat-name">Housing / Rent</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;housing&#39;,this.value)" oninput="setCatAmount(&#39;housing&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">💡</span><span class="cat-name">Utilities</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;utilities&#39;,this.value)" oninput="setCatAmount(&#39;utilities&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">📱</span><span class="cat-name">Phone</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;phone&#39;,this.value)" oninput="setCatAmount(&#39;phone&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🚗</span><span class="cat-name">Transportation</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;transportation&#39;,this.value)" oninput="setCatAmount(&#39;transportation&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🛡️</span><span class="cat-name">Insurance</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;insurance&#39;,this.value)" oninput="setCatAmount(&#39;insurance&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🏥</span><span class="cat-name">Medical</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;medical&#39;,this.value)" oninput="setCatAmount(&#39;medical&#39;,this.value)">
+      </div>
+    </div></div>
+    <div class="section-total">
+      <span class="section-total-label">Needs Total</span>
+      <span class="section-total-amount" id="needs-total">$0</span>
+    </div>
+  </div>
+
+  <!-- FOOD -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot amber"></span>Food &amp; Groceries</span></div>
+    <div id="cat-food"><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🛒</span><span class="cat-name">Groceries</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;groceries&#39;,this.value)" oninput="setCatAmount(&#39;groceries&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🧴</span><span class="cat-name">Household Supplies</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;household&#39;,this.value)" oninput="setCatAmount(&#39;household&#39;,this.value)">
+      </div>
+    </div></div>
+    <div class="section-total">
+      <span class="section-total-label">Food Total</span>
+      <span class="section-total-amount" id="food-total">$0</span>
+    </div>
+  </div>
+
+  <!-- EATING OUT — LEAK WATCHER -->
+  <div class="card">
+    <div class="leak-label" style="margin-bottom:6px;">
+      <span>Eating Out &amp; Impulse</span>
+      <span class="leak-badge">Watch This</span>
+    </div>
+    <div class="leak-bar-wrap"><div class="leak-bar-fill" id="eatingout-bar" style="width:0%"></div></div>
+    <div id="cat-eatingout"><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🍽️</span><span class="cat-name">Restaurants</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;restaurants&#39;,this.value)" oninput="setCatAmount(&#39;restaurants&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">☕</span><span class="cat-name">Coffee &amp; Drinks</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;coffee&#39;,this.value)" oninput="setCatAmount(&#39;coffee&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">📦</span><span class="cat-name">Takeout &amp; Delivery</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;takeout&#39;,this.value)" oninput="setCatAmount(&#39;takeout&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🛍️</span><span class="cat-name">Impulse Buys</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;impulse&#39;,this.value)" oninput="setCatAmount(&#39;impulse&#39;,this.value)">
+      </div>
+    </div></div>
+    <div class="section-total">
+      <span class="section-total-label">Eating Out Total</span>
+      <span class="section-total-amount" id="eatingout-total">$0</span>
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTIONS — LEAK WATCHER -->
+  <div class="card">
+    <div class="leak-label" style="margin-bottom:6px;">
+      <span>Subscriptions</span>
+      <span class="leak-badge">Recurring Leaks</span>
+    </div>
+    <div class="leak-bar-wrap"><div class="leak-bar-fill" id="subscriptions-bar" style="width:0%"></div></div>
+    <div id="cat-subscriptions"><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">📺</span><span class="cat-name">Streaming</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;streaming&#39;,this.value)" oninput="setCatAmount(&#39;streaming&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🎵</span><span class="cat-name">Music</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;music&#39;,this.value)" oninput="setCatAmount(&#39;music&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">💻</span><span class="cat-name">Software &amp; Apps</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;software&#39;,this.value)" oninput="setCatAmount(&#39;software&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">📰</span><span class="cat-name">News &amp; Publications</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;news&#39;,this.value)" oninput="setCatAmount(&#39;news&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🪪</span><span class="cat-name">Memberships</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;memberships&#39;,this.value)" oninput="setCatAmount(&#39;memberships&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">☁️</span><span class="cat-name">Cloud Storage</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;cloud&#39;,this.value)" oninput="setCatAmount(&#39;cloud&#39;,this.value)">
+      </div>
+    </div></div>
+    <div class="section-total">
+      <span class="section-total-label">Subscriptions Total</span>
+      <span class="section-total-amount" id="subscriptions-total">$0</span>
+    </div>
+  </div>
+
+  <!-- PETS -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot slate"></span>Pets</span></div>
+    <div id="cat-pets"><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🐾</span><span class="cat-name">Pet Food</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;pet-food&#39;,this.value)" oninput="setCatAmount(&#39;pet-food&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">💉</span><span class="cat-name">Vet &amp; Medical</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;pet-vet&#39;,this.value)" oninput="setCatAmount(&#39;pet-vet&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">✂️</span><span class="cat-name">Grooming &amp; Care</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;pet-care&#39;,this.value)" oninput="setCatAmount(&#39;pet-care&#39;,this.value)">
+      </div>
+    </div></div>
+    <div class="section-total">
+      <span class="section-total-label">Pets Total</span>
+      <span class="section-total-amount" id="pets-total">$0</span>
+    </div>
+  </div>
+
+  <!-- PERSONAL -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot slate"></span>Personal &amp; Lifestyle</span></div>
+    <div id="cat-personal"><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">💄</span><span class="cat-name">Personal Care</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;personal-care&#39;,this.value)" oninput="setCatAmount(&#39;personal-care&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">👗</span><span class="cat-name">Clothing</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;clothing&#39;,this.value)" oninput="setCatAmount(&#39;clothing&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">🎭</span><span class="cat-name">Entertainment</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;entertainment&#39;,this.value)" oninput="setCatAmount(&#39;entertainment&#39;,this.value)">
+      </div>
+    </div><div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">✦</span><span class="cat-name">Other</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="" placeholder="$0" min="0" step="0.01" onchange="setCatAmount(&#39;other&#39;,this.value)" oninput="setCatAmount(&#39;other&#39;,this.value)">
+      </div>
+    </div></div>
+    <div class="section-total">
+      <span class="section-total-label">Personal Total</span>
+      <span class="section-total-amount" id="personal-total">$0</span>
+    </div>
+  </div>
+
+  <!-- GRAND TOTAL -->
+  <div class="card" style="background:var(--ink);border-color:var(--ink);">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Total Going Out</span>
+      <span style="font-family:&#39;DM Serif Display&#39;,serif;font-size:1.8rem;color:white;" id="grand-total">$0</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMING UP ══ -->
+<div id="tab-coming-up" class="tab-panel">
+  <div class="page-title">Coming Up</div>
+  <div class="page-sub">Bills due this month — tap to mark paid</div>
+  <div class="accent-line"></div>
+
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot amber"></span>Add a Bill</span></div>
+    <div class="field-row c3">
+      <div class="field"><label>Bill Name</label><input type="text" id="bill-name" placeholder="e.g. Rent, Electric, Netflix" onkeydown="if(event.key===&#39;Enter&#39;)addBill()"></div>
+      <div class="field"><label>Amount ($)</label><input type="number" id="bill-amount" placeholder="0.00" step="0.01"></div>
+      <div class="field"><label>Due Day of Month</label><input type="number" id="bill-due" placeholder="e.g. 1, 15, 28" min="1" max="31"></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="addBill()">Add Bill</button></div>
+  </div>
+
+  <!-- Bills summary -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div class="snap-card amber" style="cursor:default;">
+      <div class="snap-num" id="bills-unpaid-total">$0</div>
+      <div class="snap-label">Still to Pay</div>
+    </div>
+    <div class="snap-card teal" style="cursor:default;">
+      <div class="snap-num positive" id="bills-paid-total">$0</div>
+      <div class="snap-label">Paid This Month</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot amber"></span>Your Bills</span> <span id="bills-meta" style="font-size:0.68rem;font-weight:300;text-transform:none;letter-spacing:0;color:var(--ink-lt);"></span></div>
+    <div id="bills-list"><div class="empty-state">No bills yet. Add rent, utilities, subscriptions — anything due this month.</div></div>
+  </div>
+</div>
+
+<!-- ══ SPENT TODAY ══ -->
+<div id="tab-today" class="tab-panel">
+  <div class="page-title">Spent Today</div>
+  <div class="page-sub">Every dollar you spend — logged as you go</div>
+  <div class="accent-line"></div>
+
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot rose"></span>Log a Purchase</span></div>
+    <div class="field-row c2">
+      <div class="field"><label>What was it?</label><input type="text" id="spend-desc" placeholder="e.g. Starbucks, Amazon, lunch..." onkeydown="if(event.key===&#39;Enter&#39;)addSpend()"></div>
+      <div class="field"><label>Amount ($)</label><input type="number" id="spend-amount" placeholder="0.00" step="0.01" onkeydown="if(event.key===&#39;Enter&#39;)addSpend()"></div>
+    </div>
+    <div class="field-row c2">
+      <div class="field"><label>Category</label>
+        <select id="spend-cat">
+          <option value="Eating Out">Eating Out / Restaurant</option>
+          <option value="Coffee">Coffee &amp; Drinks</option>
+          <option value="Online Shopping">Online Shopping</option>
+          <option value="Takeout">Takeout &amp; Delivery</option>
+          <option value="Beauty">Beauty &amp; Personal Care</option>
+          <option value="Gas Station">Gas Station Extras</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Date</label><input type="date" id="spend-date"></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="addSpend()">Log It</button></div>
+  </div>
+
+  <!-- Today's total -->
+  <div class="snap-card rose" style="cursor:default;margin-bottom:16px;">
+    <div class="snap-num" id="today-total">$0</div>
+    <div class="snap-label">Spent Today</div>
+    <div class="snap-sub" id="today-count-label">nothing logged today</div>
+  </div>
+
+  <!-- Category breakdown this month -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot rose"></span>Where It's Going — This Month</span></div>
+    <div id="spend-breakdown"><div class="empty-state">Start logging and you'll see your patterns here.</div></div>
+  </div>
+
+  <!-- Spend log -->
+  <div class="card">
+    <div class="card-title">
+      <span><span class="card-dot slate"></span>Spend Log</span>
+      <span id="spend-summary" style="font-size:0.68rem;font-weight:300;text-transform:none;letter-spacing:0;color:var(--ink-lt);"></span>
+    </div>
+    <div id="spend-list"><div class="empty-state">No entries yet. Start logging above — even small purchases add up fast.</div></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentMonth = new Date().getMonth();
+let currentYear  = new Date().getFullYear();
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let state = {
+  income: [],
+  bills: [],
+  spend: [],
+  categories: {}
+};
+
+// Pre-defined categories with defaults
+const CAT_DEFS = {
+  needs: [
+    {id:'housing',name:'Housing / Rent',icon:'🏠'},
+    {id:'utilities',name:'Utilities',icon:'💡'},
+    {id:'phone',name:'Phone',icon:'📱'},
+    {id:'transportation',name:'Transportation',icon:'🚗'},
+    {id:'insurance',name:'Insurance',icon:'🛡️'},
+    {id:'medical',name:'Medical',icon:'🏥'},
+  ],
+  food: [
+    {id:'groceries',name:'Groceries',icon:'🛒'},
+    {id:'household',name:'Household Supplies',icon:'🧴'},
+  ],
+  eatingout: [
+    {id:'restaurants',name:'Restaurants',icon:'🍽️'},
+    {id:'coffee',name:'Coffee & Drinks',icon:'☕'},
+    {id:'takeout',name:'Takeout & Delivery',icon:'📦'},
+    {id:'impulse',name:'Impulse Buys',icon:'🛍️'},
+  ],
+  subscriptions: [
+    {id:'streaming',name:'Streaming',icon:'📺'},
+    {id:'music',name:'Music',icon:'🎵'},
+    {id:'software',name:'Software & Apps',icon:'💻'},
+    {id:'news',name:'News & Publications',icon:'📰'},
+    {id:'memberships',name:'Memberships',icon:'🪪'},
+    {id:'cloud',name:'Cloud Storage',icon:'☁️'},
+  ],
+  pets: [
+    {id:'pet-food',name:'Pet Food',icon:'🐾'},
+    {id:'pet-vet',name:'Vet & Medical',icon:'💉'},
+    {id:'pet-care',name:'Grooming & Care',icon:'✂️'},
+  ],
+  personal: [
+    {id:'personal-care',name:'Personal Care',icon:'💄'},
+    {id:'clothing',name:'Clothing',icon:'👗'},
+    {id:'entertainment',name:'Entertainment',icon:'🎭'},
+    {id:'other',name:'Other',icon:'✦'},
+  ]
+};
+
+// ── PERSISTENCE ────────────────────────────────────────────────────────────
+function save(){ localStorage.setItem('softStartBudget',JSON.stringify({state,currentMonth,currentYear})); }
+function load(){
+  try{
+    const s=JSON.parse(localStorage.getItem('softStartBudget')||'{}');
+    if(s.state) Object.assign(state,s.state);
+    if(s.currentMonth!==undefined) currentMonth=s.currentMonth;
+    if(s.currentYear!==undefined)  currentYear=s.currentYear;
+  }catch(e){}
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify({state,currentMonth,currentYear},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`soft-start-budget-${new Date().toISOString().split('T')[0]}.json`;a.click();
+  toast('Backup saved ✓');
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.state)Object.assign(state,d.state);if(d.currentMonth!==undefined)currentMonth=d.currentMonth;if(d.currentYear!==undefined)currentYear=d.currentYear;save();renderAll();toast('Data restored ✓');}catch(err){toast('Error importing.');}};
+  reader.readAsText(file);e.target.value='';
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function fmt(d){if(!d)return'';const[y,m,day]=d.split('-');const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${mo[parseInt(m)-1]} ${parseInt(day)}`;}
+function fmtM(n){const v=parseFloat(n||0);return(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtS(n){const v=parseFloat(n||0);return(v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function pct(a,b){return b>0?Math.min(Math.round(a/b*100),100):0;}
+function ordinal(n){const s=['th','st','nd','rd'];const v=n%100;return s[(v-20)%10]||s[v]||s[0];}
+function isCurrentMonth(d){if(!d)return false;const[y,m]=d.split('-');return parseInt(m)-1===currentMonth&&parseInt(y)===currentYear;}
+function isToday(d){return d===new Date().toISOString().split('T')[0];}
+function todayStr(){return new Date().toISOString().split('T')[0];}
+
+// ── MONTH NAV ──────────────────────────────────────────────────────────────
+function changeMonth(dir){
+  currentMonth+=dir;
+  if(currentMonth>11){currentMonth=0;currentYear++;}
+  if(currentMonth<0){currentMonth=11;currentYear--;}
+  save();renderAll();
+}
+function updateMonthLabel(){
+  const label=`${MONTHS[currentMonth]} ${currentYear}`;
+  document.getElementById('month-label').textContent=label;
+  document.getElementById('dash-month-sub').textContent=label;
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────
+const TABS=['dashboard','coming-in','going-out','coming-up','today'];
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const panel=document.getElementById('tab-'+id);if(panel)panel.classList.add('active');
+  const idx=TABS.indexOf(id);
+  if(idx>=0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  window.scrollTo(0,0);
+  renderAll();
+}
+
+// ── INCOME ─────────────────────────────────────────────────────────────────
+const typeIcon={salary:'💼',side:'🌱',parttime:'⏰',other:'✦'};
+function addIncome(){
+  const name=document.getElementById('inc-name').value.trim();
+  const amount=parseFloat(document.getElementById('inc-amount').value);
+  if(!name||!amount){toast('Please enter a name and amount.');return;}
+  state.income.push({id:Date.now(),name,amount,type:document.getElementById('inc-type').value});
+  ['inc-name','inc-amount'].forEach(id=>document.getElementById(id).value='');
+  save();renderAll();toast('Income added ✓');
+}
+function deleteIncome(id){state.income=state.income.filter(i=>i.id!==id);save();renderAll();toast('Removed');}
+function getTotalIncome(){return state.income.reduce((s,i)=>s+i.amount,0);}
+
+function renderIncome(){
+  const el=document.getElementById('income-list');
+  const totalRow=document.getElementById('income-total-row');
+  const totalEl=document.getElementById('income-total');
+  if(!el)return;
+  if(!state.income.length){el.innerHTML='<div class="empty-state">No income added yet.</div>';if(totalRow)totalRow.style.display='none';return;}
+  el.innerHTML=state.income.map(i=>`
+    <div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">${typeIcon[i.type]||'✦'}</span><span class="cat-name">${i.name}</span></div>
+      <div class="cat-right"><span class="cat-amount">${fmtM(i.amount)}</span><button class="remove-btn" onclick="deleteIncome(${i.id})">×</button></div>
+    </div>`).join('');
+  if(totalRow) totalRow.style.display='flex';
+  if(totalEl) totalEl.textContent=fmtM(getTotalIncome());
+}
+
+// ── CATEGORIES / GOING OUT ─────────────────────────────────────────────────
+function getCatAmount(id){return parseFloat(state.categories[id])||0;}
+function setCatAmount(id,val){state.categories[id]=parseFloat(val)||0;save();renderAll();}
+function getTotalForGroup(group){return CAT_DEFS[group].reduce((s,c)=>s+getCatAmount(c.id),0);}
+function getTotalGoingOut(){return Object.keys(CAT_DEFS).reduce((s,g)=>s+getTotalForGroup(g),0);}
+
+function renderCatGroup(group){
+  const el=document.getElementById('cat-'+group);if(!el)return;
+  const totalEl=document.getElementById(group+'-total');
+  const cats=CAT_DEFS[group];
+  el.innerHTML=cats.map(c=>{
+    const amt=getCatAmount(c.id);
+    return`<div class="cat-row">
+      <div class="cat-left"><span class="cat-icon">${c.icon}</span><span class="cat-name">${c.name}</span></div>
+      <div class="cat-right">
+        <input class="cat-input" type="number" value="${amt||''}" placeholder="$0" min="0" step="0.01"
+          onchange="setCatAmount('${c.id}',this.value)" oninput="setCatAmount('${c.id}',this.value)">
+      </div>
+    </div>`;
+  }).join('');
+  const total=getTotalForGroup(group);
+  if(totalEl) totalEl.textContent=fmtS(total);
+  // Leak bars
+  const income=getTotalIncome();
+  if(group==='eatingout'||group==='subscriptions'){
+    const barEl=document.getElementById(group+'-bar');
+    if(barEl) barEl.style.width=pct(total,income)+'%';
+  }
+}
+
+function renderGoingOut(){
+  Object.keys(CAT_DEFS).forEach(g=>renderCatGroup(g));
+  const grandEl=document.getElementById('grand-total');
+  if(grandEl) grandEl.textContent=fmtS(getTotalGoingOut());
+}
+
+// ── BILLS ──────────────────────────────────────────────────────────────────
+function addBill(){
+  const name=document.getElementById('bill-name').value.trim();
+  const amount=parseFloat(document.getElementById('bill-amount').value);
+  if(!name||!amount){toast('Please enter a bill name and amount.');return;}
+  state.bills.push({id:Date.now(),name,amount,dueDay:parseInt(document.getElementById('bill-due').value)||1,paid:false});
+  ['bill-name','bill-amount','bill-due'].forEach(id=>document.getElementById(id).value='');
+  save();renderBills();renderDashboard();toast('Bill added ✓');
+}
+function toggleBill(id){
+  const b=state.bills.find(b=>b.id===id);
+  if(b){b.paid=!b.paid;save();renderBills();renderDashboard();toast(b.paid?'Marked paid ✓':'Marked unpaid');}
+}
+function deleteBill(id){state.bills=state.bills.filter(b=>b.id!==id);save();renderBills();renderDashboard();toast('Removed');}
+
+function renderBills(){
+  const el=document.getElementById('bills-list');
+  const metaEl=document.getElementById('bills-meta');
+  const unpaidTotalEl=document.getElementById('bills-unpaid-total');
+  const paidTotalEl=document.getElementById('bills-paid-total');
+  if(!el)return;
+  const sorted=[...state.bills].sort((a,b)=>a.dueDay-b.dueDay);
+  const unpaid=state.bills.filter(b=>!b.paid).reduce((s,b)=>s+b.amount,0);
+  const paid=state.bills.filter(b=>b.paid).reduce((s,b)=>s+b.amount,0);
+  if(unpaidTotalEl) unpaidTotalEl.textContent=fmtS(unpaid);
+  if(paidTotalEl) paidTotalEl.textContent=fmtS(paid);
+  if(metaEl) metaEl.textContent=state.bills.length?`${state.bills.filter(b=>b.paid).length} of ${state.bills.length} paid`:'';
+  if(!state.bills.length){el.innerHTML='<div class="empty-state">No bills yet. Add rent, utilities, subscriptions — anything due this month.</div>';return;}
+  el.innerHTML=sorted.map(b=>`
+    <div class="bill-item ${b.paid?'opacity:0.6':''}">
+      <div class="bill-left">
+        <div class="bill-name" style="${b.paid?'text-decoration:line-through;opacity:0.5;':''}">${b.name}</div>
+        <div class="bill-due">Due the ${b.dueDay}${ordinal(b.dueDay)}</div>
+      </div>
+      <div class="bill-right">
+        <span class="bill-amount">${fmtM(b.amount)}</span>
+        <button class="paid-toggle ${b.paid?'paid':'unpaid'}" onclick="toggleBill(${b.id})">${b.paid?'✓ Paid':'Unpaid'}</button>
+        <button class="remove-btn" onclick="deleteBill(${b.id})">×</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── DAILY SPEND TRACKER ────────────────────────────────────────────────────
+function addSpend(){
+  const desc=document.getElementById('spend-desc').value.trim();
+  const amount=parseFloat(document.getElementById('spend-amount').value);
+  if(!desc||!amount){toast('Please enter what it was and the amount.');return;}
+  state.spend.push({id:Date.now(),desc,amount,cat:document.getElementById('spend-cat').value,date:document.getElementById('spend-date').value||todayStr()});
+  ['spend-desc','spend-amount'].forEach(id=>document.getElementById(id).value='');
+  save();renderSpend();renderDashboard();toast('Logged ✓');
+}
+function deleteSpend(id){state.spend=state.spend.filter(s=>s.id!==id);save();renderSpend();renderDashboard();toast('Removed');}
+
+function renderSpend(){
+  const allEntries=[...state.spend].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  const monthEntries=allEntries.filter(s=>isCurrentMonth(s.date));
+  const todayEntries=allEntries.filter(s=>isToday(s.date));
+  const todayAmt=todayEntries.reduce((s,e)=>s+e.amount,0);
+  const monthAmt=monthEntries.reduce((s,e)=>s+e.amount,0);
+
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('today-total',fmtS(todayAmt));
+  set('today-count-label',todayEntries.length===0?'nothing logged today':todayEntries.length===1?'1 entry today':`${todayEntries.length} entries today`);
+  const sumEl=document.getElementById('spend-summary');
+  if(sumEl) sumEl.textContent=monthEntries.length?`${monthEntries.length} entries · ${fmtM(monthAmt)} this month`:'';
+
+  // Category breakdown
+  const bdEl=document.getElementById('spend-breakdown');
+  if(bdEl){
+    if(!monthEntries.length){bdEl.innerHTML='<div class="empty-state">Start logging and you\'ll see your patterns here.</div>';}
+    else{
+      const catMap={};
+      monthEntries.forEach(e=>{catMap[e.cat]=(catMap[e.cat]||0)+e.amount;});
+      const sorted=Object.entries(catMap).sort((a,b)=>b[1]-a[1]);
+      const top=sorted[0]?sorted[0][1]:1;
+      bdEl.innerHTML=sorted.map(([cat,amt])=>`
+        <div class="prog-wrap">
+          <div class="prog-label"><span>${cat}</span><span>${fmtM(amt)}</span></div>
+          <div class="prog-bar"><div class="prog-fill rose" style="width:${pct(amt,top)}%"></div></div>
+        </div>`).join('');
+    }
+  }
+
+  // Spend list
+  const listEl=document.getElementById('spend-list');
+  if(listEl){
+    if(!allEntries.length){listEl.innerHTML='<div class="empty-state">No entries yet. Start logging above — even small purchases add up fast.</div>';return;}
+    listEl.innerHTML=allEntries.map(e=>`
+      <div class="spend-entry">
+        <div class="spend-cat-dot"></div>
+        <div style="flex:1;">
+          <div class="spend-desc">${e.desc}</div>
+          <div class="spend-cat-label">${e.cat}${isToday(e.date)?' · <span style="color:var(--rose);">today</span>':' · '+fmt(e.date)}</div>
+        </div>
+        <span class="spend-amount">${fmtM(e.amount)}</span>
+        <button class="remove-btn" onclick="deleteSpend(${e.id})">×</button>
+      </div>`).join('');
+  }
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const totalIn=getTotalIncome();
+  const totalOut=getTotalGoingOut();
+  const left=totalIn-totalOut;
+  const unpaidBills=state.bills.filter(b=>!b.paid).length;
+  const todayAmt=state.spend.filter(s=>isToday(s.date)).reduce((s,e)=>s+e.amount,0);
+  const todayCount=state.spend.filter(s=>isToday(s.date)).length;
+
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('snap-in',fmtS(totalIn));
+  set('snap-out',fmtS(totalOut));
+  set('snap-bills',unpaidBills);
+  set('snap-today',fmtS(todayAmt));
+  set('snap-today-sub',todayCount===0?'nothing logged yet':todayCount===1?'1 entry today':`${todayCount} entries`);
+
+  // Left this month
+  const leftEl=document.getElementById('dash-left');
+  if(leftEl){leftEl.textContent=fmtM(left);leftEl.className='snap-num '+(left>=0?'positive':'negative');leftEl.style.fontSize='2.2rem';}
+  const pctVal=totalIn>0?pct(totalOut,totalIn):0;
+  set('dash-pct',pctVal+'%');
+  const fillEl=document.getElementById('dash-prog-fill');
+  if(fillEl){fillEl.style.width=pctVal+'%';fillEl.className='prog-fill'+(pctVal>=100?' rose':pctVal>=80?' amber':'');}
+  const msgEl=document.getElementById('dash-message');
+  if(msgEl){
+    if(!totalIn&&!totalOut) msgEl.textContent='Add your income and expenses to see your picture.';
+    else if(left>=0) msgEl.textContent=`You have ${fmtM(left)} left after expenses. You\'re doing great.`;
+    else msgEl.textContent=`Expenses exceed income by ${fmtM(Math.abs(left))}. Let\'s look at what can be adjusted.`;
+  }
+
+  // Spending breakdown on dashboard
+  const bdEl=document.getElementById('dash-breakdown');
+  if(bdEl){
+    const groups=[
+      {label:'Needs',id:'needs'},{label:'Food & Groceries',id:'food'},
+      {label:'Eating Out & Impulse',id:'eatingout'},{label:'Subscriptions',id:'subscriptions'},
+      {label:'Pets',id:'pets'},{label:'Personal',id:'personal'}
+    ];
+    const nonZero=groups.filter(g=>getTotalForGroup(g.id)>0);
+    if(!nonZero.length){bdEl.innerHTML='<div class="empty-state">Add amounts in Going Out to see the breakdown.</div>';}
+    else{
+      const topAmt=Math.max(...nonZero.map(g=>getTotalForGroup(g.id)));
+      bdEl.innerHTML=nonZero.map(g=>{
+        const amt=getTotalForGroup(g.id);
+        const isLeak=g.id==='eatingout'||g.id==='subscriptions';
+        return`<div class="prog-wrap">
+          <div class="prog-label">
+            <span>${g.label}${isLeak?' <span style="font-size:0.55rem;background:var(--rose-lt);color:var(--rose);padding:1px 5px;border-radius:6px;margin-left:4px;">watch</span>':''}</span>
+            <span>${fmtM(amt)}</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill ${isLeak?'rose':''}" style="width:${pct(amt,topAmt)}%"></div></div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Bills due soon
+  const billsEl=document.getElementById('dash-bills-soon');
+  if(billsEl){
+    const today=new Date();
+    const upcoming=state.bills.filter(b=>{
+      const d=new Date(currentYear,currentMonth,b.dueDay);
+      const diff=(d-today)/(1000*60*60*24);
+      return diff>=0&&diff<=10&&!b.paid;
+    }).sort((a,b)=>a.dueDay-b.dueDay).slice(0,4);
+    if(!upcoming.length){billsEl.innerHTML='<div class="empty-state">No bills due in the next 10 days.</div>';}
+    else{billsEl.innerHTML=upcoming.map(b=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div><div style="font-size:0.82rem;font-weight:500;">${b.name}</div><div style="font-size:0.62rem;color:var(--ink-lt);">Due ${b.dueDay}${ordinal(b.dueDay)}</div></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:'DM Serif Display',serif;">${fmtM(b.amount)}</span>
+          <button class="paid-toggle unpaid" onclick="toggleBill(${b.id});renderDashboard();" style="font-size:0.58rem;padding:2px 8px;">Mark Paid</button>
+        </div>
+      </div>`).join('');}
+  }
+
+  // Today's preview
+  const todayEl=document.getElementById('dash-today-preview');
+  if(todayEl){
+    const entries=state.spend.filter(s=>isToday(s.date)).sort((a,b)=>b.id-a.id).slice(0,4);
+    if(!entries.length){todayEl.innerHTML='<div class="empty-state">Nothing logged today. Every dollar counts — tap Log Spend to start.</div>';}
+    else{todayEl.innerHTML=entries.map(e=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div><span style="font-size:0.82rem;font-weight:500;">${e.desc}</span> <span style="font-size:0.6rem;background:var(--rose-lt);color:var(--rose);padding:1px 6px;border-radius:8px;">${e.cat}</span></div>
+        <span style="font-family:'DM Serif Display',serif;color:var(--rose);">${fmtM(e.amount)}</span>
+      </div>`).join('');}
+  }
+}
+
+// ── DARK MODE ──────────────────────────────────────────────────────────────
+function toggleDark(){
+  const isDark=document.body.classList.toggle('dark-mode');
+  localStorage.setItem('ssb-dark',isDark?'1':'0');
+  document.getElementById('dark-btn').textContent=isDark?'☀️':'🌙';
+}
+(function(){
+  if(localStorage.getItem('ssb-dark')==='1'){
+    document.body.classList.add('dark-mode');
+    const btn=document.getElementById('dark-btn');
+    if(btn) btn.textContent='☀️';
+  }
+})();
+
+// ── PWA INSTALL ────────────────────────────────────────────────────────────
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  document.getElementById('install-banner').style.display='flex';
+});
+document.getElementById('install-btn').addEventListener('click',async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  const{outcome}=await deferredPrompt.userChoice;
+  if(outcome==='accepted') document.getElementById('install-banner').style.display='none';
+  deferredPrompt=null;
+});
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('install-banner').style.display='none';
+});
+
+// ── SERVICE WORKER (PWA offline support) ──────────────────────────────────
+if('serviceWorker' in navigator){
+  const swCode=`
+    const CACHE='ssb-v1';
+    self.addEventListener('install',e=>{
+      e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/'])));
+    });
+    self.addEventListener('fetch',e=>{
+      e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
+    });
+  `;
+  navigator.serviceWorker.register(
+    URL.createObjectURL(new Blob([swCode],{type:'application/javascript'}))
+  ).catch(()=>{});
+}
+
+// ── RENDER ALL ─────────────────────────────────────────────────────────────
+function renderAll(){
+  updateMonthLabel();
+  renderIncome();
+  renderGoingOut();
+  renderBills();
+  renderSpend();
+  renderDashboard();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+load();
+document.getElementById('spend-date').value=todayStr();
+renderAll();
+</script>
+
+
+</body></html>

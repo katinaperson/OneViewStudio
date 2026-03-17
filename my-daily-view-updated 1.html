@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5C4A40">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="My Daily View">
+<title>My Daily View</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --linen:     #F5F0E8;
+    --cream:     #FAF7F2;
+    --greige:    #E8E0D5;
+    --warm:      #DDD4C4;
+    --mocha:     #8C7268;
+    --mocha-lt:  #B8A898;
+    --mocha-dk:  #5C4A40;
+    --bloom:     #C4285A;
+    --bloom-lt:  #F0C0D0;
+    --bloom-dk:  #8C1A3A;
+    --bark:      #7A5C4A;
+    --gold:      #C4A96E;
+    --gold-lt:   #EAD9B8;
+    --ink:       #2A1F18;
+    --ink-mid:   #5A4438;
+    --ink-lt:    #9A8878;
+    --border:    #DDD0C0;
+    --shadow:    rgba(90,68,56,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--linen);
+    color: var(--ink);
+    min-height: 100vh;
+    font-weight: 300;
+  }
+
+  /* subtle linen texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    position: relative;
+    z-index: 1;
+    background: var(--mocha-dk);
+    padding: 0;
+    border-bottom: 3px solid var(--bloom);
+    overflow: hidden;
+  }
+
+  .header-inner {
+    padding: 28px 44px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  /* decorative crosshatch lines like Canva template */
+  .header-inner::before {
+    content: '';
+    position: absolute;
+    right: 180px;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(196,169,110,0.2) 8px,
+      rgba(196,169,110,0.2) 9px
+    );
+    pointer-events: none;
+  }
+
+  .app-title {
+    font-family: 'Cormorant', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .app-subtitle {
+    font-size: 0.66rem;
+    color: var(--mocha-lt);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 400;
+  }
+
+  .header-date-block {
+    text-align: right;
+  }
+
+  .header-date {
+    font-family: 'Cormorant', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.08em;
+  }
+
+  .header-day {
+    font-size: 0.66rem;
+    color: var(--mocha-lt);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+    justify-content: flex-end;
+  }
+
+  .day-nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--mocha-lt);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .day-nav-btn:hover { background: rgba(255,255,255,0.18); color: var(--cream); }
+  .day-nav-btn.today-btn { border-color: var(--bloom); color: var(--bloom-lt); }
+  .day-nav-btn.today-btn:hover { background: var(--bloom); color: white; }
+
+  .header-sync-btn {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mocha-lt);
+    cursor: pointer;
+    padding: 6px 0;
+    transition: color 0.2s;
+    font-weight: 400;
+  }
+
+  .header-sync-btn:hover { color: var(--cream); }
+
+  /* ── SYNC PANEL ── */
+  .sync-panel {
+    background: var(--mocha-dk);
+    border-bottom: 2px solid var(--bloom);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0 44px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sync-panel.open { max-height: 280px; padding: 20px 44px; }
+
+  .sync-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+
+  .sync-card-title {
+    font-family: 'Cormorant', serif;
+    font-size: 1rem;
+    color: var(--cream);
+    margin-bottom: 5px;
+    font-weight: 400;
+  }
+
+  .sync-card-desc { font-size: 0.7rem; color: var(--mocha-lt); margin-bottom: 12px; line-height: 1.5; }
+
+  .sync-btn {
+    display: block; width: 100%;
+    padding: 8px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.66rem; letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 400; cursor: pointer;
+    border: 1px solid rgba(196,169,110,0.3);
+    background: transparent; color: var(--mocha-lt);
+    transition: all 0.2s; margin-bottom: 6px; border-radius: 2px;
+  }
+
+  .sync-btn:hover { background: rgba(255,255,255,0.08); color: var(--cream); }
+  .sync-btn.primary { background: var(--bloom-dk); border-color: var(--bloom); color: white; }
+  .sync-btn.primary:hover { background: var(--bloom); }
+
+  .sync-input {
+    width: 100%; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(196,169,110,0.25);
+    border-radius: 2px; padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    color: white; outline: none; margin-bottom: 8px;
+  }
+
+  .sync-input::placeholder { color: rgba(255,255,255,0.3); }
+  .sync-input:focus { border-color: var(--bloom); }
+  .sync-status { font-size: 0.66rem; color: var(--bloom-lt); margin-top: 4px; min-height: 16px; }
+
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    background: var(--greige);
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    padding: 0 44px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-tab {
+    padding: 13px 20px;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-lt);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  .nav-tab:hover { color: var(--mocha); }
+  .nav-tab.active { color: var(--mocha-dk); border-bottom-color: var(--bloom); }
+
+  /* ── MAIN ── */
+  .main {
+    padding: 32px 44px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── DASHBOARD GRID ── */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+  }
+
+  .dash-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  .dash-card.wide { grid-column: span 2; }
+  .dash-card.full { grid-column: span 3; }
+
+  .dash-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--greige);
+  }
+
+  .dash-card-title {
+    font-family: 'Cormorant', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--mocha-dk);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .dash-card-title .icon {
+    width: 6px; height: 6px;
+    background: var(--bloom);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dash-card-title[onclick]:hover {
+    color: var(--bloom-dk);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .dash-count {
+    font-size: 0.65rem;
+    color: var(--ink-lt);
+    letter-spacing: 0.12em;
+    background: var(--greige);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* ── QUICK ADD INLINE ── */
+  .quick-add {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .quick-add input {
+    flex: 1;
+    background: var(--linen);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #2A1F18;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-text-fill-color: #2A1F18;
+  }
+
+  .quick-add input:focus { border-color: var(--mocha); background: white; }
+  .quick-add input::placeholder { color: var(--ink-lt); }
+
+  .quick-add select {
+    background: var(--linen);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 7px 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--ink-mid);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    max-width: 130px;
+  }
+
+  .quick-add-btn {
+    background: var(--mocha-dk);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 7px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .quick-add-btn:hover { background: var(--bark); }
+  .quick-add-btn.bloom { background: var(--bloom-dk); }
+  .quick-add-btn.bloom:hover { background: var(--bloom); }
+
+  /* ── LIST ITEMS ── */
+  .item-list { display: flex; flex-direction: column; gap: 6px; }
+
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--linen);
+    border-radius: 3px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .list-item:hover { border-color: var(--border); background: white; }
+
+  .list-item.done { opacity: 0.5; }
+  .list-item.done .item-text { text-decoration: line-through; }
+
+  .list-item.carried {
+    border-left: 2px solid var(--gold);
+    background: #FDF8EE;
+  }
+
+  .item-check {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--mocha-lt);
+    border-radius: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .item-check:hover { border-color: var(--bloom); }
+  .item-check.checked { background: var(--bloom); border-color: var(--bloom); }
+  .item-check.checked::after { content: '✓'; font-size: 0.6rem; color: white; }
+
+  .item-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--mocha-lt);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .item-text {
+    flex: 1;
+    font-size: 0.84rem;
+    color: var(--ink-mid);
+    line-height: 1.4;
+    font-weight: 300;
+  }
+
+  .item-meta {
+    font-size: 0.65rem;
+    color: var(--ink-lt);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  .item-tag {
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--greige);
+    color: var(--mocha);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+
+  .item-tag.carried-tag {
+    background: var(--gold-lt);
+    color: var(--bark);
+  }
+
+  .item-remove {
+    background: none;
+    border: none;
+    color: var(--mocha-lt);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .item-remove:hover { color: var(--bloom); }
+
+  .empty-state {
+    font-size: 0.8rem;
+    color: var(--ink-lt);
+    font-style: italic;
+    padding: 8px 2px;
+    text-align: center;
+  }
+
+  /* ── BUDGET SECTION ── */
+  .budget-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .budget-stat {
+    background: var(--linen);
+    border-radius: 3px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+  }
+
+  .budget-stat-num {
+    font-family: 'Cormorant', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--mocha-dk);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .budget-stat-num.over { color: var(--bloom-dk); }
+  .budget-stat-num.good { color: #5C8040; }
+
+  .budget-stat-label {
+    font-size: 0.62rem;
+    color: var(--ink-lt);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .budget-bar-wrap { margin-bottom: 14px; }
+
+  .budget-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: var(--ink-lt);
+    margin-bottom: 5px;
+    letter-spacing: 0.08em;
+  }
+
+  .budget-bar {
+    height: 5px;
+    background: var(--greige);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .budget-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .budget-fill.safe { background: linear-gradient(90deg, var(--gold), #8CAA60); }
+  .budget-fill.warn { background: linear-gradient(90deg, var(--gold), #C4A040); }
+  .budget-fill.over { background: linear-gradient(90deg, var(--gold), var(--bloom)); }
+
+  .spend-entry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: var(--linen);
+    border-radius: 3px;
+    border: 1px solid transparent;
+    margin-bottom: 5px;
+    animation: fadeIn 0.2s ease;
+    transition: border-color 0.15s;
+  }
+
+  .spend-entry:hover { border-color: var(--border); }
+
+  .spend-amount {
+    font-family: 'Cormorant', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--mocha-dk);
+    min-width: 60px;
+  }
+
+  .spend-cat {
+    font-size: 0.62rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--greige);
+    color: var(--mocha);
+    letter-spacing: 0.06em;
+  }
+
+  .spend-desc { flex: 1; font-size: 0.82rem; color: var(--ink-mid); font-weight: 300; }
+
+  /* ── HABITS ── */
+  .habit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--linen);
+    border-radius: 3px;
+    margin-bottom: 6px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .habit-item:hover { border-color: var(--border); }
+  .habit-item.completed { background: #F5F8F0; border-color: #C8DCA8; }
+
+  .habit-check {
+    width: 20px; height: 20px;
+    border: 1.5px solid var(--mocha-lt);
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .habit-check:hover { border-color: var(--bloom); }
+  .habit-check.done { background: #6A9A40; border-color: #6A9A40; }
+  .habit-check.done::after { content: '✓'; font-size: 0.65rem; color: white; }
+
+  .habit-name { flex: 1; font-size: 0.84rem; color: var(--ink-mid); font-weight: 300; }
+  .habit-name.done { text-decoration: line-through; color: var(--ink-lt); }
+
+  .habit-streak {
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  /* ── NOTES ── */
+  .notes-area {
+    width: 100%;
+    min-height: 100px;
+    background: var(--linen);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.84rem;
+    color: var(--ink-mid);
+    font-weight: 300;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .notes-area:focus { border-color: var(--mocha); background: white; }
+  .notes-area::placeholder { color: var(--ink-lt); }
+
+  /* ── SECTION TITLES (for detail tabs) ── */
+  .section-title {
+    font-family: 'Cormorant', serif;
+    font-size: 1.75rem;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .section-sub {
+    font-size: 0.66rem;
+    color: var(--ink-lt);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .divider {
+    width: 36px; height: 2px;
+    background: linear-gradient(90deg, var(--bloom), var(--gold));
+    margin: 8px 0 24px;
+    border-radius: 2px;
+  }
+
+  /* ── DETAIL FORMS ── */
+  .form-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+
+  .form-card-title {
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mocha);
+    font-weight: 500;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--greige);
+  }
+
+  label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-lt);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  input, textarea, select, input[type=text], input[type=date], input[type=number], input[type=email] {
+    width: 100%;
+    background: var(--linen);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.84rem;
+    color: #2A1F18;
+    -webkit-text-fill-color: #2A1F18;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    resize: vertical;
+    -webkit-appearance: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--mocha);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(140,114,104,0.08);
+  }
+
+  textarea { min-height: 80px; }
+
+  .field { margin-bottom: 16px; }
+
+  .field-row { display: grid; gap: 16px; margin-bottom: 16px; }
+  .field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .btn {
+    padding: 9px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--mocha);
+  }
+
+  .btn:hover { border-color: var(--mocha); color: var(--mocha-dk); }
+
+  .btn-primary {
+    background: var(--mocha-dk);
+    color: white;
+    border-color: var(--mocha-dk);
+  }
+
+  .btn-primary:hover { background: var(--bark); border-color: var(--bark); color: white; }
+
+  .btn-bloom {
+    background: var(--bloom-dk);
+    color: white;
+    border-color: var(--bloom-dk);
+  }
+
+  .btn-bloom:hover { background: var(--bloom); border-color: var(--bloom); color: white; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+
+  /* ── BUDGET CATEGORY ROWS ── */
+  .cat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--greige);
+  }
+
+  .cat-name { flex: 1; font-size: 0.82rem; color: var(--ink-mid); font-weight: 400; }
+  .cat-budget { font-size: 0.8rem; color: var(--ink-lt); min-width: 70px; text-align: right; }
+  .cat-spent { font-size: 0.8rem; color: var(--mocha-dk); font-weight: 500; min-width: 70px; text-align: right; }
+  .cat-remaining { font-size: 0.8rem; min-width: 70px; text-align: right; font-weight: 500; }
+  .cat-remaining.over { color: var(--bloom-dk); }
+  .cat-remaining.ok { color: #5C8040; }
+
+  .cat-bar { width: 80px; height: 4px; background: var(--greige); border-radius: 2px; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+  .cat-bar-fill.safe { background: #8CAA60; }
+  .cat-bar-fill.warn { background: var(--gold); }
+  .cat-bar-fill.over { background: var(--bloom); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 32px;
+    background: var(--mocha-dk);
+    color: var(--cream);
+    padding: 10px 20px;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s;
+    pointer-events: none;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 4px 16px rgba(42,31,24,0.2);
+    z-index: 100;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--linen); }
+  ::-webkit-scrollbar-thumb { background: var(--warm); border-radius: 3px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    .dash-card.full { grid-column: span 2; }
+    .dash-card.wide { grid-column: span 2; }
+  }
+
+  @media (max-width: 640px) {
+    .app-header .header-inner { padding: 18px 20px; flex-direction: column; gap: 10px; align-items: flex-start; }
+    .main { padding: 20px; }
+    .nav-tabs { padding: 0 20px; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .dash-card.full, .dash-card.wide { grid-column: span 1; }
+    .sync-panel.open { padding: 16px 20px; }
+    .sync-grid { grid-template-columns: 1fr; }
+    .budget-summary { grid-template-columns: 1fr 1fr; }
+    .field-row.cols-2, .field-row.cols-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ── WEATHER WIDGET ── */
+  .weather-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(196,169,110,0.3);
+    border-radius: 4px;
+    padding: 6px 14px;
+    margin-top: 8px;
+  }
+
+  .weather-icon { font-size: 1.3rem; flex-shrink: 0; }
+
+  .weather-temp {
+    font-family: 'Cormorant', serif;
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+  }
+
+  .weather-desc {
+    font-size: 0.6rem;
+    color: var(--mocha-lt);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .weather-loc {
+    font-size: 0.58rem;
+    color: rgba(184,168,152,0.65);
+    letter-spacing: 0.1em;
+    margin-top: 1px;
+  }
+
+  .weather-loading {
+    font-size: 0.64rem;
+    color: var(--mocha-lt);
+    letter-spacing: 0.1em;
+    font-style: italic;
+  }
+
+  /* ── TOP 3 FOCUS CARD ── */
+  .focus-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 12px var(--shadow);
+    grid-column: span 1;
+  }
+
+  .focus-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--greige);
+  }
+
+  .focus-card-title {
+    font-family: 'Cormorant', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--mocha-dk);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .focus-badge {
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--bloom-lt);
+    color: var(--bloom-dk);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .focus-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 10px;
+    background: var(--linen);
+    border-radius: 3px;
+    border: 1px solid transparent;
+    margin-bottom: 7px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .focus-item:hover { border-color: var(--border); background: white; }
+  .focus-item.done { opacity: 0.45; }
+  .focus-item.done .focus-item-text { text-decoration: line-through; }
+
+  .focus-num {
+    font-family: 'Cormorant', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--bloom);
+    line-height: 1.2;
+    min-width: 18px;
+    flex-shrink: 0;
+  }
+
+  .focus-item-text {
+    flex: 1;
+    font-size: 0.84rem;
+    color: var(--ink-mid);
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  .focus-item-cat {
+    font-size: 0.6rem;
+    color: var(--ink-lt);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    margin-top: 2px;
+    align-self: center;
+  }
+
+  .focus-check {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--mocha-lt);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .focus-check:hover { border-color: var(--bloom); }
+  .focus-check.checked { background: var(--bloom); border-color: var(--bloom); }
+  .focus-check.checked::after { content: '✓'; font-size: 0.6rem; color: white; }
+
+  .focus-empty {
+    font-size: 0.78rem;
+    color: var(--ink-lt);
+    font-style: italic;
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  /* ── MEAL PLAN DASHBOARD ── */
+  .meal-dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin-bottom: 10px;
+  }
+
+  .meal-dash-item { display: flex; flex-direction: column; gap: 4px; }
+
+  .meal-dash-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mocha);
+    font-weight: 500;
+  }
+
+  .meal-dash-input {
+    width: 100%;
+    background: var(--linen) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 3px;
+    padding: 6px 10px !important;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem !important;
+    color: #1A0F08 !important;
+    -webkit-text-fill-color: #1A0F08 !important;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .meal-dash-input:focus { border-color: var(--mocha) !important; background: white !important; }
+  .meal-dash-input::placeholder { color: var(--ink-lt) !important; -webkit-text-fill-color: var(--ink-lt) !important; }
+
+  /* ── WATER TRACKER ── */
+  .water-track { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  .water-glass {
+    width: 24px; height: 30px;
+    border: 1.5px solid var(--mocha-lt);
+    border-radius: 0 0 4px 4px;
+    border-top: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    background: var(--linen);
+  }
+
+  .water-glass::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0%;
+    background: linear-gradient(to top, #7AB8D4, #A8D4E8);
+    transition: height 0.3s ease;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .water-glass.filled::before { height: 100%; }
+  .water-glass.filled { border-color: #5A9AB4; }
+  .water-glass:hover { border-color: var(--bloom); transform: translateY(-2px); }
+
+  /* ── GROCERY LIST ── */
+  .grocery-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: var(--linen);
+    border-radius: 3px;
+    border: 1px solid transparent;
+    margin-bottom: 5px;
+    transition: all 0.15s;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .grocery-item:hover { border-color: var(--border); }
+  .grocery-item.picked { opacity: 0.5; }
+  .grocery-item.picked .grocery-name { text-decoration: line-through; }
+
+  .grocery-check {
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--mocha-lt);
+    border-radius: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .grocery-check:hover { border-color: var(--bloom); }
+  .grocery-check.checked { background: #6A9A40; border-color: #6A9A40; }
+  .grocery-check.checked::after { content: '✓'; font-size: 0.6rem; color: white; }
+
+  .grocery-name { flex: 1; font-size: 0.84rem; color: var(--ink-mid); font-weight: 300; }
+  .grocery-cat-tag {
+    font-size: 0.6rem; padding: 2px 7px; border-radius: 10px;
+    background: var(--greige); color: var(--mocha); letter-spacing: 0.06em;
+  }
+
+  /* ── CALENDAR BUTTONS ── */
+  .cal-btn { font-size: 0.62rem !important; padding: 6px 10px !important; letter-spacing: 0.1em !important; }
+
+  .cal-launch-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--linen);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    min-width: 180px;
+    text-align: left;
+  }
+
+  .cal-launch-btn:hover {
+    border-color: var(--bloom);
+    background: white;
+    box-shadow: 0 2px 10px var(--shadow);
+    transform: translateY(-1px);
+  }
+
+  .cal-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+  .cal-btn-title {
+    font-size: 0.84rem;
+    color: var(--mocha-dk);
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 2px;
+  }
+
+  .cal-btn-sub {
+    font-size: 0.65rem;
+    color: var(--ink-lt);
+    letter-spacing: 0.06em;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* force visible text in all inputs regardless of cascade */
+  input, input[type=text], input[type=number], input[type=date],
+  input[type=email], input[type=month], .quick-add input {
+    color: #1A0F08 !important;
+    -webkit-text-fill-color: #1A0F08 !important;
+    opacity: 1 !important;
+  }
+  input::placeholder, .quick-add input::placeholder {
+    color: #A08878 !important;
+    -webkit-text-fill-color: #A08878 !important;
+    opacity: 1 !important;
+  }
+
+  /* ── DARK MODE ── */
+  body.dark-mode {
+    --linen:    #1E1916;
+    --cream:    #262018;
+    --greige:   #302820;
+    --warm:     #3A3028;
+    --mocha:    #C4A898;
+    --mocha-lt: #D4B8A8;
+    --mocha-dk: #6A5248;
+    --bloom:    #E04878;
+    --bloom-lt: #6A2040;
+    --bloom-dk: #A83058;
+    --bark:     #C09868;
+    --gold:     #D4B878;
+    --gold-lt:  #3A2E18;
+    --ink:      #F2EDE8;
+    --ink-mid:  #D8CEC8;
+    --ink-lt:   #A09088;
+    --border:   #3E3028;
+    --shadow:   rgba(0,0,0,0.35);
+  }
+
+  body.dark-mode .app-header { background: #2A2018; }
+
+  body.dark-mode .dash-card,
+  body.dark-mode .form-card,
+  body.dark-mode .focus-card {
+    background: #262018;
+    border-color: #3E3028;
+  }
+
+  body.dark-mode .list-item,
+  body.dark-mode .habit-item,
+  body.dark-mode .spend-entry,
+  body.dark-mode .budget-stat,
+  body.dark-mode .grocery-item {
+    background: #302820;
+    border-color: #3E3028;
+  }
+
+  body.dark-mode .list-item:hover,
+  body.dark-mode .habit-item:hover {
+    background: #3A3028;
+    border-color: #5A4838;
+  }
+
+  body.dark-mode .nav-tabs {
+    background: #1E1916;
+    border-color: #3E3028;
+  }
+
+  body.dark-mode .nav-tab { color: #A09088; }
+  body.dark-mode .nav-tab:hover { color: #C4A898; }
+  body.dark-mode .nav-tab.active { color: #F2EDE8; border-bottom-color: var(--bloom); }
+
+  body.dark-mode .item-text,
+  body.dark-mode .habit-name,
+  body.dark-mode .spend-desc,
+  body.dark-mode .grocery-name { color: #D8CEC8; }
+
+  body.dark-mode .section-title { color: #F2EDE8; }
+  body.dark-mode .section-sub { color: #A09088; }
+  body.dark-mode .dash-card-header,
+  body.dark-mode .focus-card-header { border-color: #3E3028; }
+  body.dark-mode .dash-card-title { color: #C4A898; }
+  body.dark-mode .form-card-title { color: #C4A898; }
+
+  body.dark-mode .notes-area {
+    background: #302820 !important;
+    color: #D8CEC8 !important;
+    border-color: #3E3028 !important;
+    -webkit-text-fill-color: #D8CEC8 !important;
+  }
+  body.dark-mode .notes-area:focus {
+    background: #3A3028 !important;
+    border-color: #C4A898 !important;
+  }
+
+  body.dark-mode input,
+  body.dark-mode input[type=text],
+  body.dark-mode input[type=number],
+  body.dark-mode input[type=date],
+  body.dark-mode input[type=email],
+  body.dark-mode input[type=month],
+  body.dark-mode .quick-add input,
+  body.dark-mode textarea,
+  body.dark-mode select {
+    color: #F2EDE8 !important;
+    -webkit-text-fill-color: #F2EDE8 !important;
+    background-color: #302820 !important;
+    border-color: #3E3028 !important;
+  }
+
+  body.dark-mode input:focus,
+  body.dark-mode textarea:focus,
+  body.dark-mode select:focus {
+    background-color: #3A3028 !important;
+    border-color: #C4A898 !important;
+  }
+
+  body.dark-mode input::placeholder,
+  body.dark-mode textarea::placeholder,
+  body.dark-mode .quick-add input::placeholder {
+    color: #706058 !important;
+    -webkit-text-fill-color: #706058 !important;
+  }
+
+  body.dark-mode .sync-input {
+    color: #F2EDE8 !important;
+    -webkit-text-fill-color: #F2EDE8 !important;
+  }
+
+  body.dark-mode .budget-bar { background: #3A3028; }
+  body.dark-mode .cat-row { border-color: #3E3028; }
+  body.dark-mode .cat-name { color: #D8CEC8; }
+  body.dark-mode .item-tag { background: #3A3028; color: #C4A898; }
+  body.dark-mode .dash-count { background: #302820; color: #A09088; }
+  body.dark-mode .habit-item.completed { background: #1E2A1A; border-color: #304828; }
+  body.dark-mode .meal-dash-input { background: #302820 !important; color: #D8CEC8 !important; -webkit-text-fill-color: #D8CEC8 !important; }
+  body.dark-mode .sync-panel { background: #2A2018; }
+
+  /* ── DARK TOGGLE BUTTON ── */
+  .dark-toggle-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--mocha-lt);
+    font-size: 0.78rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .dark-toggle-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div>
+      <div class="app-title">My Daily View</div>
+      <div class="app-subtitle">Daily Life Dashboard</div>
+    </div>
+    <div class="header-date-block">
+      <div class="header-day" id="header-day">—</div>
+      <div class="header-date" id="header-date">—</div>
+      <div id="weather-widget" class="weather-widget">
+        <div class="weather-loading">Fetching weather…</div>
+      </div>
+      <div class="header-controls">
+        <button class="day-nav-btn" onclick="changeDay(-1)">← Previous</button>
+        <button class="day-nav-btn today-btn" onclick="goToday()">Today</button>
+        <button class="day-nav-btn" onclick="changeDay(1)">Next →</button>
+        <span style="width:1px;height:18px;background:rgba(255,255,255,0.15);display:inline-block;margin:0 2px;"></span>
+        <button class="day-nav-btn cal-btn" onclick="window.open('https://calendar.google.com','_blank')" title="Open Google Calendar">📅 Google</button>
+        <button class="day-nav-btn cal-btn" onclick="window.open('https://outlook.live.com/calendar','_blank')" title="Open Outlook Calendar">📅 Outlook</button>
+        <button class="day-nav-btn cal-btn" onclick="window.open('https://www.icloud.com/calendar','_blank')" title="Open iCloud Calendar">📅 iCal</button>
+        <span style="width:1px;height:18px;background:rgba(255,255,255,0.15);display:inline-block;margin:0 2px;"></span>
+        <button class="header-sync-btn" onclick="toggleSync()">↑ Backup</button>
+        <button class="dark-toggle-btn" id="dark-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SYNC PANEL -->
+<div class="sync-panel" id="sync-panel">
+  <div class="sync-grid">
+    <div>
+      <div class="sync-card-title">Export & Import</div>
+      <div class="sync-card-desc">Download all your data as a backup. Import on any device to restore.</div>
+      <button class="sync-btn primary" onclick="exportData()">Export My Data (.json)</button>
+      <button class="sync-btn" onclick="document.getElementById('import-file').click()">Import from File</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      <div class="sync-status" id="export-status"></div>
+    </div>
+    <div>
+      <div class="sync-card-title">Email Backup</div>
+      <div class="sync-card-desc">Open an email draft so you can send your backup to yourself.</div>
+      <input class="sync-input" type="email" id="backup-email" placeholder="your@email.com">
+      <button class="sync-btn primary" onclick="emailBackup()">Open Email Draft</button>
+      <div class="sync-status" id="email-status"></div>
+    </div>
+    <div>
+      <div class="sync-card-title">Google Drive</div>
+      <div class="sync-card-desc">Download your backup file then drag it into Google Drive.</div>
+      <button class="sync-btn primary" onclick="saveToGoogleDrive()">Save to Google Drive</button>
+      <button class="sync-btn" onclick="loadFromGoogleDrive()">Load from Google Drive</button>
+      <div class="sync-status" id="drive-status"></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-tabs">
+  <div class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</div>
+  <div class="nav-tab" onclick="switchTab('appointments')">Appointments</div>
+  <div class="nav-tab" onclick="switchTab('tasks')">Tasks</div>
+  <div class="nav-tab" onclick="switchTab('reminders')">Reminders</div>
+  <div class="nav-tab" onclick="switchTab('budget')">Budget</div>
+  <div class="nav-tab" onclick="switchTab('habits')">Habits</div>
+  <div class="nav-tab" onclick="switchTab('meals')">Meals</div>
+  <div class="nav-tab" onclick="switchTab('notes')">Notes</div>
+</nav>
+
+<div class="main">
+
+  <!-- ══ DASHBOARD ══ -->
+  <div id="tab-dashboard" class="tab-panel active">
+
+    <div class="dashboard-grid">
+
+      <!-- APPOINTMENTS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('appointments')" style="cursor:pointer;" title="Go to Appointments"><span class="icon"></span> Appointments ›</div>
+          <span class="dash-count" id="appt-count">0 today</span>
+        </div>
+        <div class="quick-add">
+          <input type="text" id="appt-quick" placeholder="Add appointment..." onkeydown="if(event.key==='Enter') quickAddAppt()">
+          <input type="text" id="appt-time-quick" placeholder="Time" style="max-width:80px;">
+          <button class="quick-add-btn" onclick="quickAddAppt()">+ Add</button>
+        </div>
+        <div class="item-list" id="appt-dash-list"></div>
+      </div>
+
+      <!-- REMINDERS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('reminders')" style="cursor:pointer;" title="Go to Reminders"><span class="icon" style="background:var(--gold)"></span> Reminders ›</div>
+          <span class="dash-count" id="reminder-count">0 today</span>
+        </div>
+        <div class="quick-add">
+          <input type="text" id="reminder-quick" placeholder="Add reminder..." onkeydown="if(event.key==='Enter') quickAddReminder()">
+          <button class="quick-add-btn" onclick="quickAddReminder()">+ Add</button>
+        </div>
+        <div class="item-list" id="reminder-dash-list"></div>
+      </div>
+
+      <!-- TASKS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('tasks')" style="cursor:pointer;" title="Go to Tasks"><span class="icon" style="background:var(--bark)"></span> Tasks ›</div>
+          <span class="dash-count" id="task-count">0 remaining</span>
+        </div>
+        <div class="quick-add">
+          <input type="text" id="task-quick" placeholder="Add task..." onkeydown="if(event.key==='Enter') quickAddTask()">
+          <select id="task-priority-quick" style="max-width:90px;">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+          <select id="task-cat-quick" style="max-width:110px;">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Side Project">Side Project</option>
+            <option value="Errands">Errands</option>
+            <option value="Learning">Learning</option>
+          </select>
+          <button class="quick-add-btn" onclick="quickAddTask()">+ Add</button>
+        </div>
+        <div class="item-list" id="task-dash-list"></div>
+      </div>
+
+      <!-- TOP 3 FOCUS -->
+      <div class="focus-card">
+        <div class="focus-card-header">
+          <div class="focus-card-title">✦ Today's Focus 3</div>
+          <span class="focus-badge">High Priority</span>
+        </div>
+        <div id="focus-3-list"><div class="focus-empty">No high-priority tasks yet.<br>Add tasks and mark them High.</div></div>
+      </div>
+
+      <!-- BUDGET SNAPSHOT -->
+      <div class="dash-card wide">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('budget')" style="cursor:pointer;" title="Go to Budget"><span class="icon" style="background:var(--gold)"></span> Budget — <span id="budget-month-label" style="font-weight:300;font-size:0.95rem;"></span> ›</div>
+          <span class="dash-count" id="budget-dash-count">$0 spent today</span>
+        </div>
+        <div class="budget-summary">
+          <div class="budget-stat">
+            <div class="budget-stat-num" id="dash-total-budget">$0</div>
+            <div class="budget-stat-label">Monthly Budget</div>
+          </div>
+          <div class="budget-stat">
+            <div class="budget-stat-num" id="dash-total-spent">$0</div>
+            <div class="budget-stat-label">Spent This Month</div>
+          </div>
+          <div class="budget-stat">
+            <div class="budget-stat-num" id="dash-remaining">$0</div>
+            <div class="budget-stat-label">Remaining</div>
+          </div>
+        </div>
+        <div class="budget-bar-wrap">
+          <div class="budget-bar-label">
+            <span>Monthly Progress</span>
+            <span id="budget-pct">0%</span>
+          </div>
+          <div class="budget-bar"><div class="budget-fill safe" id="budget-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="quick-add">
+          <input type="number" id="spend-amount-quick" placeholder="Amount $" style="max-width:110px;" step="0.01">
+          <input type="text" id="spend-desc-quick" placeholder="Description..." onkeydown="if(event.key==='Enter') quickAddSpend()">
+          <select id="spend-cat-quick">
+            <option value="General">General</option>
+          </select>
+          <button class="quick-add-btn bloom" onclick="quickAddSpend()">+ Log Spend</button>
+        </div>
+        <div class="item-list" id="spend-dash-list"></div>
+      </div>
+
+      <!-- HABITS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('habits')" style="cursor:pointer;" title="Go to Habits"><span class="icon" style="background:#8CAA60"></span> Habits ›</div>
+          <span class="dash-count" id="habit-count">0 / 0 done</span>
+        </div>
+        <div id="habit-dash-list"></div>
+        <div style="margin-top:8px;text-align:center;">
+          <button class="quick-add-btn" style="background:transparent;color:var(--mocha);border:1px solid var(--border);font-size:0.62rem;" onclick="switchTab('habits')">Manage Habits →</button>
+        </div>
+      </div>
+
+      <!-- MEAL PLAN DASHBOARD -->
+      <div class="dash-card wide">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('meals')" style="cursor:pointer;" title="Go to Meals"><span class="icon" style="background:#7A9A6A"></span> Today's Meals ›</div>
+          <button class="quick-add-btn" style="background:transparent;color:var(--mocha);border:1px solid var(--border);font-size:0.62rem;padding:4px 10px;" onclick="saveMealsDash()">Save</button>
+        </div>
+        <div class="meal-dash-grid">
+          <div class="meal-dash-item">
+            <div class="meal-dash-label">🌅 Breakfast</div>
+            <input type="text" class="meal-dash-input" id="meal-breakfast-dash" placeholder="What's for breakfast?">
+          </div>
+          <div class="meal-dash-item">
+            <div class="meal-dash-label">☀️ Lunch</div>
+            <input type="text" class="meal-dash-input" id="meal-lunch-dash" placeholder="What's for lunch?">
+          </div>
+          <div class="meal-dash-item">
+            <div class="meal-dash-label">🌙 Dinner</div>
+            <input type="text" class="meal-dash-input" id="meal-dinner-dash" placeholder="What's for dinner?">
+          </div>
+          <div class="meal-dash-item">
+            <div class="meal-dash-label">🍎 Snack</div>
+            <input type="text" class="meal-dash-input" id="meal-snack-dash" placeholder="Snack or dessert?">
+          </div>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:14px;">
+          <div class="meal-dash-label" style="margin:0;">💧 Water</div>
+          <div class="water-track" id="water-dash-track"></div>
+          <span style="font-size:0.7rem;color:var(--ink-lt);" id="water-dash-count">0 / 8 glasses</span>
+        </div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="dash-card full">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('notes')" style="cursor:pointer;" title="Go to Notes"><span class="icon" style="background:var(--mocha-lt)"></span> Brain Dump ›</div>
+          <button class="quick-add-btn" style="background:transparent;color:var(--mocha);border:1px solid var(--border);font-size:0.62rem;padding:4px 10px;" onclick="saveNotes()">Save Note</button>
+        </div>
+        <textarea class="notes-area" id="notes-dash" placeholder="Whatever's on your mind today — thoughts, ideas, reminders to self, overflow..."></textarea>
+      </div>
+
+      <!-- CALENDARS -->
+      <div class="dash-card full">
+        <div class="dash-card-header">
+          <div class="dash-card-title"><span class="icon" style="background:var(--bloom)"></span> My Calendars</div>
+          <span style="font-size:0.65rem;color:var(--ink-lt);letter-spacing:0.08em;">Opens in a new tab</span>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="cal-launch-btn" onclick="window.open('https://calendar.google.com','_blank')">
+            <span class="cal-icon">📅</span>
+            <div>
+              <div class="cal-btn-title">Google Calendar</div>
+              <div class="cal-btn-sub">calendar.google.com</div>
+            </div>
+          </button>
+          <button class="cal-launch-btn" onclick="window.open('https://outlook.live.com/calendar','_blank')">
+            <span class="cal-icon">📅</span>
+            <div>
+              <div class="cal-btn-title">Outlook Calendar</div>
+              <div class="cal-btn-sub">outlook.live.com</div>
+            </div>
+          </button>
+          <button class="cal-launch-btn" onclick="window.open('https://www.icloud.com/calendar','_blank')">
+            <span class="cal-icon">📅</span>
+            <div>
+              <div class="cal-btn-title">Apple iCal</div>
+              <div class="cal-btn-sub">icloud.com/calendar</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ APPOINTMENTS ══ -->
+  <div id="tab-appointments" class="tab-panel">
+    <div class="section-title">Appointments</div>
+    <div class="section-sub">Meetings, calls & commitments</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add Appointment</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Date</label><input type="date" id="appt-date"></div>
+        <div class="field"><label>Time</label><input type="text" id="appt-time" placeholder="e.g. 10:00 AM"></div>
+        <div class="field"><label>Location / Link</label><input type="text" id="appt-location" placeholder="Office, Zoom, Phone..."></div>
+      </div>
+      <div class="field"><label>Title / Description</label><input type="text" id="appt-title" placeholder="What is this appointment?"></div>
+      <div class="field"><label>Notes</label><textarea id="appt-notes" placeholder="Any prep, notes, or details..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveAppt()">Save Appointment</button>
+        <button class="btn" onclick="clearAppt()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card-title" style="margin-bottom:12px;">All Appointments</div>
+    <div id="appt-full-list"></div>
+  </div>
+
+  <!-- ══ TASKS ══ -->
+  <div id="tab-tasks" class="tab-panel">
+    <div class="section-title">Tasks</div>
+    <div class="section-sub">To-dos, carried forward automatically</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add Task</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Due Date</label><input type="date" id="task-date"></div>
+        <div class="field"><label>Priority</label>
+          <select id="task-priority">
+            <option value="normal">Normal</option>
+            <option value="high">High Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+        </div>
+        <div class="field"><label>Category</label>
+          <select id="task-category">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Side Project">Side Project</option>
+            <option value="Errands">Errands</option>
+            <option value="Learning">Learning</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Task</label><input type="text" id="task-title" placeholder="What needs to be done?"></div>
+      <div class="field"><label>Notes</label><textarea id="task-notes" placeholder="Any additional details..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveTask()">Add Task</button>
+        <button class="btn" onclick="clearTask()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card-title" style="margin-bottom:12px;">All Tasks</div>
+    <div id="task-full-list"></div>
+  </div>
+
+  <!-- ══ REMINDERS ══ -->
+  <div id="tab-reminders" class="tab-panel">
+    <div class="section-title">Reminders & Follow-Ups</div>
+    <div class="section-sub">Don't let anything slip through</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add Reminder</div>
+      <div class="field-row cols-2">
+        <div class="field"><label>Date</label><input type="date" id="reminder-date"></div>
+        <div class="field"><label>Type</label>
+          <select id="reminder-type">
+            <option>Follow-Up</option><option>Reminder</option><option>Call Back</option>
+            <option>Check In</option><option>Deadline</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Reminder</label><input type="text" id="reminder-title" placeholder="What do you need to remember?"></div>
+      <div class="field"><label>Notes</label><textarea id="reminder-notes" placeholder="Any context or details..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveReminder()">Save Reminder</button>
+        <button class="btn" onclick="clearReminder()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card-title" style="margin-bottom:12px;">All Reminders</div>
+    <div id="reminder-full-list"></div>
+  </div>
+
+  <!-- ══ BUDGET ══ -->
+  <div id="tab-budget" class="tab-panel">
+    <div class="section-title">Budget</div>
+    <div class="section-sub">Monthly budget · category tracking · daily spending</div>
+    <div class="divider"></div>
+
+    <!-- MONTHLY SETUP -->
+    <div class="form-card">
+      <div class="form-card-title">Monthly Budget Setup — <span id="budget-setup-month"></span></div>
+      <div class="field-row cols-2">
+        <div class="field"><label>Month</label><input type="month" id="budget-month"></div>
+        <div class="field"><label>Total Monthly Budget ($)</label><input type="number" id="budget-total" placeholder="e.g. 3000" step="0.01"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveBudgetSetup()">Save Budget</button>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="form-card">
+      <div class="form-card-title">Budget Categories</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Category Name</label><input type="text" id="cat-name" placeholder="e.g. Groceries"></div>
+        <div class="field"><label>Monthly Limit ($)</label><input type="number" id="cat-limit" placeholder="e.g. 400" step="0.01"></div>
+        <div class="field" style="display:flex;align-items:flex-end;">
+          <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
+        </div>
+      </div>
+      <div id="category-list"></div>
+    </div>
+
+    <!-- SPENDING LOG -->
+    <div class="form-card">
+      <div class="form-card-title">Log a Purchase</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Date</label><input type="date" id="spend-date"></div>
+        <div class="field"><label>Amount ($)</label><input type="number" id="spend-amount" placeholder="0.00" step="0.01"></div>
+        <div class="field"><label>Category</label><select id="spend-category"><option>General</option></select></div>
+      </div>
+      <div class="field"><label>Description</label><input type="text" id="spend-desc" placeholder="What did you buy?"></div>
+      <div class="btn-row">
+        <button class="btn btn-bloom" onclick="saveSpend()">Log Purchase</button>
+        <button class="btn" onclick="clearSpend()">Clear</button>
+      </div>
+    </div>
+
+    <!-- CATEGORY BREAKDOWN -->
+    <div class="form-card">
+      <div class="form-card-title">Category Breakdown</div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;">
+        <span style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-lt);">Category</span>
+        <span style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Budget</span>
+        <span style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Spent</span>
+        <span style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Left</span>
+        <span></span>
+      </div>
+      <div id="category-breakdown"></div>
+    </div>
+
+    <!-- DAILY SPENDING SUMMARY -->
+    <div class="form-card">
+      <div class="form-card-title">Daily Spending — <span id="daily-spend-date-label"></span></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <input type="date" id="daily-spend-filter" style="max-width:180px;" />
+        <button class="btn" onclick="filterDailySpend()">View Day</button>
+        <button class="btn" onclick="viewToday()">Today</button>
+      </div>
+      <div id="daily-spend-total" style="font-size:1.1rem;font-weight:700;color:var(--mocha-dk);margin-bottom:10px;"></div>
+      <div id="daily-spend-list"></div>
+    </div>
+
+    <!-- SPENDING HISTORY -->
+    <div class="form-card">
+      <div class="form-card-title">Spending History</div>
+      <div id="spend-full-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ HABITS ══ -->
+  <div id="tab-habits" class="tab-panel">
+    <div class="section-title">Habit Tracker</div>
+    <div class="section-sub">Build your own daily habit list</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add a New Habit</div>
+      <div class="field-row cols-2">
+        <div class="field"><label>Habit Name</label><input type="text" id="habit-name" placeholder="e.g. Read for 20 minutes"></div>
+        <div class="field"><label>Category (optional)</label><input type="text" id="habit-cat" placeholder="Health, Faith, Work..."></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addHabit()">Add Habit</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Today's Habits — <span id="habit-date-label"></span></div>
+      <div id="habit-full-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ MEALS ══ -->
+  <div id="tab-meals" class="tab-panel">
+    <div class="section-title">Meals & Nutrition</div>
+    <div class="section-sub">What you eat today shapes tomorrow</div>
+    <div class="divider"></div>
+
+    <!-- TODAY'S MEAL PLAN -->
+    <div class="form-card">
+      <div class="form-card-title">Today's Meal Plan — <span id="meals-date-label"></span></div>
+      <div class="field-row cols-2">
+        <div class="field">
+          <label>🌅 Breakfast</label>
+          <input type="text" id="meal-breakfast" placeholder="e.g. Oatmeal with berries">
+        </div>
+        <div class="field">
+          <label>☀️ Lunch</label>
+          <input type="text" id="meal-lunch" placeholder="e.g. Grilled chicken salad">
+        </div>
+        <div class="field">
+          <label>🌙 Dinner</label>
+          <input type="text" id="meal-dinner" placeholder="e.g. Brown rice and vegetables">
+        </div>
+        <div class="field">
+          <label>🍎 Snack / Dessert</label>
+          <input type="text" id="meal-snack" placeholder="e.g. Apple and almond butter">
+        </div>
+      </div>
+      <div class="field">
+        <label>📝 Notes (calories, macros, how you felt, etc.)</label>
+        <textarea id="meal-notes" placeholder="Any notes about today's eating — energy levels, cravings, wins..."></textarea>
+      </div>
+
+      <!-- WATER TRACKER -->
+      <div style="margin-bottom:18px;">
+        <label>💧 Water Intake</label>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:8px;">
+          <div class="water-track" id="water-full-track"></div>
+          <span style="font-size:0.78rem;color:var(--ink-lt);" id="water-full-count">0 / 8 glasses</span>
+          <button class="btn" style="padding:5px 12px;font-size:0.62rem;" onclick="resetWater()">Reset</button>
+        </div>
+        <div style="font-size:0.64rem;color:var(--ink-lt);margin-top:6px;letter-spacing:0.06em;">Click each glass to track. Goal: 8 glasses per day.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveMeals()">Save Meals</button>
+        <button class="btn" onclick="clearMeals()">Clear</button>
+      </div>
+    </div>
+
+    <!-- GROCERY LIST -->
+    <div class="form-card">
+      <div class="form-card-title">Grocery List</div>
+      <div class="quick-add">
+        <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key==='Enter') addGrocery()">
+        <select id="grocery-cat" style="max-width:130px;">
+          <option value="Produce">Produce</option>
+          <option value="Protein">Protein</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Grains">Grains</option>
+          <option value="Frozen">Frozen</option>
+          <option value="Pantry">Pantry</option>
+          <option value="Other">Other</option>
+        </select>
+        <button class="quick-add-btn" onclick="addGrocery()">+ Add</button>
+      </div>
+      <div id="grocery-list"></div>
+    </div>
+
+    <!-- MEAL HISTORY -->
+    <div class="form-card">
+      <div class="form-card-title">Past Meals</div>
+      <div id="meals-history"></div>
+    </div>
+  </div>
+
+  <!-- ══ NOTES ══ -->
+  <div id="tab-notes" class="tab-panel">
+    <div class="section-title">Brain Dump</div>
+    <div class="section-sub">One place for everything on your mind</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Today's Notes — <span id="notes-date-label"></span></div>
+      <div class="field">
+        <textarea class="notes-area" id="notes-full" style="min-height:280px;" placeholder="Let it all out here — thoughts, ideas, reminders to self, things you don't want to forget..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveNotesFull()">Save Notes</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Past Notes</div>
+      <div id="notes-history"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let state = {
+  appointments: [],
+  tasks: [],
+  reminders: [],
+  spending: [],
+  habits: [],
+  habitLog: {}, // { 'YYYY-MM-DD': { habitId: true/false } }
+  notes: {},    // { 'YYYY-MM-DD': string }
+  budget: {},   // { 'YYYY-MM': { total, categories: [{name,limit}] } }
+  meals: {},    // { 'YYYY-MM-DD': { breakfast, lunch, dinner, snack, notes, water } }
+  groceries: [] // [{ id, name, category, picked }]
+};
+
+let currentDate = new Date().toISOString().split('T')[0];
+
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('myDailyView') || '{}');
+    state.appointments = saved.appointments || [];
+    state.tasks        = saved.tasks        || [];
+    state.reminders    = saved.reminders    || [];
+    state.spending     = saved.spending     || [];
+    state.habits       = saved.habits       || [];
+    state.habitLog     = saved.habitLog     || {};
+    state.notes        = saved.notes        || {};
+    state.budget       = saved.budget       || {};
+    state.meals        = saved.meals        || {};
+    state.groceries    = saved.groceries    || [];
+  } catch(e) {}
+}
+
+function save() { localStorage.setItem('myDailyView', JSON.stringify(state)); }
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function fmt(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+}
+
+function currentMonth() { return currentDate.substring(0,7); }
+
+function fmtMoney(n) { return '$' + parseFloat(n||0).toFixed(2); }
+
+// ── DATE NAV ──────────────────────────────────────────────────────────────────
+function updateDateDisplay() {
+  const d = new Date(currentDate + 'T12:00:00');
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('header-day').textContent = days[d.getDay()];
+  document.getElementById('header-date').textContent = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelector('.today-btn').style.opacity = currentDate === today ? '0.4' : '1';
+}
+
+function changeDay(delta) {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  currentDate = d.toISOString().split('T')[0];
+  updateDateDisplay();
+  renderAll();
+  carryOverTasks();
+}
+
+function goToday() {
+  currentDate = new Date().toISOString().split('T')[0];
+  updateDateDisplay();
+  renderAll();
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const tabs = ['dashboard','appointments','tasks','reminders','budget','habits','meals','notes'];
+  const idx = tabs.indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  renderAll();
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderAppts();
+  renderTasks();
+  renderReminders();
+  renderHabits();
+  renderBudget();
+  setTimeout(() => { if (document.getElementById('daily-spend-filter')) { document.getElementById('daily-spend-filter').value = currentDate; renderDailySpend(currentDate); } }, 100);
+  renderNotes();
+  renderFocus3();
+  renderMeals();
+  renderGroceries();
+}
+
+// ── APPOINTMENTS ──────────────────────────────────────────────────────────────
+function quickAddAppt() {
+  const title = document.getElementById('appt-quick').value.trim();
+  const time  = document.getElementById('appt-time-quick').value.trim();
+  if (!title) return;
+  state.appointments.push({ id: Date.now(), date: currentDate, time, title, location: '', notes: '' });
+  save(); renderAppts();
+  document.getElementById('appt-quick').value = '';
+  document.getElementById('appt-time-quick').value = '';
+  toast('Appointment added');
+}
+
+function saveAppt() {
+  const title = document.getElementById('appt-title').value.trim();
+  if (!title) { toast('Please add a title.'); return; }
+  state.appointments.push({
+    id: Date.now(),
+    date: document.getElementById('appt-date').value || currentDate,
+    time: document.getElementById('appt-time').value,
+    title,
+    location: document.getElementById('appt-location').value,
+    notes: document.getElementById('appt-notes').value
+  });
+  save(); renderAppts(); clearAppt(); toast('Appointment saved');
+}
+
+function clearAppt() {
+  ['appt-title','appt-time','appt-location','appt-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('appt-date').value = currentDate;
+}
+
+function deleteAppt(id) {
+  state.appointments = state.appointments.filter(a => a.id !== id);
+  save(); renderAppts(); toast('Removed');
+}
+
+function renderAppts() {
+  const todayList = state.appointments.filter(a => a.date === currentDate);
+  const allList   = state.appointments.slice().sort((a,b) => a.date.localeCompare(b.date));
+
+  document.getElementById('appt-count').textContent = todayList.length + ' today';
+
+  const dashEl = document.getElementById('appt-dash-list');
+  if (!todayList.length) {
+    dashEl.innerHTML = '<div class="empty-state">No appointments today</div>';
+  } else {
+    dashEl.innerHTML = todayList.map(a => `
+      <div class="list-item">
+        <div class="item-dot" style="background:var(--bloom)"></div>
+        <div style="flex:1;">
+          <div class="item-text">${a.title}</div>
+          ${a.time ? `<div class="item-meta">${a.time}${a.location ? ' · ' + a.location : ''}</div>` : ''}
+        </div>
+        <button class="item-remove" onclick="deleteAppt(${a.id})">×</button>
+      </div>`).join('');
+  }
+
+  const fullEl = document.getElementById('appt-full-list');
+  if (fullEl) {
+    if (!allList.length) {
+      fullEl.innerHTML = '<div class="empty-state">No appointments yet.</div>';
+    } else {
+      fullEl.innerHTML = allList.map(a => `
+        <div class="list-item" style="margin-bottom:6px;">
+          <div class="item-dot" style="background:var(--bloom);margin-top:4px;"></div>
+          <div style="flex:1;">
+            <div class="item-text">${a.title}</div>
+            <div class="item-meta">${fmt(a.date)}${a.time ? ' · ' + a.time : ''}${a.location ? ' · ' + a.location : ''}</div>
+            ${a.notes ? `<div style="font-size:0.78rem;color:var(--ink-lt);margin-top:3px;">${a.notes}</div>` : ''}
+          </div>
+          <button class="item-remove" onclick="deleteAppt(${a.id})">×</button>
+        </div>`).join('');
+    }
+  }
+}
+
+// ── TASKS ─────────────────────────────────────────────────────────────────────
+function quickAddTask() {
+  const title    = document.getElementById('task-quick').value.trim();
+  const priority = document.getElementById('task-priority-quick').value;
+  const category = document.getElementById('task-cat-quick').value;
+  if (!title) return;
+  state.tasks.push({ id: Date.now(), date: currentDate, title, priority, category, notes: '', done: false, carried: false });
+  save(); renderTasks(); renderFocus3();
+  document.getElementById('task-quick').value = '';
+  toast('Task added');
+}
+
+function saveTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if (!title) { toast('Please add a task.'); return; }
+  state.tasks.push({
+    id: Date.now(),
+    date: document.getElementById('task-date').value || currentDate,
+    title,
+    priority: document.getElementById('task-priority').value,
+    category: document.getElementById('task-category').value,
+    notes: document.getElementById('task-notes').value,
+    done: false, carried: false
+  });
+  save(); renderTasks(); renderFocus3(); clearTask(); toast('Task saved');
+}
+
+function clearTask() {
+  ['task-title','task-category','task-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('task-date').value = currentDate;
+  document.getElementById('task-priority').value = 'normal';
+}
+
+function toggleTask(id) {
+  const t = state.tasks.find(t => t.id === id);
+  if (t) { t.done = !t.done; save(); renderTasks(); renderFocus3(); }
+}
+
+function toggleTaskNotes(id) {
+  const el = document.getElementById(`task-notes-${id}`);
+  if (!el) return;
+  const isVisible = el.style.display !== 'none';
+  el.style.display = isVisible ? 'none' : 'block';
+  // Update button text in all instances (dash + full list)
+  document.querySelectorAll(`#task-item-${id} button[onclick="toggleTaskNotes(${id})"]`).forEach(btn => {
+    btn.textContent = isVisible ? '📝 notes' : '📝 hide';
+  });
+}
+
+function deleteTask(id) {
+  state.tasks = state.tasks.filter(t => t.id !== id);
+  save(); renderTasks(); renderFocus3(); toast('Removed');
+}
+
+function carryOverTasks() {
+  // Mark incomplete tasks from past days as carried
+  const today = new Date().toISOString().split('T')[0];
+  state.tasks.forEach(t => {
+    if (!t.done && t.date < today && !t.carried) { t.carried = true; }
+  });
+  save();
+}
+
+function renderTasks() {
+  const todayTasks = state.tasks.filter(t => t.date === currentDate || (t.carried && !t.done));
+  const remaining  = todayTasks.filter(t => !t.done).length;
+  const allTasks   = state.tasks.slice().sort((a,b) => a.date.localeCompare(b.date));
+
+  document.getElementById('task-count').textContent = remaining + ' remaining';
+
+  const priorityColors = { high: 'var(--bloom)', normal: 'var(--bark)', low: 'var(--mocha-lt)' };
+
+  function taskHTML(t, showDate) {
+    const hasNotes = t.notes && t.notes.trim().length > 0;
+    return `<div class="list-item ${t.done?'done':''} ${t.carried?'carried':''}" id="task-item-${t.id}">
+      <div class="item-check ${t.done?'checked':''}" onclick="toggleTask(${t.id})"></div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="item-text" style="flex:1;">${t.title}</div>
+          ${hasNotes ? `<button onclick="toggleTaskNotes(${t.id})" title="View notes" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:var(--mocha-lt);padding:2px 6px;border-radius:999px;transition:background 0.15s;" onmouseover="this.style.background='var(--greige)'" onmouseout="this.style.background='none'">📝 notes</button>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap;">
+          ${showDate ? `<span class="item-meta">${fmt(t.date)}</span>` : ''}
+          ${t.category ? `<span class="item-tag" style="${t.category==='Work'?'background:#E8DDD5;color:var(--mocha-dk);':t.category==='Personal'?'background:var(--bloom-lt);color:var(--bloom-dk);':'background:var(--greige);color:var(--ink-lt);'}">${t.category}</span>` : ''}
+          ${t.carried ? `<span class="item-tag carried-tag">Carried Over</span>` : ''}
+          ${t.priority !== 'normal' ? `<span class="item-tag" style="background:${t.priority==='high'?'#F5D8DE':'var(--greige)'};color:${priorityColors[t.priority]};">${t.priority}</span>` : ''}
+        </div>
+        ${hasNotes ? `<div id="task-notes-${t.id}" style="display:none;margin-top:10px;padding:10px 12px;background:var(--greige);border-radius:10px;font-size:0.88rem;color:var(--ink);line-height:1.6;white-space:pre-wrap;">${t.notes.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="deleteTask(${t.id})">×</button>
+    </div>`;
+  }
+
+  const dashEl = document.getElementById('task-dash-list');
+  if (!todayTasks.length) {
+    dashEl.innerHTML = '<div class="empty-state">No tasks for today</div>';
+  } else {
+    dashEl.innerHTML = todayTasks.map(t => taskHTML(t, false)).join('');
+  }
+
+  const fullEl = document.getElementById('task-full-list');
+  if (fullEl) {
+    if (!allTasks.length) {
+      fullEl.innerHTML = '<div class="empty-state">No tasks yet.</div>';
+    } else {
+      fullEl.innerHTML = allTasks.map(t => taskHTML(t, true)).join('');
+    }
+  }
+}
+
+// ── REMINDERS ─────────────────────────────────────────────────────────────────
+function quickAddReminder() {
+  const title = document.getElementById('reminder-quick').value.trim();
+  if (!title) return;
+  state.reminders.push({ id: Date.now(), date: currentDate, title, type: 'Reminder', notes: '', done: false });
+  save(); renderReminders();
+  document.getElementById('reminder-quick').value = '';
+  toast('Reminder added');
+}
+
+function saveReminder() {
+  const title = document.getElementById('reminder-title').value.trim();
+  if (!title) { toast('Please add a reminder.'); return; }
+  state.reminders.push({
+    id: Date.now(),
+    date: document.getElementById('reminder-date').value || currentDate,
+    title,
+    type: document.getElementById('reminder-type').value,
+    notes: document.getElementById('reminder-notes').value,
+    done: false
+  });
+  save(); renderReminders(); clearReminder(); toast('Reminder saved');
+}
+
+function clearReminder() {
+  ['reminder-title','reminder-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('reminder-date').value = currentDate;
+}
+
+function toggleReminder(id) {
+  const r = state.reminders.find(r => r.id === id);
+  if (r) { r.done = !r.done; save(); renderReminders(); }
+}
+
+function deleteReminder(id) {
+  state.reminders = state.reminders.filter(r => r.id !== id);
+  save(); renderReminders(); toast('Removed');
+}
+
+function renderReminders() {
+  const todayList = state.reminders.filter(r => r.date === currentDate);
+  const allList   = state.reminders.slice().sort((a,b) => a.date.localeCompare(b.date));
+
+  document.getElementById('reminder-count').textContent = todayList.filter(r=>!r.done).length + ' today';
+
+  const dashEl = document.getElementById('reminder-dash-list');
+  if (!todayList.length) {
+    dashEl.innerHTML = '<div class="empty-state">No reminders today</div>';
+  } else {
+    dashEl.innerHTML = todayList.map(r => `
+      <div class="list-item ${r.done?'done':''}">
+        <div class="item-check ${r.done?'checked':''}" onclick="toggleReminder(${r.id})" style="border-color:var(--gold);"></div>
+        <div style="flex:1;">
+          <div class="item-text">${r.title}</div>
+          <div style="margin-top:3px;"><span class="item-tag">${r.type}</span></div>
+        </div>
+        <button class="item-remove" onclick="deleteReminder(${r.id})">×</button>
+      </div>`).join('');
+  }
+
+  const fullEl = document.getElementById('reminder-full-list');
+  if (fullEl) {
+    if (!allList.length) {
+      fullEl.innerHTML = '<div class="empty-state">No reminders yet.</div>';
+    } else {
+      fullEl.innerHTML = allList.map(r => `
+        <div class="list-item ${r.done?'done':''}">
+          <div class="item-check ${r.done?'checked':''}" onclick="toggleReminder(${r.id})" style="border-color:var(--gold);"></div>
+          <div style="flex:1;">
+            <div class="item-text">${r.title}</div>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap;">
+              <span class="item-meta">${fmt(r.date)}</span>
+              <span class="item-tag">${r.type}</span>
+            </div>
+            ${r.notes ? `<div style="font-size:0.78rem;color:var(--ink-lt);margin-top:3px;">${r.notes}</div>` : ''}
+          </div>
+          <button class="item-remove" onclick="deleteReminder(${r.id})">×</button>
+        </div>`).join('');
+    }
+  }
+}
+
+// ── BUDGET ────────────────────────────────────────────────────────────────────
+function getMonthBudget(month) {
+  return state.budget[month] || { total: 0, categories: [] };
+}
+
+function saveBudgetSetup() {
+  const month = document.getElementById('budget-month').value || currentMonth();
+  const total = parseFloat(document.getElementById('budget-total').value) || 0;
+  if (!state.budget[month]) state.budget[month] = { total: 0, categories: [] };
+  state.budget[month].total = total;
+  save(); renderBudget(); toast('Budget saved');
+}
+
+function addCategory() {
+  const name  = document.getElementById('cat-name').value.trim();
+  const limit = parseFloat(document.getElementById('cat-limit').value) || 0;
+  if (!name) { toast('Please enter a category name.'); return; }
+  const month = document.getElementById('budget-month').value || currentMonth();
+  if (!state.budget[month]) state.budget[month] = { total: 0, categories: [] };
+  state.budget[month].categories.push({ name, limit });
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-limit').value = '';
+  save(); renderBudget(); populateSpendCategories(); toast('Category added');
+}
+
+function deleteCategory(month, idx) {
+  state.budget[month].categories.splice(idx, 1);
+  save(); renderBudget(); populateSpendCategories();
+}
+
+function populateSpendCategories() {
+  const month = currentMonth();
+  const mb = getMonthBudget(month);
+  const cats = ['General', ...(mb.categories||[]).map(c => c.name)];
+  ['spend-category','spend-cat-quick'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const val = sel.value;
+    sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    if (cats.includes(val)) sel.value = val;
+  });
+}
+
+function quickAddSpend() {
+  const amount = parseFloat(document.getElementById('spend-amount-quick').value);
+  const desc   = document.getElementById('spend-desc-quick').value.trim();
+  const cat    = document.getElementById('spend-cat-quick').value;
+  if (!amount || amount <= 0) { toast('Please enter an amount.'); return; }
+  state.spending.push({ id: Date.now(), date: currentDate, amount, description: desc, category: cat });
+  save(); renderBudget(); renderDailySpend(currentDate);
+  document.getElementById('spend-amount-quick').value = '';
+  document.getElementById('spend-desc-quick').value = '';
+  toast('Spend logged');
+}
+
+function saveSpend() {
+  const amount = parseFloat(document.getElementById('spend-amount').value);
+  const desc   = document.getElementById('spend-desc').value.trim();
+  if (!amount || amount <= 0) { toast('Please enter an amount.'); return; }
+  state.spending.push({
+    id: Date.now(),
+    date: document.getElementById('spend-date').value || currentDate,
+    amount,
+    description: desc,
+    category: document.getElementById('spend-category').value
+  });
+  save(); renderBudget(); clearSpend(); renderDailySpend(currentDate); toast('Purchase logged');
+}
+
+function clearSpend() {
+  ['spend-amount','spend-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('spend-date').value = currentDate;
+}
+
+function renderDailySpend(date) {
+  const daySpending = state.spending.filter(s => s.date === date);
+  const dayTotal = daySpending.reduce((sum, s) => sum + s.amount, 0);
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const d = new Date(date + 'T12:00:00');
+  const label = d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+  const labelEl = document.getElementById('daily-spend-date-label');
+  const totalEl = document.getElementById('daily-spend-total');
+  const listEl  = document.getElementById('daily-spend-list');
+  if (!labelEl) return;
+
+  labelEl.textContent = label;
+  totalEl.textContent = daySpending.length ? `Total spent: ${fmtMoney(dayTotal)}` : '';
+
+  if (!daySpending.length) {
+    listEl.innerHTML = '<div class="empty-state">No spending logged for this day.</div>';
+    return;
+  }
+
+  // Group by category
+  const byCat = {};
+  daySpending.forEach(s => {
+    if (!byCat[s.category]) byCat[s.category] = [];
+    byCat[s.category].push(s);
+  });
+
+  listEl.innerHTML = Object.entries(byCat).map(([cat, items]) => {
+    const catTotal = items.reduce((sum, s) => sum + s.amount, 0);
+    const month = date.slice(0, 7);
+    const mb = getMonthBudget(month);
+    const catConfig = mb.categories.find(c => c.name === cat);
+    const catLimit = catConfig ? catConfig.limit : 0;
+    const monthCatSpent = state.spending.filter(s => s.date && s.date.startsWith(month) && s.category === cat).reduce((sum, s) => sum + s.amount, 0);
+    const remaining = catLimit > 0 ? catLimit - monthCatSpent : null;
+    const remainingHtml = remaining !== null
+      ? `<span style="font-size:0.82rem;color:${remaining < 0 ? 'var(--bloom-dk)' : '#5C8040'};margin-left:8px;">${remaining < 0 ? fmtMoney(Math.abs(remaining)) + ' over budget' : fmtMoney(remaining) + ' left this month'}</span>`
+      : '';
+
+    return `<div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span style="font-weight:700;font-size:0.95rem;color:var(--mocha-dk);">${cat}</span>
+        <span style="font-size:0.82rem;color:var(--ink-lt);">${fmtMoney(catTotal)} today</span>
+        ${remainingHtml}
+      </div>
+      ${items.slice().reverse().map(s => `
+        <div class="spend-entry" style="margin-left:8px;">
+          <div class="spend-amount">${fmtMoney(s.amount)}</div>
+          <div class="spend-desc">${s.description || '—'}</div>
+          <button class="item-remove" onclick="deleteSpend(${s.id});renderDailySpend(document.getElementById('daily-spend-filter').value||currentDate)">×</button>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function filterDailySpend() {
+  const date = document.getElementById('daily-spend-filter').value || currentDate;
+  renderDailySpend(date);
+}
+
+function viewToday() {
+  document.getElementById('daily-spend-filter').value = currentDate;
+  renderDailySpend(currentDate);
+}
+
+function deleteSpend(id) {
+  state.spending = state.spending.filter(s => s.id !== id);
+  save(); renderBudget(); toast('Removed');
+}
+
+function renderBudget() {
+  const month = currentMonth();
+  const mb    = getMonthBudget(month);
+  const monthSpending = state.spending.filter(s => s.date && s.date.startsWith(month));
+  const todaySpending = state.spending.filter(s => s.date === currentDate);
+  const totalSpent    = monthSpending.reduce((sum,s) => sum + s.amount, 0);
+  const todaySpent    = todaySpending.reduce((sum,s) => sum + s.amount, 0);
+  const remaining     = mb.total - totalSpent;
+  const pct           = mb.total > 0 ? Math.min((totalSpent / mb.total) * 100, 100) : 0;
+
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const [yr, mo] = month.split('-');
+  const monthName = `${months[parseInt(mo)-1]} ${yr}`;
+
+  // Header updates
+  const bmLabel = document.getElementById('budget-month-label');
+  if (bmLabel) bmLabel.textContent = monthName;
+  document.getElementById('budget-dash-count').textContent = fmtMoney(todaySpent) + ' spent today';
+  document.getElementById('dash-total-budget').textContent = fmtMoney(mb.total);
+  document.getElementById('dash-total-spent').textContent  = fmtMoney(totalSpent);
+  const remEl = document.getElementById('dash-remaining');
+  remEl.textContent = fmtMoney(Math.abs(remaining));
+  remEl.className   = 'budget-stat-num ' + (remaining < 0 ? 'over' : remaining < mb.total * 0.2 ? '' : 'good');
+  document.getElementById('budget-pct').textContent = Math.round(pct) + '%';
+  const fillEl = document.getElementById('budget-bar-fill');
+  fillEl.style.width = pct + '%';
+  fillEl.className   = 'budget-fill ' + (pct >= 100 ? 'over' : pct >= 75 ? 'warn' : 'safe');
+
+  // Setup tab month label
+  const setupLabel = document.getElementById('budget-setup-month');
+  if (setupLabel) setupLabel.textContent = monthName;
+
+  // Category list (setup tab)
+  const catListEl = document.getElementById('category-list');
+  if (catListEl) {
+    if (!mb.categories || !mb.categories.length) {
+      catListEl.innerHTML = '<div class="empty-state" style="margin-top:10px;">No categories yet. Add one above.</div>';
+    } else {
+      catListEl.innerHTML = mb.categories.map((c,i) => `
+        <div class="cat-row">
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-budget">${fmtMoney(c.limit)}</div>
+          <button class="item-remove" onclick="deleteCategory('${month}',${i})">×</button>
+        </div>`).join('');
+    }
+  }
+
+  // Category breakdown
+  const breakdownEl = document.getElementById('category-breakdown');
+  if (breakdownEl) {
+    const allCats = ['General', ...(mb.categories||[]).map(c=>c.name)];
+    breakdownEl.innerHTML = allCats.map(name => {
+      const catLimit = name === 'General' ? 0 : (mb.categories.find(c=>c.name===name)||{}).limit || 0;
+      const catSpent = monthSpending.filter(s=>s.category===name).reduce((sum,s)=>sum+s.amount, 0);
+      const catLeft  = catLimit > 0 ? catLimit - catSpent : null;
+      const catPct   = catLimit > 0 ? Math.min((catSpent/catLimit)*100, 100) : 0;
+      const cls      = catLimit > 0 ? (catPct >= 100 ? 'over' : catPct >= 75 ? 'warn' : 'safe') : 'safe';
+      return `<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--greige);">
+        <span class="cat-name">${name}</span>
+        <span class="cat-budget">${catLimit > 0 ? fmtMoney(catLimit) : '—'}</span>
+        <span class="cat-spent">${fmtMoney(catSpent)}</span>
+        <span class="cat-remaining ${catLeft !== null ? (catLeft < 0 ? 'over' : 'ok') : ''}">${catLeft !== null ? fmtMoney(Math.abs(catLeft)) + (catLeft < 0 ? ' over' : '') : '—'}</span>
+        <div class="cat-bar"><div class="cat-bar-fill ${cls}" style="width:${catPct}%"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Dashboard spend list (today)
+  const dashSpendEl = document.getElementById('spend-dash-list');
+  if (dashSpendEl) {
+    if (!todaySpending.length) {
+      dashSpendEl.innerHTML = '<div class="empty-state">No spending logged today</div>';
+    } else {
+      dashSpendEl.innerHTML = todaySpending.slice().reverse().map(s => `
+        <div class="spend-entry">
+          <div class="spend-amount">${fmtMoney(s.amount)}</div>
+          <span class="spend-cat">${s.category}</span>
+          <div class="spend-desc">${s.description || ''}</div>
+          <button class="item-remove" onclick="deleteSpend(${s.id})">×</button>
+        </div>`).join('');
+    }
+  }
+
+  // Full spending history
+  const fullSpendEl = document.getElementById('spend-full-list');
+  if (fullSpendEl) {
+    const allSpend = state.spending.slice().sort((a,b) => b.date.localeCompare(a.date));
+    if (!allSpend.length) {
+      fullSpendEl.innerHTML = '<div class="empty-state">No spending logged yet.</div>';
+    } else {
+      fullSpendEl.innerHTML = allSpend.map(s => `
+        <div class="spend-entry">
+          <div style="min-width:90px;font-size:0.72rem;color:var(--ink-lt);">${fmt(s.date)}</div>
+          <div class="spend-amount">${fmtMoney(s.amount)}</div>
+          <span class="spend-cat">${s.category}</span>
+          <div class="spend-desc">${s.description || ''}</div>
+          <button class="item-remove" onclick="deleteSpend(${s.id})">×</button>
+        </div>`).join('');
+    }
+  }
+
+  populateSpendCategories();
+}
+
+// ── HABITS ────────────────────────────────────────────────────────────────────
+function addHabit() {
+  const name = document.getElementById('habit-name').value.trim();
+  if (!name) { toast('Please enter a habit name.'); return; }
+  state.habits.push({ id: Date.now(), name, category: document.getElementById('habit-cat').value });
+  document.getElementById('habit-name').value = '';
+  document.getElementById('habit-cat').value = '';
+  save(); renderHabits(); toast('Habit added');
+}
+
+function deleteHabit(id) {
+  state.habits = state.habits.filter(h => h.id !== id);
+  save(); renderHabits(); toast('Habit removed');
+}
+
+function toggleHabit(id) {
+  if (!state.habitLog[currentDate]) state.habitLog[currentDate] = {};
+  state.habitLog[currentDate][id] = !state.habitLog[currentDate][id];
+  save(); renderHabits();
+}
+
+function renderHabits() {
+  const log    = state.habitLog[currentDate] || {};
+  const done   = state.habits.filter(h => log[h.id]).length;
+  const total  = state.habits.length;
+
+  document.getElementById('habit-count').textContent = `${done} / ${total} done`;
+
+  const dateLabel = document.getElementById('habit-date-label');
+  if (dateLabel) dateLabel.textContent = fmt(currentDate);
+
+  function habitHTML(h, showDelete) {
+    const isDone = !!log[h.id];
+    return `<div class="habit-item ${isDone?'completed':''}">
+      <div class="habit-check ${isDone?'done':''}" onclick="toggleHabit(${h.id})"></div>
+      <div class="habit-name ${isDone?'done':''}">${h.name}${h.category ? ` <span style="font-size:0.7rem;color:var(--ink-lt);">· ${h.category}</span>` : ''}</div>
+      ${showDelete ? `<button class="item-remove" onclick="deleteHabit(${h.id})">×</button>` : ''}
+    </div>`;
+  }
+
+  const dashEl = document.getElementById('habit-dash-list');
+  if (!state.habits.length) {
+    dashEl.innerHTML = '<div class="empty-state">No habits yet.<br>Add some in the Habits tab.</div>';
+  } else {
+    dashEl.innerHTML = state.habits.map(h => habitHTML(h, false)).join('');
+  }
+
+  const fullEl = document.getElementById('habit-full-list');
+  if (fullEl) {
+    if (!state.habits.length) {
+      fullEl.innerHTML = '<div class="empty-state">No habits yet. Add one above.</div>';
+    } else {
+      fullEl.innerHTML = state.habits.map(h => habitHTML(h, true)).join('');
+    }
+  }
+}
+
+// ── NOTES ─────────────────────────────────────────────────────────────────────
+function saveNotes() {
+  const text = document.getElementById('notes-dash').value;
+  state.notes[currentDate] = text;
+  save(); toast('Notes saved');
+}
+
+function saveNotesFull() {
+  const text = document.getElementById('notes-full').value;
+  state.notes[currentDate] = text;
+  // Sync to dashboard
+  const dashEl = document.getElementById('notes-dash');
+  if (dashEl) dashEl.value = text;
+  save(); renderNotes(); toast('Notes saved');
+}
+
+function renderNotes() {
+  const text = state.notes[currentDate] || '';
+
+  const dashEl = document.getElementById('notes-dash');
+  if (dashEl && document.activeElement !== dashEl) dashEl.value = text;
+
+  const fullEl = document.getElementById('notes-full');
+  if (fullEl && document.activeElement !== fullEl) fullEl.value = text;
+
+  const labelEl = document.getElementById('notes-date-label');
+  if (labelEl) labelEl.textContent = fmt(currentDate);
+
+  // Past notes history
+  const histEl = document.getElementById('notes-history');
+  if (histEl) {
+    const entries = Object.entries(state.notes)
+      .filter(([d,t]) => d !== currentDate && t.trim())
+      .sort(([a],[b]) => b.localeCompare(a));
+    if (!entries.length) {
+      histEl.innerHTML = '<div class="empty-state">No past notes yet.</div>';
+    } else {
+      histEl.innerHTML = entries.map(([d,t]) => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--greige);">
+          <div style="font-size:0.66rem;letter-spacing:0.12em;color:var(--mocha);font-weight:500;margin-bottom:6px;text-transform:uppercase;">${fmt(d)}</div>
+          <div style="font-size:0.84rem;color:var(--ink-mid);line-height:1.6;font-weight:300;">${t}</div>
+        </div>`).join('');
+    }
+  }
+}
+
+// ── SYNC / EXPORT / IMPORT ────────────────────────────────────────────────────
+function toggleSync() { document.getElementById('sync-panel').classList.toggle('open'); }
+
+function exportData() {
+  try {
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `my-daily-view-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    document.getElementById('export-status').textContent = '✓ Exported successfully';
+    setTimeout(() => document.getElementById('export-status').textContent = '', 3000);
+    toast('Data exported');
+  } catch(e) { document.getElementById('export-status').textContent = '✗ Export failed'; }
+}
+
+function importData(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imp = JSON.parse(e.target.result);
+      if (typeof imp !== 'object') throw new Error();
+      state.appointments = imp.appointments || [];
+      state.tasks        = imp.tasks        || [];
+      state.reminders    = imp.reminders    || [];
+      state.spending     = imp.spending     || [];
+      state.habits       = imp.habits       || [];
+      state.habitLog     = imp.habitLog     || {};
+      state.notes        = imp.notes        || {};
+      state.budget       = imp.budget       || {};
+      state.meals        = imp.meals        || {};
+      state.groceries    = imp.groceries    || [];
+      save(); renderAll();
+      document.getElementById('export-status').textContent = '✓ Data imported';
+      toast('Data restored');
+    } catch(err) {
+      document.getElementById('export-status').textContent = '✗ Invalid file';
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function emailBackup() {
+  const email = document.getElementById('backup-email').value.trim();
+  const statusEl = document.getElementById('email-status');
+  if (!email || !email.includes('@')) { statusEl.textContent = '✗ Please enter a valid email.'; return; }
+  const body = `My Daily View Backup\n\nDate: ${new Date().toLocaleDateString()}\nTasks: ${state.tasks.length} · Appointments: ${state.appointments.length} · Spending entries: ${state.spending.length}\n\nExport your backup .json file and attach it to this email.`;
+  window.open(`mailto:${email}?subject=My Daily View Backup&body=${encodeURIComponent(body)}`);
+  statusEl.textContent = '✓ Email draft opened — attach your .json file.';
+  setTimeout(() => statusEl.textContent = '', 5000);
+}
+
+function saveToGoogleDrive() {
+  const statusEl = document.getElementById('drive-status');
+  statusEl.textContent = '⏳ Preparing...';
+  try {
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `my-daily-view-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    setTimeout(() => {
+      window.open('https://drive.google.com','_blank');
+      statusEl.textContent = '✓ File downloaded — drag it into Google Drive.';
+      setTimeout(() => statusEl.textContent = '', 6000);
+    }, 800);
+  } catch(e) { statusEl.textContent = '✗ Try exporting manually.'; }
+}
+
+function loadFromGoogleDrive() {
+  window.open('https://drive.google.com','_blank');
+  const s = document.getElementById('drive-status');
+  s.textContent = 'Download your backup file, then use Import.';
+  setTimeout(() => s.textContent = '', 6000);
+}
+
+// ── MEALS ─────────────────────────────────────────────────────────────────────
+function saveMeals() {
+  if (!state.meals) state.meals = {};
+  state.meals[currentDate] = {
+    breakfast: document.getElementById('meal-breakfast').value,
+    lunch:     document.getElementById('meal-lunch').value,
+    dinner:    document.getElementById('meal-dinner').value,
+    snack:     document.getElementById('meal-snack').value,
+    notes:     document.getElementById('meal-notes').value,
+    water:     state.meals[currentDate]?.water || 0
+  };
+  save(); renderMeals(); syncMealsDash(); toast('Meals saved');
+}
+
+function clearMeals() {
+  ['meal-breakfast','meal-lunch','meal-dinner','meal-snack','meal-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  if (state.meals && state.meals[currentDate]) {
+    state.meals[currentDate] = { breakfast:'', lunch:'', dinner:'', snack:'', notes:'', water: state.meals[currentDate].water || 0 };
+  }
+  save(); renderMeals(); syncMealsDash(); toast('Cleared');
+}
+
+function saveMealsDash() {
+  if (!state.meals) state.meals = {};
+  if (!state.meals[currentDate]) state.meals[currentDate] = { water: 0 };
+  state.meals[currentDate].breakfast = document.getElementById('meal-breakfast-dash').value;
+  state.meals[currentDate].lunch     = document.getElementById('meal-lunch-dash').value;
+  state.meals[currentDate].dinner    = document.getElementById('meal-dinner-dash').value;
+  state.meals[currentDate].snack     = document.getElementById('meal-snack-dash').value;
+  save(); renderMeals(); toast('Meals saved');
+}
+
+function syncMealsDash() {
+  const m = (state.meals || {})[currentDate] || {};
+  const fields = [['meal-breakfast-dash','breakfast'],['meal-lunch-dash','lunch'],['meal-dinner-dash','dinner'],['meal-snack-dash','snack']];
+  fields.forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el && document.activeElement !== el) el.value = m[key] || '';
+  });
+}
+
+function toggleWater(idx, source) {
+  if (!state.meals) state.meals = {};
+  if (!state.meals[currentDate]) state.meals[currentDate] = { breakfast:'', lunch:'', dinner:'', snack:'', notes:'', water: 0 };
+  const cur = state.meals[currentDate].water || 0;
+  state.meals[currentDate].water = (idx < cur) ? idx : idx + 1;
+  save(); renderWater();
+}
+
+function resetWater() {
+  if (!state.meals) state.meals = {};
+  if (!state.meals[currentDate]) state.meals[currentDate] = {};
+  state.meals[currentDate].water = 0;
+  save(); renderWater();
+}
+
+function renderWater() {
+  const count = (state.meals?.[currentDate]?.water) || 0;
+  ['water-dash-track','water-full-track'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = Array.from({length:8}, (_,i) =>
+      `<div class="water-glass ${i < count ? 'filled' : ''}" onclick="toggleWater(${i}, '${id}')"></div>`
+    ).join('');
+  });
+  const dc = document.getElementById('water-dash-count');
+  if (dc) dc.textContent = `${count} / 8 glasses`;
+  const fc = document.getElementById('water-full-count');
+  if (fc) fc.textContent = `${count} / 8 glasses`;
+}
+
+function renderMeals() {
+  const m = (state.meals || {})[currentDate] || {};
+
+  // Sync full tab fields
+  const fullFields = [['meal-breakfast','breakfast'],['meal-lunch','lunch'],['meal-dinner','dinner'],['meal-snack','snack'],['meal-notes','notes']];
+  fullFields.forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el && document.activeElement !== el) el.value = m[key] || '';
+  });
+
+  // Sync dash fields
+  syncMealsDash();
+
+  // Date label
+  const dl = document.getElementById('meals-date-label');
+  if (dl) dl.textContent = fmt(currentDate);
+
+  renderWater();
+
+  // Meal history
+  const histEl = document.getElementById('meals-history');
+  if (histEl) {
+    const entries = Object.entries(state.meals || {})
+      .filter(([d, meal]) => d !== currentDate && (meal.breakfast || meal.lunch || meal.dinner || meal.snack))
+      .sort(([a],[b]) => b.localeCompare(a))
+      .slice(0, 10);
+    if (!entries.length) {
+      histEl.innerHTML = '<div class="empty-state">No past meal history yet.</div>';
+    } else {
+      histEl.innerHTML = entries.map(([d, meal]) => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--greige);">
+          <div style="font-size:0.66rem;letter-spacing:0.12em;color:var(--mocha);font-weight:500;margin-bottom:8px;text-transform:uppercase;">${fmt(d)}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+            ${meal.breakfast ? `<div style="font-size:0.8rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.65rem;">Breakfast · </span>${meal.breakfast}</div>` : ''}
+            ${meal.lunch     ? `<div style="font-size:0.8rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.65rem;">Lunch · </span>${meal.lunch}</div>` : ''}
+            ${meal.dinner    ? `<div style="font-size:0.8rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.65rem;">Dinner · </span>${meal.dinner}</div>` : ''}
+            ${meal.snack     ? `<div style="font-size:0.8rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.65rem;">Snack · </span>${meal.snack}</div>` : ''}
+          </div>
+          ${meal.water ? `<div style="font-size:0.7rem;color:#5A9AB4;margin-top:4px;">💧 ${meal.water} glasses</div>` : ''}
+        </div>`).join('');
+    }
+  }
+}
+
+// ── GROCERY LIST ───────────────────────────────────────────────────────────────
+function addGrocery() {
+  const name = document.getElementById('grocery-input').value.trim();
+  if (!name) return;
+  if (!state.groceries) state.groceries = [];
+  state.groceries.push({ id: Date.now(), name, category: document.getElementById('grocery-cat').value, picked: false });
+  document.getElementById('grocery-input').value = '';
+  save(); renderGroceries(); toast('Item added');
+}
+
+function toggleGrocery(id) {
+  const item = (state.groceries || []).find(g => g.id === id);
+  if (item) { item.picked = !item.picked; save(); renderGroceries(); }
+}
+
+function deleteGrocery(id) {
+  state.groceries = (state.groceries || []).filter(g => g.id !== id);
+  save(); renderGroceries(); toast('Removed');
+}
+
+function renderGroceries() {
+  const el = document.getElementById('grocery-list');
+  if (!el) return;
+  const list = state.groceries || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state">Your grocery list is empty.</div>'; return; }
+  // Group by category
+  const cats = [...new Set(list.map(g => g.category))];
+  el.innerHTML = cats.map(cat => {
+    const items = list.filter(g => g.category === cat);
+    return `<div style="margin-bottom:12px;">
+      <div style="font-size:0.6rem;color:var(--mocha);letter-spacing:0.16em;text-transform:uppercase;font-weight:500;margin-bottom:6px;">${cat}</div>
+      ${items.map(g => `
+        <div class="grocery-item ${g.picked ? 'picked' : ''}">
+          <div class="grocery-check ${g.picked ? 'checked' : ''}" onclick="toggleGrocery(${g.id})"></div>
+          <div class="grocery-name">${g.name}</div>
+          <button class="item-remove" onclick="deleteGrocery(${g.id})">×</button>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ── WEATHER ───────────────────────────────────────────────────────────────────
+const WMO_CODES = {
+  0:'Clear Sky',1:'Mainly Clear',2:'Partly Cloudy',3:'Overcast',
+  45:'Foggy',48:'Icy Fog',
+  51:'Light Drizzle',53:'Drizzle',55:'Heavy Drizzle',
+  61:'Light Rain',63:'Rain',65:'Heavy Rain',
+  71:'Light Snow',73:'Snow',75:'Heavy Snow',77:'Snow Grains',
+  80:'Light Showers',81:'Showers',82:'Heavy Showers',
+  85:'Snow Showers',86:'Heavy Snow Showers',
+  95:'Thunderstorm',96:'Thunderstorm w/ Hail',99:'Heavy Thunderstorm'
+};
+
+const WMO_ICONS = {
+  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+  45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',
+  61:'🌧️',63:'🌧️',65:'🌧️',
+  71:'🌨️',73:'❄️',75:'❄️',77:'🌨️',
+  80:'🌦️',81:'🌧️',82:'⛈️',
+  85:'🌨️',86:'❄️',
+  95:'⛈️',96:'⛈️',99:'⛈️'
+};
+
+function fetchWeather() {
+  const widget = document.getElementById('weather-widget');
+  if (!navigator.geolocation) {
+    widget.innerHTML = '<div class="weather-loading">Weather unavailable</div>';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const cw = data.current_weather;
+      const code = cw.weathercode;
+      const icon = WMO_ICONS[code] || '🌡️';
+      const desc = WMO_CODES[code] || 'Current Conditions';
+      const temp = Math.round(cw.temperature);
+
+      // Reverse geocode for city name
+      let city = '';
+      try {
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+        const geoData = await geoRes.json();
+        city = geoData.address?.city || geoData.address?.town || geoData.address?.county || '';
+      } catch(e) {}
+
+      widget.innerHTML = `
+        <div class="weather-icon">${icon}</div>
+        <div>
+          <div class="weather-temp">${temp}°F</div>
+          <div class="weather-desc">${desc}</div>
+          ${city ? `<div class="weather-loc">${city}</div>` : ''}
+        </div>
+      `;
+    } catch(e) {
+      widget.innerHTML = '<div class="weather-loading">Weather unavailable</div>';
+    }
+  }, () => {
+    widget.innerHTML = '<div class="weather-loading">Allow location for weather</div>';
+  });
+}
+
+// ── FOCUS 3 ───────────────────────────────────────────────────────────────────
+function renderFocus3() {
+  const el = document.getElementById('focus-3-list');
+  if (!el) return;
+
+  // Get today's undone high-priority tasks first, then medium to fill up to 3
+  const todayTasks = state.tasks.filter(t => t.date === currentDate);
+  const high = todayTasks.filter(t => !t.done && t.priority === 'high');
+  const medium = todayTasks.filter(t => !t.done && t.priority === 'medium');
+  const allTasks = state.tasks.filter(t => !t.done && t.priority === 'high' && t.date !== currentDate);
+
+  let focusTasks = [...high];
+  if (focusTasks.length < 3) focusTasks = [...focusTasks, ...medium].slice(0,3);
+  if (focusTasks.length < 3) focusTasks = [...focusTasks, ...allTasks].slice(0,3);
+
+  // Also include already-done high tasks so user can see them checked off
+  const doneHigh = todayTasks.filter(t => t.done && t.priority === 'high');
+  const display = [...focusTasks, ...doneHigh].slice(0,3);
+
+  if (!display.length) {
+    el.innerHTML = '<div class="focus-empty">No high-priority tasks yet.<br>Add tasks and mark them High.</div>';
+    return;
+  }
+
+  el.innerHTML = display.map((t, i) => `
+    <div class="focus-item ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id}); renderFocus3()">
+      <div class="focus-num">${i+1}</div>
+      <div class="focus-check ${t.done ? 'checked' : ''}"></div>
+      <div class="focus-item-text">${t.title}</div>
+      <div class="focus-item-cat">${t.category || ''}</div>
+    </div>
+  `).join('');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+// Force visible text on all inputs via JS (overrides any sandbox CSS interference)
+function forceInputVisibility() {
+  document.querySelectorAll('input, textarea').forEach(el => {
+    el.style.setProperty('color', '#1A0F08', 'important');
+    el.style.setProperty('-webkit-text-fill-color', '#1A0F08', 'important');
+    el.style.setProperty('opacity', '1', 'important');
+    el.style.setProperty('background-color', '#F5F0E8', 'important');
+  });
+}
+// Run on load and again after a short delay to catch any late renders
+forceInputVisibility();
+setTimeout(forceInputVisibility, 300);
+setTimeout(forceInputVisibility, 800);
+
+// Re-apply whenever user focuses an input (catches any reset)
+document.addEventListener('focusin', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    e.target.style.setProperty('color', '#1A0F08', 'important');
+    e.target.style.setProperty('-webkit-text-fill-color', '#1A0F08', 'important');
+    e.target.style.setProperty('opacity', '1', 'important');
+  }
+});
+
+load();
+carryOverTasks();
+
+// Set today's date on all date fields
+const today = new Date().toISOString().split('T')[0];
+const todayMonth = today.substring(0,7);
+['appt-date','task-date','reminder-date','spend-date'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.value = today;
+});
+const bmEl = document.getElementById('budget-month');
+if (bmEl) bmEl.value = todayMonth;
+
+updateDateDisplay();
+populateSpendCategories();
+renderAll();
+fetchWeather();
+</script>
+<script>
+// ── DARK MODE ──────────────────────────────────────────────────────────────────
+function toggleDarkMode() {
+  var isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('mdv-dark', isDark ? '1' : '0');
+  document.getElementById('dark-toggle-btn').textContent = isDark ? '☀️' : '🌙';
+}
+
+(function initDark() {
+  if (localStorage.getItem('mdv-dark') === '1') {
+    document.body.classList.add('dark-mode');
+    var btn = document.getElementById('dark-toggle-btn');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
+// ── PWA ────────────────────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  var swCode = "const CACHE='mdv-v1';" +
+    "self.addEventListener('install',function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(['/']);}));});" +
+    "self.addEventListener('fetch',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request);}));});";
+  var swBlob = new Blob([swCode], {type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(function(){});
+}
+
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(function() {
+    if (deferredPrompt) {
+      var hint = document.createElement('button');
+      hint.className = 'dark-toggle-btn';
+      hint.style.marginLeft = '4px';
+      hint.textContent = '⊕ Install App';
+      hint.title = 'Install My Daily View as an app';
+      hint.onclick = function() {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function() { hint.remove(); deferredPrompt = null; });
+      };
+      var controls = document.querySelector('.header-controls');
+      if (controls) controls.appendChild(hint);
+    }
+  }, 3000);
+});
+</script>
+
+</body>
+</html>

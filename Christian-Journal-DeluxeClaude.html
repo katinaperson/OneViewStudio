@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#8c6f56" />
+  <title>Grace for the Journey — Daily Faith Journal</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --bg-2: #efe7dd;
+      --card: rgba(255, 255, 255, 0.88);
+      --text: #2f2a24;
+      --muted: #6f675f;
+      --accent: #8c6f56;
+      --accent-2: #b89473;
+      --accent-soft: #e8ddd1;
+      --border: #ddd2c7;
+      --shadow: 0 18px 40px rgba(66, 47, 31, 0.12);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --input-bg: #fffdfb;
+      --success: #2e7d32;
+      --danger: #a33a2a;
+    }
+
+    body.dark {
+      --bg: #171412;
+      --bg-2: #231d18;
+      --card: rgba(35, 29, 24, 0.88);
+      --text: #f4ede6;
+      --muted: #cabdb0;
+      --accent: #d1a67d;
+      --accent-2: #f0c59e;
+      --accent-soft: #3a2d24;
+      --border: #4e4035;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+      --input-bg: #211a16;
+      --success: #88d38c;
+      --danger: #ef8b7a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar,
+    .hero,
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .topbar {
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .toolbar,
+    .toolbar-right,
+    .entry-tools,
+    .history-actions,
+    .modal-actions,
+    .stats-grid,
+    .chart-legend,
+    .install-row,
+    .save-row,
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .hero {
+      border-radius: var(--radius);
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .hero-copy h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+    }
+
+    .hero-copy p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .mini-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: linear-gradient(180deg, var(--input-bg), transparent);
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+    }
+
+    .mini-card span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .card {
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.5fr 0.95fr;
+      gap: 18px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+      font: inherit;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--input-bg);
+      color: var(--text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(140, 111, 86, 0.12);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .writing-area {
+      min-height: 220px;
+      font-size: 1.04rem;
+      padding: 18px;
+      line-height: 1.8;
+      border-radius: 20px;
+      background-image: linear-gradient(to bottom, transparent 0, transparent 34px, rgba(140, 111, 86, 0.08) 35px);
+      background-size: 100% 36px;
+      touch-action: manipulation;
+    }
+
+    .small-textarea {
+      min-height: 110px;
+    }
+
+    .stylus-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .mood-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .mood-option input {
+      display: none;
+    }
+
+    .mood-option label {
+      margin: 0;
+      padding: 14px 10px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--input-bg);
+      font-weight: 600;
+      transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+      user-select: none;
+    }
+
+    .mood-option label:hover {
+      transform: translateY(-1px);
+    }
+
+    .mood-option input:checked + label {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--input-bg);
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.97;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .ghost {
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    .danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: linear-gradient(180deg, var(--input-bg), transparent);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .chart-wrap {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      background: var(--input-bg);
+    }
+
+    #moodChart {
+      display: block;
+      width: 100%;
+      height: 230px;
+      max-width: 100%;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 12px;
+      max-height: 630px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .history-item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--input-bg);
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .history-date {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .history-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .history-preview {
+      color: var(--muted);
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .footer-note,
+    .status {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .empty-state {
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .pill-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--input-bg);
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pill-toggle input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    dialog {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      width: min(680px, calc(100vw - 24px));
+      padding: 0;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.42);
+    }
+
+    .modal-inner {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .install-banner {
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--input-bg);
+    }
+
+    .install-banner.show {
+      display: block;
+    }
+
+    .fine-print {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .topbar,
+      .hero,
+      .sidebar,
+      .history-section,
+      .install-banner,
+      .footer-note,
+      .stylus-note,
+      .save-row,
+      .toggle-row {
+        display: none !important;
+      }
+
+      .layout,
+      .stack,
+      .card,
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        display: block;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin-bottom: 16px;
+        break-inside: avoid;
+      }
+
+      textarea,
+      input,
+      select {
+        border: 1px solid #ccc;
+        background: #fff;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-cards,
+      .stats-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 12px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .mood-row,
+      .mini-cards,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card,
+      .hero,
+      .topbar {
+        padding: 16px;
+      }
+
+      .toolbar,
+      .toolbar-right,
+      .entry-tools,
+      .history-actions,
+      .modal-actions,
+      .install-row,
+      .save-row,
+      .toggle-row {
+        width: 100%;
+      }
+
+      .toolbar > *,
+      .toolbar-right > *,
+      .entry-tools > *,
+      .history-actions > *,
+      .modal-actions > *,
+      .install-row > *,
+      .save-row > *,
+      .toggle-row > * {
+        flex: 1 1 100%;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .topbar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <h1>Grace for the Journey</h1>
+        <p>A daily faith journal — reflect, pray, track your walk, and capture what God is doing.</p>
+      </div>
+      <div class="toolbar-right">
+        <label class="pill-toggle" for="darkModeToggle">
+          <input type="checkbox" id="darkModeToggle" />
+          Dark mode
+        </label>
+        <button type="button" class="secondary" id="installBtn" hidden>Install App</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <h2>Walk by faith, one day at a time.</h2>
+        <p>This faith journal stores your daily reflections, prayers, and scripture — works beautifully on tablets and can be installed to your home screen like a lightweight app.</p>
+        <div class="mini-cards">
+          <div class="mini-card">
+            <strong id="heroCount">0</strong>
+            <span>entries saved</span>
+          </div>
+          <div class="mini-card">
+            <strong id="heroStreak">0</strong>
+            <span>day streak</span>
+          </div>
+          <div class="mini-card">
+            <strong id="heroMood">—</strong>
+            <span>spirit today</span>
+          </div>
+        </div>
+      </div>
+      <div class="card install-banner" id="installBanner">
+        <h3 class="section-title">Install on your tablet</h3>
+        <p class="subtle">You can add this journal to your home screen for faster access and a more app-like experience.</p>
+        <div class="install-row">
+          <button type="button" class="primary" id="installBannerBtn">Install Journal</button>
+          <button type="button" class="secondary" id="dismissInstallBtn">Dismiss</button>
+        </div>
+        <p class="fine-print">If your browser does not show an install prompt, use your browser menu and choose "Add to Home screen" or "Install app."</p>
+      </div>
+    </section>
+
+    <div class="layout">
+      <main class="stack">
+        <form class="stack" id="journalForm">
+          <section class="card grid-2">
+            <div>
+              <label for="date">Date</label>
+              <input type="date" id="date" name="date" />
+            </div>
+            <div>
+              <label for="focus">Today's Intention</label>
+              <input type="text" id="focus" name="focus" placeholder="What is God calling you to focus on today?" />
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="grid-2">
+              <div>
+                <h2 class="section-title">How is your spirit today?</h2>
+                <div class="mood-row">
+                  <div class="mood-option"><input type="radio" id="mood1" name="mood" value="Great" /><label for="mood1">Great</label></div>
+                  <div class="mood-option"><input type="radio" id="mood2" name="mood" value="Good" /><label for="mood2">Good</label></div>
+                  <div class="mood-option"><input type="radio" id="mood3" name="mood" value="Okay" /><label for="mood3">Okay</label></div>
+                  <div class="mood-option"><input type="radio" id="mood4" name="mood" value="Tired" /><label for="mood4">Tired</label></div>
+                  <div class="mood-option"><input type="radio" id="mood5" name="mood" value="Stressed" /><label for="mood5">Stressed</label></div>
+                </div>
+              </div>
+              <div class="toggle-row">
+                <label class="pill-toggle" for="autosaveToggle">
+                  <input type="checkbox" id="autosaveToggle" />
+                  Autosave draft
+                </label>
+                <label class="pill-toggle" for="largeWritingToggle">
+                  <input type="checkbox" id="largeWritingToggle" checked />
+                  Tablet writing mode
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="card grid-3">
+            <div>
+              <label for="gratitude">Blessings Today</label>
+              <textarea id="gratitude" name="gratitude" class="small-textarea" placeholder="What blessings, big or small, did God place in your path today?"></textarea>
+            </div>
+            <div>
+              <label for="wins">Scripture / Word</label>
+              <textarea id="wins" name="wins" class="small-textarea" placeholder="A verse, word, or passage that speaks to you today..."></textarea>
+            </div>
+            <div>
+              <label for="challenge">Where I Need God's Strength</label>
+              <textarea id="challenge" name="challenge" class="small-textarea" placeholder="Where are you trusting God to carry you right now?"></textarea>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="entry-tools">
+              <div style="flex:1 1 220px;">
+                <label for="entryTitle">Entry Title</label>
+                <input type="text" id="entryTitle" name="entryTitle" placeholder="Optional title for this entry" />
+              </div>
+              <div style="flex:1 1 220px;">
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" placeholder="faith, healing, provision, gratitude, worship" />
+              </div>
+            </div>
+            <label for="journalEntry">My Heart Today</label>
+            <textarea id="journalEntry" name="journalEntry" class="writing-area" placeholder="Write freely — your prayers, reflections, what God spoke to you, what you are trusting Him for..."></textarea>
+            <p class="stylus-note">Tablet writing mode keeps the writing area larger and easier to use with a stylus or touch keyboard.</p>
+          </section>
+
+          <section class="card grid-2">
+            <div>
+              <h2 class="section-title">Faith Check-In</h2>
+              <div class="checklist">
+                <label class="checklist-item"><input type="checkbox" name="water" /> Spent time in prayer</label>
+                <label class="checklist-item"><input type="checkbox" name="movement" /> Read Scripture</label>
+                <label class="checklist-item"><input type="checkbox" name="rest" /> Practiced gratitude</label>
+                <label class="checklist-item"><input type="checkbox" name="prayer" /> Extended grace to myself or others</label>
+              </div>
+            </div>
+            <div>
+              <label for="tomorrow">My Prayer for Tomorrow</label>
+              <textarea id="tomorrow" name="tomorrow" placeholder="A prayer, a hope, or a surrender for tomorrow..."></textarea>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="save-row">
+              <button type="button" class="primary" id="saveBtn">Save Entry</button>
+              <button type="button" class="ghost" id="saveCopyBtn">Save as New Copy</button>
+              <button type="button" class="secondary" id="exportTxtBtn">Export This Entry (.txt)</button>
+              <button type="button" class="secondary" id="exportJsonBtn">Backup All Entries (.json)</button>
+              <button type="button" class="secondary" id="printBtn">Export / Print PDF</button>
+              <button type="reset" class="secondary">Clear Form</button>
+            </div>
+            <p class="status" id="status">Your entries are saved in this browser. Export backups regularly to keep your journey safe.</p>
+          </section>
+        </form>
+      </main>
+
+      <aside class="stack sidebar">
+        <section class="card">
+          <h2 class="section-title">Spirit Tracker</h2>
+          <div class="stats-grid">
+            <div class="stat"><strong id="entryCount">0</strong><span class="subtle">entries</span></div>
+            <div class="stat"><strong id="currentStreak">0</strong><span class="subtle">streak</span></div>
+            <div class="stat"><strong id="mostCommonMood">—</strong><span class="subtle">top mood</span></div>
+          </div>
+          <div class="chart-wrap" style="margin-top:14px;">
+            <canvas id="moodChart" width="500" height="230" aria-label="Mood trend chart"></canvas>
+          </div>
+          <p class="subtle" style="margin-top:10px;">The chart shows your last 14 entries saved.</p>
+        </section>
+
+        <section class="card history-section">
+          <div class="history-top" style="margin-bottom:12px;">
+            <div>
+              <h2 class="section-title" style="margin-bottom:6px;">Saved Entries</h2>
+              <p class="subtle" style="margin:0;">Tap any day to revisit what God was doing in your life.</p>
+            </div>
+          </div>
+          <div class="history-actions" style="margin-bottom:12px;">
+            <input type="search" id="searchEntries" placeholder="Search entries saved" />
+            <button type="button" class="secondary" id="importJsonBtn">Import Backup</button>
+          </div>
+          <input class="sr-only" type="file" id="importFile" accept="application/json,.json" />
+          <div class="history-list" id="historyList"></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <dialog id="confirmDeleteDialog">
+    <div class="modal-inner">
+      <h3 style="margin:0;">Delete this entry?</h3>
+      <p class="subtle" style="margin:0;">This will remove the selected saved entry from this browser.</p>
+      <div class="modal-actions">
+        <button type="button" class="danger" id="confirmDeleteBtn">Delete Entry</button>
+        <button type="button" class="secondary" id="cancelDeleteBtn">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const form = document.getElementById('journalForm');
+    const statusText = document.getElementById('status');
+    const historyList = document.getElementById('historyList');
+    const searchEntries = document.getElementById('searchEntries');
+    const moodChart = document.getElementById('moodChart');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const autosaveToggle = document.getElementById('autosaveToggle');
+    const largeWritingToggle = document.getElementById('largeWritingToggle');
+    const journalEntry = document.getElementById('journalEntry');
+    const importFile = document.getElementById('importFile');
+    const importJsonBtn = document.getElementById('importJsonBtn');
+    const installBtn = document.getElementById('installBtn');
+    const installBanner = document.getElementById('installBanner');
+    const installBannerBtn = document.getElementById('installBannerBtn');
+    const dismissInstallBtn = document.getElementById('dismissInstallBtn');
+    const confirmDeleteDialog = document.getElementById('confirmDeleteDialog');
+    const STORAGE_KEY = 'dailyJournalEntriesV2';
+    const DRAFT_KEY = 'dailyJournalDraftV2';
+    const SETTINGS_KEY = 'dailyJournalSettingsV2';
+
+    let editingId = null;
+    let deleteId = null;
+    let deferredPrompt = null;
+
+    const moodScores = { Great: 5, Good: 4, Okay: 3, Tired: 2, Stressed: 1 };
+
+    function getEntries() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+
+    function getSettings() {
+      try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch { return {}; }
+    }
+
+    function saveSettings(settings) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    }
+
+    function setStatus(message, type = '') {
+      statusText.textContent = message;
+      statusText.className = `status ${type}`.trim();
+    }
+
+    function setToday() {
+      const dateInput = document.getElementById('date');
+      if (!dateInput.value) {
+        const now = new Date();
+        const tzOffset = now.getTimezoneOffset() * 60000;
+        dateInput.value = new Date(now - tzOffset).toISOString().split('T')[0];
+      }
+    }
+
+    function getFormData() {
+      const formData = new FormData(form);
+      const data = {};
+      for (const [key, value] of formData.entries()) {
+        data[key] = typeof value === 'string' ? value.trim() : value;
+      }
+      document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+        data[checkbox.name] = checkbox.checked;
+      });
+      return data;
+    }
+
+    function fillForm(entry) {
+      form.reset();
+      Object.entries(entry).forEach(([key, value]) => {
+        const field = form.elements[key];
+        if (!field) return;
+        if (field.type === 'checkbox') {
+          field.checked = Boolean(value);
+        } else if (field.type === 'radio') {
+          const radio = form.querySelector(`input[name="${key}"][value="${value}"]`);
+          if (radio) radio.checked = true;
+        } else {
+          field.value = value ?? '';
+        }
+      });
+      setToday();
+      applyWritingMode();
+    }
+
+    function clearDraft() { localStorage.removeItem(DRAFT_KEY); }
+
+    function saveDraft() {
+      if (!autosaveToggle.checked) return;
+      const data = getFormData();
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      setStatus('Draft autosaved in this browser.', 'success');
+    }
+
+    function loadDraft() {
+      try {
+        const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+        if (draft) fillForm(draft);
+      } catch {}
+    }
+
+    function buildEntry(data, forceNew = false) {
+      const now = new Date().toISOString();
+      const existingId = forceNew ? null : editingId;
+      return { id: existingId || `entry-${Date.now()}`, createdAt: existingId ? undefined : now, updatedAt: now, ...data };
+    }
+
+    function saveEntry(forceNew = false) {
+      const data = getFormData();
+      if (!data.date) { setStatus('Please choose a date before saving.', 'error'); return; }
+      if (!data.journalEntry && !data.gratitude && !data.wins && !data.challenge) { setStatus('Write something before saving your entry.', 'error'); return; }
+      const entries = getEntries();
+      const entry = buildEntry(data, forceNew);
+      if (!forceNew && editingId) {
+        const index = entries.findIndex((item) => item.id === editingId);
+        if (index >= 0) { entry.createdAt = entries[index].createdAt || entry.updatedAt; entries[index] = entry; }
+        else entries.unshift(entry);
+      } else entries.unshift(entry);
+      saveEntries(entries);
+      editingId = entry.id;
+      clearDraft();
+      renderHistory();
+      updateDashboard();
+      setStatus(forceNew ? 'New copy saved successfully.' : 'Entry saved successfully.', 'success');
+    }
+
+    function resetFormState() {
+      editingId = null; form.reset(); setToday(); applyWritingMode();
+      if (autosaveToggle.checked) saveDraft();
+      setStatus('Form cleared. Start a fresh journal entry.', '');
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'Undated';
+      const date = new Date(`${dateString}T12:00:00`);
+      return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function shortPreview(entry) {
+      const first = entry.journalEntry || entry.gratitude || entry.wins || entry.challenge || '';
+      return first.length > 140 ? `${first.slice(0, 140)}...` : first || 'No preview available.';
+    }
+
+    function matchesSearch(entry, term) {
+      if (!term) return true;
+      const haystack = [entry.date, entry.focus, entry.entryTitle, entry.tags, entry.mood, entry.gratitude, entry.wins, entry.challenge, entry.journalEntry, entry.tomorrow].join(' ').toLowerCase();
+      return haystack.includes(term.toLowerCase());
+    }
+
+    function renderHistory() {
+      const entries = getEntries();
+      const term = searchEntries.value.trim();
+      const filtered = entries.filter((entry) => matchesSearch(entry, term));
+      if (!filtered.length) {
+        historyList.innerHTML = `<div class="empty-state">${entries.length ? 'No entries match your search.' : 'No entries saved yet. Save your first day to build your journal history.'}</div>`;
+        return;
+      }
+      historyList.innerHTML = filtered.map((entry) => `
+        <article class="history-item">
+          <div class="history-top">
+            <div>
+              <div class="history-date">${formatDate(entry.date)}</div>
+              <div class="history-meta">${entry.entryTitle ? entry.entryTitle + ' • ' : ''}${entry.focus ? 'Focus: ' + escapeHtml(entry.focus) : 'No focus added'}</div>
+            </div>
+            <span class="badge">${escapeHtml(entry.mood || 'No mood')}</span>
+          </div>
+          <div class="history-preview">${escapeHtml(shortPreview(entry))}</div>
+          <div class="history-actions">
+            <button type="button" class="ghost" onclick="loadEntry('${entry.id}')">Load</button>
+            <button type="button" class="secondary" onclick="exportSingleEntry('${entry.id}')">Export .txt</button>
+            <button type="button" class="secondary" onclick="promptDelete('${entry.id}')">Delete</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function escapeHtml(value = '') {
+      return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function loadEntry(id) {
+      const entry = getEntries().find((item) => item.id === id);
+      if (!entry) return;
+      editingId = id;
+      fillForm(entry);
+      setStatus(`Loaded entry for ${formatDate(entry.date)}.`, 'success');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function promptDelete(id) {
+      deleteId = id;
+      if (typeof confirmDeleteDialog.showModal === 'function') confirmDeleteDialog.showModal();
+      else if (confirm('Delete this saved entry?')) deleteEntry();
+    }
+
+    function deleteEntry() {
+      if (!deleteId) return;
+      const entries = getEntries().filter((item) => item.id !== deleteId);
+      saveEntries(entries);
+      if (editingId === deleteId) { editingId = null; resetFormState(); }
+      deleteId = null;
+      if (confirmDeleteDialog.open) confirmDeleteDialog.close();
+      renderHistory();
+      updateDashboard();
+      setStatus('Entry deleted.', 'success');
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function entryToText(entry) {
+      return [`Daily Journal Entry`, `Date: ${entry.date || ''}`, `Title: ${entry.entryTitle || ''}`, `Focus: ${entry.focus || ''}`, `Mood: ${entry.mood || ''}`, `Tags: ${entry.tags || ''}`, '', `Grateful For:`, entry.gratitude || '', '', `Today's Wins:`, entry.wins || '', '', `Biggest Challenge:`, entry.challenge || '', '', `Journal Entry:`, entry.journalEntry || '', '', `Daily Check-In:`, `- Drank enough water: ${entry.water ? 'Yes' : 'No'}`, `- Moved my body: ${entry.movement ? 'Yes' : 'No'}`, `- Took time to rest: ${entry.rest ? 'Yes' : 'No'}`, `- Prayed / reflected: ${entry.prayer ? 'Yes' : 'No'}`, '', `Carry into tomorrow:`, entry.tomorrow || '', '', `Saved: ${entry.updatedAt || ''}`].join('\n');
+    }
+
+    function exportCurrentEntry() {
+      const data = getFormData();
+      if (!data.date) { setStatus('Add a date first, then export the entry.', 'error'); return; }
+      downloadFile(`journal-${data.date}.txt`, entryToText(data), 'text/plain;charset=utf-8');
+      setStatus('Current entry exported as a text file.', 'success');
+    }
+
+    function exportSingleEntry(id) {
+      const entry = getEntries().find((item) => item.id === id);
+      if (!entry) return;
+      downloadFile(`journal-${entry.date || 'entry'}.txt`, entryToText(entry), 'text/plain;charset=utf-8');
+      setStatus('Saved entry exported as a text file.', 'success');
+    }
+
+    function exportAllEntries() {
+      const entries = getEntries();
+      if (!entries.length) { setStatus('There are no entries saved to back up yet.', 'error'); return; }
+      downloadFile('daily-journal-backup.json', JSON.stringify(entries, null, 2), 'application/json;charset=utf-8');
+      setStatus('All entries saved exported as a backup JSON file.', 'success');
+    }
+
+    function importEntriesFromFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const incoming = JSON.parse(reader.result);
+          if (!Array.isArray(incoming)) throw new Error('Invalid backup file');
+          const current = getEntries();
+          const byId = new Map(current.map((entry) => [entry.id, entry]));
+          incoming.forEach((entry) => { if (entry && entry.id) byId.set(entry.id, entry); });
+          const merged = Array.from(byId.values()).sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+          saveEntries(merged);
+          renderHistory();
+          updateDashboard();
+          setStatus('Backup imported successfully.', 'success');
+        } catch { setStatus('That backup file could not be imported.', 'error'); }
+      };
+      reader.readAsText(file);
+    }
+
+    function calculateStreak(entries) {
+      if (!entries.length) return 0;
+      const dates = [...new Set(entries.map((entry) => entry.date).filter(Boolean))].sort((a, b) => new Date(b) - new Date(a));
+      if (!dates.length) return 0;
+      let streak = 1;
+      for (let i = 0; i < dates.length - 1; i++) {
+        const current = new Date(`${dates[i]}T12:00:00`);
+        const next = new Date(`${dates[i + 1]}T12:00:00`);
+        const diff = Math.round((current - next) / 86400000);
+        if (diff === 1) streak += 1;
+        else break;
+      }
+      return streak;
+    }
+
+    function getMostCommonMood(entries) {
+      const counts = {};
+      entries.forEach((entry) => { if (entry.mood) counts[entry.mood] = (counts[entry.mood] || 0) + 1; });
+      const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      return top ? top[0] : '—';
+    }
+
+    function updateDashboard() {
+      const entries = getEntries().sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
+      const count = entries.length;
+      const streak = calculateStreak([...entries].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
+      const latest = entries[count - 1];
+      const topMood = getMostCommonMood(entries);
+      document.getElementById('entryCount').textContent = count;
+      document.getElementById('currentStreak').textContent = streak;
+      document.getElementById('mostCommonMood').textContent = topMood;
+      document.getElementById('heroCount').textContent = count;
+      document.getElementById('heroStreak').textContent = streak;
+      document.getElementById('heroMood').textContent = latest?.mood || '—';
+      drawMoodChart(entries.slice(-14));
+    }
+
+    function drawMoodChart(entries) {
+      const canvas = moodChart;
+      const ctx = canvas.getContext('2d');
+      const styles = getComputedStyle(document.body);
+      const textColor = styles.getPropertyValue('--muted').trim() || '#6f675f';
+      const lineColor = styles.getPropertyValue('--accent').trim() || '#8c6f56';
+      const borderColor = styles.getPropertyValue('--border').trim() || '#ddd2c7';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = borderColor;
+      ctx.fillStyle = textColor;
+      ctx.font = '12px Arial';
+      const left = 36, right = canvas.width - 16, top = 18, bottom = canvas.height - 28;
+      const height = bottom - top, width = right - left;
+      for (let i = 1; i <= 5; i++) {
+        const y = bottom - ((i - 1) / 4) * height;
+        ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+        ctx.fillText(String(i), 12, y + 4);
+      }
+      if (!entries.length) { ctx.fillStyle = textColor; ctx.fillText('Save entries to see your mood trend.', 48, canvas.height / 2); return; }
+      const points = entries.map((entry, index) => {
+        const x = entries.length === 1 ? left + width / 2 : left + (index / (entries.length - 1)) * width;
+        const score = moodScores[entry.mood] || 0;
+        const y = score ? bottom - ((score - 1) / 4) * height : bottom;
+        return { x, y, label: entry.date?.slice(5) || '', score };
+      });
+      ctx.beginPath();
+      points.forEach((point, index) => {
+        if (!point.score) return;
+        if (index === 0 || !points[index - 1].score) ctx.moveTo(point.x, point.y);
+        else ctx.lineTo(point.x, point.y);
+      });
+      ctx.strokeStyle = lineColor; ctx.lineWidth = 3; ctx.stroke();
+      points.forEach((point) => {
+        if (!point.score) return;
+        ctx.beginPath(); ctx.fillStyle = styles.getPropertyValue('--accent-soft').trim() || '#e8ddd1';
+        ctx.arc(point.x, point.y, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = lineColor; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = textColor; ctx.fillText(point.label, point.x - 12, bottom + 18);
+      });
+    }
+
+    function applyDarkMode(enabled = darkModeToggle.checked) {
+      document.body.classList.toggle('dark', enabled);
+      const settings = getSettings(); settings.darkMode = enabled; saveSettings(settings);
+      updateDashboard();
+    }
+
+    function applyWritingMode() {
+      journalEntry.style.minHeight = largeWritingToggle.checked ? '280px' : '180px';
+      const settings = getSettings(); settings.largeWriting = largeWritingToggle.checked; saveSettings(settings);
+    }
+
+    function applyAutosaveSetting() {
+      const settings = getSettings(); settings.autosave = autosaveToggle.checked; saveSettings(settings);
+    }
+
+    function loadSettings() {
+      const settings = getSettings();
+      darkModeToggle.checked = Boolean(settings.darkMode);
+      autosaveToggle.checked = Boolean(settings.autosave);
+      largeWritingToggle.checked = settings.largeWriting !== false;
+      applyDarkMode(darkModeToggle.checked);
+      applyWritingMode();
+    }
+
+    function printToPdf() { window.print(); }
+
+    function setupAutosaveListeners() {
+      form.querySelectorAll('input, textarea, select').forEach((field) => {
+        field.addEventListener('input', () => { if (autosaveToggle.checked) saveDraft(); });
+        field.addEventListener('change', () => { if (autosaveToggle.checked) saveDraft(); });
+      });
+    }
+
+    function setupPWA() {
+      try {
+        const manifest = { name: 'Grace for the Journey', short_name: 'Grace Journal', start_url: './', display: 'standalone', background_color: '#f7f4ef', theme_color: '#8c6f56', icons: [{ src: 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="#8c6f56"/><path d="M38 32h42c8 0 14 6 14 14v50H52c-8 0-14-6-14-14V32z" fill="#f7f4ef"/><path d="M52 96V46c0-8 6-14 14-14h24v64H52z" fill="#e8ddd1"/><path d="M62 54h18M62 68h18M62 82h14" stroke="#8c6f56" stroke-width="5" stroke-linecap="round"/></svg>`), sizes: '192x192', type: 'image/svg+xml' }] };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest'; manifestLink.href = manifestURL;
+        document.head.appendChild(manifestLink);
+        const swCode = `const CACHE='daily-journal-cache-v1';self.addEventListener('install',(e)=>{e.waitUntil(caches.open(CACHE).then((c)=>c.addAll(['./'])));self.skipWaiting();});self.addEventListener('activate',(e)=>{e.waitUntil(self.clients.claim());});self.addEventListener('fetch',(e)=>{e.respondWith(caches.match(e.request).then((r)=>r||fetch(e.request)));});`;
+        const swBlob = new Blob([swCode], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register(swUrl).catch(() => {});
+      } catch {}
+    }
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault(); deferredPrompt = event;
+      installBtn.hidden = false; installBanner.classList.add('show');
+    });
+
+    async function installApp() {
+      if (!deferredPrompt) { installBanner.classList.add('show'); setStatus('Use your browser menu and choose Add to Home screen or Install app.', ''); return; }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null; installBtn.hidden = true; installBanner.classList.remove('show');
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', () => saveEntry(false));
+    document.getElementById('saveCopyBtn').addEventListener('click', () => saveEntry(true));
+    document.getElementById('exportTxtBtn').addEventListener('click', exportCurrentEntry);
+    document.getElementById('exportJsonBtn').addEventListener('click', exportAllEntries);
+    document.getElementById('printBtn').addEventListener('click', printToPdf);
+    document.getElementById('confirmDeleteBtn').addEventListener('click', deleteEntry);
+    document.getElementById('cancelDeleteBtn').addEventListener('click', () => { deleteId = null; confirmDeleteDialog.close(); });
+    searchEntries.addEventListener('input', renderHistory);
+    importJsonBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', (event) => { const file = event.target.files[0]; if (file) importEntriesFromFile(file); event.target.value = ''; });
+    darkModeToggle.addEventListener('change', () => applyDarkMode());
+    autosaveToggle.addEventListener('change', applyAutosaveSetting);
+    largeWritingToggle.addEventListener('change', applyWritingMode);
+    installBtn.addEventListener('click', installApp);
+    installBannerBtn.addEventListener('click', installApp);
+    dismissInstallBtn.addEventListener('click', () => installBanner.classList.remove('show'));
+    form.addEventListener('reset', () => { setTimeout(() => { editingId = null; clearDraft(); setToday(); applyWritingMode(); setStatus('Form cleared. Your saved journal history is still available on the right.', ''); }, 0); });
+
+    setupAutosaveListeners();
+    loadSettings();
+    setToday();
+    loadDraft();
+    renderHistory();
+    updateDashboard();
+    setupPWA();
+
+    window.loadEntry = loadEntry;
+    window.exportSingleEntry = exportSingleEntry;
+    window.promptDelete = promptDelete;
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Money Reset Journal</title>
+<style>
+:root{
+  --bg1:#f7f4ef;
+  --bg2:#efe6dc;
+  --card:#fffdfa;
+  --ink:#3d342f;
+  --muted:#7d6f66;
+  --line:#e7ddd1;
+  --accent:#c8a977;
+  --accent-dark:#b18d59;
+  --shadow:0 16px 42px rgba(75,56,40,.12);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Segoe UI",Tahoma,sans-serif;
+  color:var(--ink);
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  min-height:100vh;
+}
+.app{
+  max-width:1500px;
+  margin:auto;
+  padding:20px;
+}
+.hero{
+  background:linear-gradient(135deg,rgba(255,253,250,.95),rgba(255,249,243,.92));
+  border-radius:30px;
+  padding:24px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+.hero h1{
+  margin:0 0 8px;
+  font-family:Georgia,serif;
+  font-size:clamp(2rem,4vw,3rem);
+}
+.hero p{color:var(--muted);margin:0;line-height:1.6}
+.layout{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:20px;
+  align-items:start;
+}
+.sidebar{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:var(--shadow);
+  position:sticky;
+  top:20px;
+  height:fit-content;
+}
+.navbtn{
+  width:100%;
+  text-align:left;
+  border:none;
+  background:white;
+  padding:10px 12px;
+  margin-bottom:6px;
+  border-radius:10px;
+  font-weight:600;
+  border:1px solid var(--line);
+  cursor:pointer;
+  color:var(--ink);
+}
+.navbtn.active{
+  background:var(--ink);
+  color:white;
+  border-color:var(--ink);
+}
+.panel{display:none}
+.panel.active{display:block}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:18px;
+}
+.card h2{
+  margin:0 0 12px;
+  font-family:Georgia,serif;
+}
+.card h3{
+  margin:18px 0 10px;
+  font-family:Georgia,serif;
+  font-size:1.05rem;
+}
+.helper{
+  color:var(--muted);
+  margin:0 0 14px;
+  line-height:1.6;
+}
+.field{margin-bottom:14px}
+.field label{
+  display:block;
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:6px;
+  color:var(--muted);
+  font-weight:700;
+}
+input,textarea,select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  font:inherit;
+  color:var(--ink);
+  background:white;
+}
+textarea{min-height:100px;resize:vertical}
+button.primary,button.secondary{
+  border:none;
+  padding:10px 16px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:600;
+}
+button.primary{background:var(--accent);color:white}
+button.primary:hover{background:var(--accent-dark)}
+button.secondary{background:white;border:1px solid var(--line);color:var(--ink)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.table-wrap{overflow:auto}
+.table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.table th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#faf6f0}
+.entry{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  margin-top:10px;
+  background:white;
+}
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+  margin-bottom:14px;
+}
+.stat{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+.stat label{
+  display:block;
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+}
+.stat strong{
+  display:block;
+  font-size:1.2rem;
+  margin-top:4px;
+}
+.twocol{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative;top:auto}
+  .twocol{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <h1>Money Reset Journal</h1>
+    <p>A guided system for understanding your relationship with money and building healthier financial habits.</p>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <button class="navbtn active" data-tab="dashboard">Dashboard</button>
+      <button class="navbtn" data-tab="reflection">Weekly Reflection</button>
+      <button class="navbtn" data-tab="rules">Money Rules</button>
+      <button class="navbtn" data-tab="mindset">Money Mindset</button>
+      <button class="navbtn" data-tab="identity">Money Identity</button>
+      <button class="navbtn" data-tab="retro">Monthly Retro</button>
+      <button class="navbtn" data-tab="spending">Category Log</button>
+      <button class="navbtn" data-tab="impulse">Impulse Autopsy</button>
+      <button class="navbtn" data-tab="triggers">Triggers Map</button>
+      <button class="navbtn" data-tab="clarity">Money Clarity</button>
+      <button class="navbtn" data-tab="boundaries">Boundaries</button>
+      <button class="navbtn" data-tab="wins">Financial Wins</button>
+      <button class="navbtn" data-tab="networth">Net Worth</button>
+      <button class="navbtn" data-tab="patterns">Pattern Tracker</button>
+    </aside>
+
+    <main>
+      <section class="panel active" id="dashboard">
+        <div class="card">
+          <h2>Financial Life Dashboard</h2>
+          <p class="helper">A quick overview of your current financial focus so the journal feels like a working system, not just a notebook.</p>
+          <div class="dashboard-grid">
+            <div class="stat"><label>Monthly Focus</label><strong>Intentional Spending</strong></div>
+            <div class="stat"><label>Current Rule</label><strong>24-Hour Wait</strong></div>
+            <div class="stat"><label>Main Trigger</label><strong>Boredom Spending</strong></div>
+            <div class="stat"><label>Priority</label><strong>Debt Reduction</strong></div>
+          </div>
+          <div class="field">
+            <label for="dashboardRule">Current Money Rule</label>
+            <input id="dashboardRule" placeholder="No purchases over $50 without waiting 24 hours" />
+          </div>
+          <div class="field">
+            <label for="dashboardPriority">Financial Priority This Month</label>
+            <textarea id="dashboardPriority" placeholder="Example: pay down credit card balance"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="reflection">
+        <div class="card">
+          <h2>Weekly Money Reflection</h2>
+          <div class="field"><label for="moneyWin">Money Win</label><textarea id="moneyWin"></textarea></div>
+          <div class="field"><label for="moneyRegret">Money Regret</label><textarea id="moneyRegret"></textarea></div>
+          <div class="field"><label for="emotionalSpending">Emotional Spending</label><textarea id="emotionalSpending"></textarea></div>
+          <div class="field"><label for="tryingToBuy">What I Was Really Trying To Buy</label><textarea id="tryingToBuy"></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="rules">
+        <div class="card">
+          <h2>Money Rules</h2>
+          <p class="helper">Create pre-commitment rules that help you slow down spending decisions.</p>
+          <div class="field">
+            <label for="ruleInput">Create a Rule</label>
+            <input id="ruleInput" placeholder="No purchases over $50 without waiting 24 hours" />
+          </div>
+          <div class="actions">
+            <button class="primary" id="addRuleBtn" type="button">Add Rule</button>
+          </div>
+          <div id="ruleList"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="mindset">
+        <div class="card">
+          <h2>Money Mindset</h2>
+          <div class="field"><label>What did I learn about money growing up?</label><textarea></textarea></div>
+          <div class="field"><label>When do I feel financially secure?</label><textarea></textarea></div>
+          <div class="field"><label>What purchases make me feel successful?</label><textarea></textarea></div>
+          <div class="field"><label>What financial fear shows up most often?</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="identity">
+        <div class="card">
+          <h2>Money Identity</h2>
+          <div class="field"><label>What does financial peace look like for me?</label><textarea></textarea></div>
+          <div class="field"><label>What kind of person do I want to become with money?</label><textarea></textarea></div>
+          <div class="field"><label>What habits would that version of me have?</label><textarea></textarea></div>
+          <div class="field"><label>What behaviors need to change to become that person?</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="retro">
+        <div class="card">
+          <h2>Monthly Retro</h2>
+          <div class="field"><label>Patterns I noticed</label><textarea></textarea></div>
+          <div class="field"><label>Triggers that caused spending</label><textarea></textarea></div>
+          <div class="field"><label>What worked well this month?</label><textarea></textarea></div>
+          <div class="field"><label>What experiment will I try next month?</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="spending">
+        <div class="card">
+          <h2>Category Spending Log</h2>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Why I Bought It</th>
+                  <th>Worth It?</th>
+                </tr>
+              </thead>
+              <tbody id="spendingTable"></tbody>
+            </table>
+          </div>
+          <div class="actions" style="margin-top:12px;">
+            <button class="primary" id="addRowBtn" type="button">Add Entry</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="impulse">
+        <div class="card">
+          <h2>Impulse Purchase Autopsy</h2>
+          <div class="field"><label>What did I buy?</label><textarea></textarea></div>
+          <div class="field"><label>What was I feeling before?</label><textarea></textarea></div>
+          <div class="field"><label>What did I hope the purchase would solve?</label><textarea></textarea></div>
+          <div class="field"><label>Did it actually help?</label><textarea></textarea></div>
+          <div class="field"><label>What will I do differently next time?</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="triggers">
+        <div class="card">
+          <h2>Spending Triggers Map</h2>
+          <div class="field"><label>Boredom Spending</label><textarea></textarea></div>
+          <div class="field"><label>Stress or Emotional Spending</label><textarea></textarea></div>
+          <div class="field"><label>Reward Spending</label><textarea></textarea></div>
+          <div class="field"><label>Convenience Spending</label><textarea></textarea></div>
+          <div class="field"><label>Social or Identity Spending</label><textarea></textarea></div>
+          <div class="field"><label>What new rule or habit could reduce these triggers?</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="clarity">
+        <div class="card">
+          <h2>Money Clarity</h2>
+          <div class="field"><label>What does “enough” look like for me financially?</label><textarea></textarea></div>
+          <div class="field"><label>What kind of life am I actually trying to fund?</label><textarea></textarea></div>
+          <div class="field"><label>Which purchases truly improve my life?</label><textarea></textarea></div>
+          <div class="field"><label>Which spending habits move me away from the life I want?</label><textarea></textarea></div>
+          <div class="field"><label>One financial principle I want to live by</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="boundaries">
+        <div class="card">
+          <h2>Financial Boundaries</h2>
+          <div class="field"><label>Lending Money Boundary</label><textarea></textarea></div>
+          <div class="field"><label>Family Expectations</label><textarea></textarea></div>
+          <div class="field"><label>Social Pressure Spending</label><textarea></textarea></div>
+          <div class="field"><label>Lifestyle Inflation Boundary</label><textarea></textarea></div>
+          <div class="field"><label>My Personal Money Boundary Statement</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="wins">
+        <div class="card">
+          <h2>Financial Wins</h2>
+          <div class="field"><label>What financial win did I have?</label><textarea></textarea></div>
+          <div class="field"><label>What decision helped create this win?</label><textarea></textarea></div>
+          <div class="field"><label>How did this improve my financial situation?</label><textarea></textarea></div>
+          <div class="field"><label>How can I repeat this behavior?</label><textarea></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel" id="networth">
+        <div class="card">
+          <h2>Net Worth Snapshot</h2>
+          <p class="helper">A light snapshot, not a spreadsheet-heavy tracker.</p>
+          <div class="twocol">
+            <div>
+              <h3>Assets</h3>
+              <div class="field"><label>Cash / Checking</label><input type="number" placeholder="Amount" /></div>
+              <div class="field"><label>Savings</label><input type="number" placeholder="Amount" /></div>
+              <div class="field"><label>Investments</label><input type="number" placeholder="Amount" /></div>
+              <div class="field"><label>Other Assets</label><input type="number" placeholder="Amount" /></div>
+            </div>
+            <div>
+              <h3>Debt</h3>
+              <div class="field"><label>Credit Cards</label><input type="number" placeholder="Amount" /></div>
+              <div class="field"><label>Loans</label><input type="number" placeholder="Amount" /></div>
+              <div class="field"><label>Other Debt</label><input type="number" placeholder="Amount" /></div>
+              <div class="field"><label>Estimated Net Worth</label><input placeholder="Assets minus debt" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="patterns">
+        <div class="card">
+          <h2>Spending Pattern Tracker</h2>
+          <div class="field"><label>Most Common Spending Trigger This Month</label><textarea></textarea></div>
+          <div class="field"><label>Number of Impulse Purchases This Month</label><input type="number" placeholder="Count" /></div>
+          <div class="field"><label>Rule I Honored Most Often</label><textarea></textarea></div>
+          <div class="field"><label>Rule I Broke Most Often</label><textarea></textarea></div>
+          <div class="field"><label>Top Spending Categories This Month</label><textarea></textarea></div>
+          <div class="field"><label>Most Helpful Money Habit This Month</label><textarea></textarea></div>
+          <div class="field"><label>Behavior I Want to Improve Next Month</label><textarea></textarea></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  function runApp(){
+    const tabs = Array.from(document.querySelectorAll('.navbtn'));
+    const panels = Array.from(document.querySelectorAll('.panel'));
+    const ruleList = document.getElementById('ruleList');
+    const ruleInput = document.getElementById('ruleInput');
+    const addRuleBtn = document.getElementById('addRuleBtn');
+    const addRowBtn = document.getElementById('addRowBtn');
+    const spendingTable = document.getElementById('spendingTable');
+
+    function activateTab(tabId){
+      const target = document.getElementById(tabId);
+      if(!target){
+        console.warn('Missing panel for tab:', tabId);
+        return false;
+      }
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+      panels.forEach(p => p.classList.toggle('active', p.id === tabId));
+      return true;
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+    });
+
+    if(addRuleBtn && ruleInput && ruleList){
+      addRuleBtn.addEventListener('click', () => {
+        const text = ruleInput.value.trim();
+        if(!text) return;
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.textContent = text;
+        ruleList.appendChild(div);
+        ruleInput.value = '';
+      });
+    }
+
+    if(addRowBtn && spendingTable){
+      addRowBtn.addEventListener('click', () => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="date" aria-label="Date"></td>
+          <td>
+            <select aria-label="Category">
+              <option>Housing</option>
+              <option>Food</option>
+              <option>Transportation</option>
+              <option>Health</option>
+              <option>Fun</option>
+              <option>Subscriptions</option>
+              <option>Savings</option>
+            </select>
+          </td>
+          <td><input type="number" aria-label="Amount"></td>
+          <td><input aria-label="Why I Bought It"></td>
+          <td>
+            <select aria-label="Worth It">
+              <option>Yes</option>
+              <option>No</option>
+              <option>Not Sure</option>
+            </select>
+          </td>
+        `;
+        spendingTable.appendChild(row);
+      });
+    }
+
+    const firstActive = document.querySelector('.navbtn.active');
+    activateTab(firstActive ? firstActive.dataset.tab : 'dashboard');
+
+    console.assert(document.getElementById('patterns'), 'Pattern Tracker panel should exist.');
+    console.assert(document.getElementById('mindset'), 'Money Mindset panel should exist.');
+    console.assert(document.getElementById('identity'), 'Money Identity panel should exist.');
+    console.assert(document.getElementById('retro'), 'Monthly Retro panel should exist.');
+    console.assert(document.getElementById('impulse'), 'Impulse Autopsy panel should exist.');
+    console.assert(document.getElementById('triggers'), 'Triggers Map panel should exist.');
+    console.assert(document.getElementById('clarity'), 'Money Clarity panel should exist.');
+    console.assert(document.getElementById('boundaries'), 'Boundaries panel should exist.');
+    console.assert(document.getElementById('wins'), 'Financial Wins panel should exist.');
+    console.assert(document.getElementById('networth'), 'Net Worth panel should exist.');
+    console.assert(activateTab('patterns') === true, 'Pattern Tracker tab should activate successfully.');
+    activateTab('dashboard');
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', runApp);
+  } else {
+    runApp();
+  }
+})();
+</script>
+</body>
+</html>
