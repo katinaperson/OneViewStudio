@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Journal</title>
+<style>
+:root{
+  --bg1:#f8f2ea;
+  --bg2:#f4efe7;
+  --card:#fffdf9;
+  --ink:#3b312c;
+  --muted:#8c7a70;
+  --line:#e7ddd3;
+  --accent:#c9a97e;
+  --accent2:#a8c7b0;
+  --rose:#d8b1b5;
+  --shadow:0 18px 45px rgba(90,71,56,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Georgia, serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.8), transparent 28%),
+    radial-gradient(circle at top right, rgba(216,177,181,.18), transparent 24%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  padding:28px 16px 40px;
+}
+.shell{
+  max-width:980px;
+  margin:0 auto;
+}
+.hero{
+  text-align:center;
+  margin-bottom:18px;
+}
+.kicker{
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-size:.78rem;
+  margin-bottom:10px;
+}
+h1{
+  margin:0;
+  font-size:clamp(2.1rem, 4vw, 3.2rem);
+  font-weight:normal;
+}
+.subtitle{
+  margin:10px auto 0;
+  max-width:650px;
+  color:var(--muted);
+  font-size:1.03rem;
+  line-height:1.6;
+}
+.card{
+  background:rgba(255,253,249,.9);
+  backdrop-filter:blur(4px);
+  border:1px solid rgba(231,221,211,.95);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.ribbon{
+  height:12px;
+  background:linear-gradient(90deg, var(--accent2), #d9d0b9, var(--rose), var(--accent));
+}
+.inner{
+  padding:26px;
+}
+.top{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.leftgroup,
+.rightgroup{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.datebox{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.datebox span{
+  color:var(--muted);
+  font-size:.9rem;
+}
+input[type="date"]{
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  font-size:1rem;
+}
+button{
+  border:none;
+  border-radius:14px;
+  padding:12px 16px;
+  cursor:pointer;
+  font-size:.98rem;
+  font-family:inherit;
+  transition:transform .15s ease, opacity .15s ease;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+}
+button:hover{transform:translateY(-1px)}
+.save{background:var(--accent2);color:#fff}
+.download{background:#8ea7cf;color:#fff}
+.clear{background:#d39a9f;color:#fff}
+.status{
+  margin:4px 0 22px;
+  color:var(--muted);
+  font-size:.94rem;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.75);
+  border:1px solid var(--line);
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.panel{
+  background:rgba(255,255,255,.72);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+}
+.panel.full{grid-column:1 / -1}
+label{
+  display:block;
+  margin-bottom:8px;
+  font-size:1.02rem;
+}
+.prompt{
+  color:var(--muted);
+  font-size:.9rem;
+  margin-bottom:10px;
+  line-height:1.5;
+}
+textarea{
+  width:100%;
+  min-height:130px;
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-family:Georgia, serif;
+  font-size:1rem;
+  line-height:1.7;
+  color:var(--ink);
+  resize:vertical;
+}
+.tall textarea{min-height:220px}
+.medium textarea{min-height:160px}
+.footerNote{
+  text-align:center;
+  color:var(--muted);
+  font-size:.9rem;
+  margin-top:18px;
+}
+@media (max-width:760px){
+  body{padding:16px 10px 28px}
+  .inner{padding:18px}
+  .grid{grid-template-columns:1fr}
+  .panel.full{grid-column:auto}
+  .top{align-items:stretch}
+  .leftgroup,.rightgroup{width:100%}
+  .rightgroup button{flex:1}
+  input[type="date"]{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero">
+    <div class="kicker">Quiet space for your day</div>
+    <h1>Daily Journal</h1>
+    <p class="subtitle">A softer, prettier journal with room to reflect, pray, and capture the heart of the day.</p>
+  </div>
+
+  <div class="card">
+    <div class="ribbon"></div>
+    <div class="inner">
+      <div class="top">
+        <div class="leftgroup">
+          <div class="datebox">
+            <span>Entry Date</span>
+            <input type="date" id="date" />
+          </div>
+        </div>
+        <div class="rightgroup">
+          <button class="save" onclick="saveJournal()">Save</button>
+          <button class="download" onclick="downloadJournal()">Download</button>
+          <button class="clear" onclick="clearJournal()">Clear</button>
+        </div>
+      </div>
+
+      <div class="status" id="status">Auto-saves while you type.</div>
+
+      <div class="grid">
+        <section class="panel medium">
+          <label for="gratitude">Gratitude</label>
+          <div class="prompt">What felt like grace today, even in a small way?</div>
+          <textarea id="gratitude" placeholder="Write a few things you are grateful for..."></textarea>
+        </section>
+
+        <section class="panel medium">
+          <label for="focus">Today's Focus</label>
+          <div class="prompt">What matters most today? What do you want to carry with intention?</div>
+          <textarea id="focus" placeholder="Write your focus for the day..."></textarea>
+        </section>
+
+        <section class="panel full tall">
+          <label for="reflection">Reflection</label>
+          <div class="prompt">Let this be your open space. Write freely about what happened, how you felt, and what stayed with you.</div>
+          <textarea id="reflection" placeholder="Write your reflections here..."></textarea>
+        </section>
+
+        <section class="panel medium">
+          <label for="prayer">Prayer / Intentions</label>
+          <div class="prompt">A prayer, a release, a hope, or the posture you want for tomorrow.</div>
+          <textarea id="prayer" placeholder="Write your prayer or intentions..."></textarea>
+        </section>
+
+        <section class="panel medium">
+          <label for="notes">Notes</label>
+          <div class="prompt">Scripture, reminders, ideas, or anything else you do not want to lose.</div>
+          <textarea id="notes" placeholder="Write any extra notes..."></textarea>
+        </section>
+      </div>
+
+      <div class="footerNote">Designed to feel calm, feminine, and easy to use.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const fields=["date","gratitude","focus","reflection","prayer","notes"]
+
+function todayString(){
+  const d=new Date()
+  const tzOffset=d.getTimezoneOffset()*60000
+  return new Date(d-tzOffset).toISOString().split("T")[0]
+}
+
+function saveJournal(showMessage=true){
+  const data={}
+  fields.forEach(id=>data[id]=document.getElementById(id).value)
+  localStorage.setItem("journalEntry",JSON.stringify(data))
+  if(showMessage){
+    const now=new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})
+    document.getElementById("status").innerText=`Saved at ${now}.`
+  }
+}
+
+function loadJournal(){
+  const saved=localStorage.getItem("journalEntry")
+  if(saved){
+    try{
+      const data=JSON.parse(saved)
+      fields.forEach(id=>{if(typeof data[id]!=="undefined") document.getElementById(id).value=data[id]})
+    }catch(e){}
+  }
+  if(!document.getElementById("date").value){
+    document.getElementById("date").value=todayString()
+  }
+}
+
+function clearJournal(){
+  if(confirm("Clear the journal?")){
+    fields.forEach(id=>document.getElementById(id).value=(id==="date"?todayString():""))
+    localStorage.removeItem("journalEntry")
+    document.getElementById("status").innerText="Journal cleared."
+  }
+}
+
+function downloadJournal(){
+  let text=`Date: ${date.value}\n\nGratitude:\n${gratitude.value}\n\nFocus:\n${focus.value}\n\nReflection:\n${reflection.value}\n\nPrayer:\n${prayer.value}\n\nNotes:\n${notes.value}`
+  let blob=new Blob([text],{type:"text/plain"})
+  let a=document.createElement("a")
+  a.href=URL.createObjectURL(blob)
+  a.download="journal.txt"
+  a.click()
+}
+
+fields.forEach(id=>{
+  document.getElementById(id).addEventListener("input",()=>saveJournal(false))
+})
+
+loadJournal()
+</script>
+</body>
+</html>

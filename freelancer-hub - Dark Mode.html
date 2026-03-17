@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2A7B6F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Freelancer Hub">
+<title>FreelancerHub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F7F4; --surface: #FFFFFF; --border: #E8E4DC;
+  --ink: #1A1A18; --ink-mid: #4A4A44; --ink-lt: #8A8880;
+  --teal: #2A7B6F; --teal-lt: #E8F4F2; --teal-mid: #4A9B8E;
+  --amber: #C4872A; --amber-lt: #FDF3E3;
+  --rose: #C4546A; --rose-lt: #FDE8EC;
+  --slate: #3A4A5C; --slate-lt: #EAF0F8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); font-weight: 300; min-height: 100vh; font-size: 14px; }
+
+/* HEADER */
+.header { background: var(--ink); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: white; letter-spacing: 0.02em; }
+.logo span { color: #7DD3C8; }
+.header-actions { display: flex; gap: 10px; }
+
+/* NAV */
+.nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; padding: 0 32px; overflow-x: auto; }
+.nav-tab { padding: 14px 18px; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: var(--ink-lt); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+.nav-tab:hover { color: var(--teal); }
+.nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+/* MAIN */
+.main { padding: 32px; max-width: 1200px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* PAGE HEADER */
+.page-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 4px; }
+.page-sub { font-size: 0.78rem; color: var(--ink-lt); letter-spacing: 0.12em; text-transform: uppercase; }
+.title-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.accent-line { width: 32px; height: 2px; background: var(--teal); margin: 8px 0 24px; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px 28px; }
+.card-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 4px; }
+
+/* STAT CARDS */
+.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 22px; position: relative; overflow: hidden; }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.stat-card.teal::before { background: var(--teal); }
+.stat-card.amber::before { background: var(--amber); }
+.stat-card.rose::before { background: var(--rose); }
+.stat-card.slate::before { background: var(--slate); }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 0.72rem; color: var(--ink-lt); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 20px; border: none; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.btn-primary { background: var(--teal); color: white; }
+.btn-primary:hover { background: #1f5f56; }
+.btn-outline { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+.btn-outline:hover { background: var(--teal-lt); }
+.btn-ghost { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); }
+.btn-ghost:hover { background: rgba(255,255,255,0.08); }
+.btn-danger { background: transparent; color: var(--rose); border: 1px solid var(--rose-lt); padding: 5px 10px; font-size: 0.65rem; }
+.btn-danger:hover { background: var(--rose-lt); }
+.btn-sm { padding: 6px 12px; font-size: 0.65rem; }
+.btn-amber { background: var(--amber); color: white; }
+
+/* FORM */
+label { display: block; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 6px; font-weight: 500; }
+.field { margin-bottom: 16px; }
+input[type="text"], input[type="email"], input[type="number"], input[type="date"], input[type="url"], textarea, select {
+  width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+  color: var(--ink); outline: none; transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--teal); }
+textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* TABLE */
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--bg); }
+th { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-lt); font-weight: 500; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+td { padding: 12px 14px; font-size: 0.85rem; border-bottom: 1px solid var(--border); color: var(--ink-mid); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* BADGE */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+.badge-active, .badge-paid, .badge-signed, .badge-accepted { background: #EAF5EA; color: #3A7A3A; }
+.badge-pending, .badge-unpaid, .badge-draft, .badge-sent { background: var(--amber-lt); color: var(--amber); }
+.badge-overdue, .badge-declined { background: var(--rose-lt); color: var(--rose); }
+.badge-lead, .badge-onhold, .badge-archived, .badge-cancelled { background: #F0F0F0; color: var(--ink-lt); }
+.badge-inactive { background: #F0F0F0; color: var(--ink-lt); }
+
+/* SUB TABS (for Documents) */
+.sub-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.sub-tab { padding: 8px 20px; background: transparent; color: var(--teal); border: 1px solid var(--teal); border-radius: 6px; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.sub-tab.active { background: var(--teal); color: white; }
+.sub-tab:hover:not(.active) { background: var(--teal-lt); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; z-index: 999; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal { background: white; border-radius: 12px; padding: 32px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+.modal.wide { max-width: 700px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; }
+.modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--ink-lt); line-height: 1; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+/* SYNC PANEL */
+.sync-panel { background: var(--ink); padding: 20px 32px; display: none; }
+.sync-panel.open { display: block; }
+
+/* ACTIVITY ITEM */
+.activity-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.activity-item:last-child { border-bottom: none; }
+
+/* TODO */
+.todo-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.todo-item:last-child { border-bottom: none; }
+.todo-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.todo-check.done { background: var(--teal); border-color: var(--teal); }
+.pri-bar { width: 4px; border-radius: 2px; align-self: stretch; flex-shrink: 0; }
+
+/* PROGRESS */
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+
+/* DOCUMENT CARD */
+.doc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; margin-bottom: 10px; cursor: pointer; transition: box-shadow 0.2s; }
+.doc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.doc-type { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 4px; }
+
+/* GENERATED DOC */
+.gen-doc { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 40px 48px; font-family: Georgia, serif; line-height: 1.8; }
+.gen-doc h2 { font-size: 1.4rem; margin-bottom: 8px; }
+.gen-doc h3 { font-size: 1rem; margin: 24px 0 8px; color: var(--ink); }
+.gen-doc p { margin-bottom: 12px; font-size: 0.9rem; color: var(--ink-mid); }
+.gen-doc .section { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
+.gen-doc .sig-line { border-top: 1px solid var(--ink); width: 200px; margin-top: 40px; padding-top: 6px; font-size: 0.78rem; color: var(--ink-lt); }
+
+/* INVOICE PRINT */
+@media print {
+  .header, .nav, .sync-panel, .btn, .modal-overlay, .sub-tabs, .title-bar, .accent-line, .table-wrap + *, .no-print { display: none !important; }
+  .print-invoice { display: block !important; }
+  body { background: white; }
+}
+.print-invoice { display: none; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #7DD3C8; padding: 12px 20px; border-radius: 6px; font-size: 0.75rem; letter-spacing: 0.08em; z-index: 9999; opacity: 0; transform: translateY(8px); transition: all 0.3s; pointer-events: none; border-left: 3px solid var(--teal); }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.empty { color: var(--ink-lt); font-style: italic; padding: 20px 0; text-align: center; }
+.info-box { background: var(--teal-lt); border: 1px solid var(--teal); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; font-size: 0.82rem; color: var(--teal); line-height: 1.6; }
+
+@media (max-width: 768px) {
+  .stat-grid { grid-template-columns: repeat(2,1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .main { padding: 16px; }
+  .nav { padding: 0 16px; }
+  .header { padding: 14px 16px; }
+}
+
+/* ── DARK MODE ── */
+body.dark-mode {
+  --bg:       #161614;
+  --surface:  #1E1E1C;
+  --border:   #2E2E2A;
+  --ink:      #F0EFEC;
+  --ink-mid:  #C8C6C0;
+  --ink-lt:   #888680;
+  --teal:     #4AB8A8;
+  --teal-lt:  #0E2420;
+  --teal-mid: #6ACABA;
+  --amber:    #D4982A;
+  --amber-lt: #2A1E08;
+  --rose:     #E06880;
+  --rose-lt:  #2A1018;
+  --slate:    #6A8AAC;
+  --slate-lt: #0E1A28;
+}
+
+body.dark-mode .header { background: #1A1A18; }
+body.dark-mode .nav { background: #1E1E1C; border-color: #2E2E2A; }
+body.dark-mode .nav-tab { color: #888680; }
+body.dark-mode .nav-tab:hover { color: #4AB8A8; }
+body.dark-mode .nav-tab.active { color: #4AB8A8; border-bottom-color: #4AB8A8; }
+
+body.dark-mode .card { background: #1E1E1C; border-color: #2E2E2A; }
+body.dark-mode .stat-card { background: #1E1E1C; border-color: #2E2E2A; }
+body.dark-mode .stat-num { color: #F0EFEC; }
+body.dark-mode .stat-label { color: #888680; }
+
+body.dark-mode .table-header { background: #252522; border-color: #2E2E2A; color: #888680; }
+body.dark-mode .table-row { border-color: #2E2E2A; }
+body.dark-mode .table-row:hover { background: #252522; }
+
+body.dark-mode .form-group label { color: #888680; }
+body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+  background: #252522 !important;
+  border-color: #2E2E2A !important;
+  color: #F0EFEC !important;
+  -webkit-text-fill-color: #F0EFEC !important;
+}
+body.dark-mode input:focus, body.dark-mode textarea:focus, body.dark-mode select:focus {
+  border-color: #4AB8A8 !important;
+  background: #2E2E2A !important;
+}
+body.dark-mode input::placeholder, body.dark-mode textarea::placeholder {
+  color: #585650 !important;
+  -webkit-text-fill-color: #585650 !important;
+}
+
+body.dark-mode .section-title { color: #F0EFEC; }
+body.dark-mode .page-sub { color: #888680; }
+body.dark-mode .info-box { background: #0E2420; border-color: #2A5048; color: #4AB8A8; }
+body.dark-mode .empty { color: #585650; }
+body.dark-mode .toast { background: #2E2E2A; color: #F0EFEC; }
+body.dark-mode .line-item-row { background: #252522; border-color: #2E2E2A; }
+body.dark-mode .invoice-preview { background: #1E1E1C; border-color: #2E2E2A; color: #F0EFEC; }
+
+.dark-toggle-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.dark-toggle-btn:hover { background: rgba(255,255,255,0.18); color: white; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">Freelancer<span>Hub</span></div>
+  <div class="header-actions">
+    <button class="dark-toggle-btn" id="dark-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+    <button class="btn btn-ghost" onclick="toggleSync()">☁ Sync</button>
+    <button class="btn btn-primary btn-sm" onclick="switchTab('clients'); openClientModal()">+ New Client</button>
+  </div>
+</div>
+
+<!-- SYNC PANEL -->
+<div class="sync-panel" id="sync-panel">
+  <div class="grid-3" style="max-width:900px;">
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 20px;">
+      <div style="color:white;font-weight:500;margin-bottom:6px;">📥 Export Data</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:12px;line-height:1.5;">Download your data as JSON. Upload it anytime to restore.</div>
+      <button onclick="exportData()" class="btn btn-primary" style="width:100%;justify-content:center;">Export (.json)</button>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 20px;">
+      <div style="color:white;font-weight:500;margin-bottom:6px;">📂 Import Data</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:12px;line-height:1.5;">Restore from a previous backup file.</div>
+      <label for="import-file" class="btn btn-primary" style="width:100%;justify-content:center;cursor:pointer;display:flex;">Import File</label>
+      <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
+    </div>
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:18px 20px;">
+      <div style="color:white;font-weight:500;margin-bottom:6px;">📊 Data Summary</div>
+      <div id="data-summary" style="font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.8;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-tab active" onclick="switchTab('dashboard', this)">Dashboard</div>
+  <div class="nav-tab" onclick="switchTab('clients', this)">Clients</div>
+  <div class="nav-tab" onclick="switchTab('projects', this)">Projects</div>
+  <div class="nav-tab" onclick="switchTab('documents', this)">Documents</div>
+  <div class="nav-tab" onclick="switchTab('income', this)">Income</div>
+  <div class="nav-tab" onclick="switchTab('services', this)">Services</div>
+  <div class="nav-tab" onclick="switchTab('goals', this)">Goals</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="title-bar">
+      <div><div class="page-title">Dashboard</div><div class="page-sub">Your business at a glance</div></div>
+    </div>
+    <div class="accent-line"></div>
+    <div class="stat-grid">
+      <div class="stat-card teal"><div class="stat-num" id="stat-clients">0</div><div class="stat-label">Active Clients</div></div>
+      <div class="stat-card amber"><div class="stat-num" id="stat-projects">0</div><div class="stat-label">Open Projects</div></div>
+      <div class="stat-card rose"><div class="stat-num" id="stat-outstanding">$0</div><div class="stat-label">Outstanding</div></div>
+      <div class="stat-card slate"><div class="stat-num" id="stat-income">$0</div><div class="stat-label">Income This Month</div></div>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Tasks</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input type="text" id="todo-input" placeholder="Add a task..." style="flex:1;" onkeydown="if(event.key==='Enter')addTodo()">
+          <select id="todo-priority" style="width:80px;padding:8px;">
+            <option value="high">High</option>
+            <option value="med" selected>Med</option>
+            <option value="low">Low</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="addTodo()">Add</button>
+        </div>
+        <div id="todos-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Recent Activity</div>
+        <div id="activity-list"><div class="empty">No activity yet.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">Upcoming Deadlines</div>
+      <div id="deadlines-list"><div class="empty">No upcoming deadlines.</div></div>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="tab-content" id="tab-clients">
+    <div class="title-bar">
+      <div><div class="page-title">Clients</div><div class="page-sub">Manage your client relationships</div></div>
+      <button class="btn btn-primary" onclick="openClientModal()">+ Add Client</button>
+    </div>
+    <div class="accent-line"></div>
+    <div id="clients-list"></div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="tab-content" id="tab-projects">
+    <div class="title-bar">
+      <div><div class="page-title">Projects</div><div class="page-sub">Track your active work</div></div>
+      <button class="btn btn-primary" onclick="openProjectModal()">+ Add Project</button>
+    </div>
+    <div class="accent-line"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Project</th><th>Client</th><th>Status</th><th>Deadline</th><th>Value</th><th>Notes</th><th></th></tr></thead>
+        <tbody id="projects-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS (Proposals / Contracts / Invoices) -->
+  <div class="tab-content" id="tab-documents">
+    <div class="title-bar">
+      <div><div class="page-title">Documents</div><div class="page-sub">Proposals, contracts & invoices</div></div>
+      <div id="doc-action-btn"></div>
+    </div>
+    <div class="accent-line"></div>
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchDocTab('proposals', this)">Proposals</button>
+      <button class="sub-tab" onclick="switchDocTab('contracts', this)">Contracts</button>
+      <button class="sub-tab" onclick="switchDocTab('invoices', this)">Invoices</button>
+    </div>
+
+    <!-- PROPOSALS -->
+    <div id="doc-proposals" class="doc-tab-content">
+      <div class="info-box">💡 Build a proposal from the template, or store a link to one saved in Google Drive or Dropbox.</div>
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <button class="btn btn-primary" onclick="openProposalBuilder()">Build Proposal</button>
+        <button class="btn btn-outline" onclick="openDocStorage('proposal')">Store Link</button>
+      </div>
+      <div id="proposals-list"></div>
+    </div>
+
+    <!-- CONTRACTS -->
+    <div id="doc-contracts" class="doc-tab-content" style="display:none;">
+      <div class="info-box">💡 Generate a basic contract from the template, or store a link to a signed contract in Google Drive or Dropbox.</div>
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <button class="btn btn-primary" onclick="openContractBuilder()">Build Contract</button>
+        <button class="btn btn-outline" onclick="openDocStorage('contract')">Store Link</button>
+      </div>
+      <div id="contracts-list"></div>
+    </div>
+
+    <!-- INVOICES -->
+    <div id="doc-invoices" class="doc-tab-content" style="display:none;">
+      <div style="margin-bottom:20px;">
+        <button class="btn btn-primary" onclick="openInvoiceModal()">+ Create Invoice</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Invoice #</th><th>Client</th><th>Date</th><th>Due</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+          <tbody id="invoices-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOME -->
+  <div class="tab-content" id="tab-income">
+    <div class="title-bar">
+      <div><div class="page-title">Income Log</div><div class="page-sub">Track every dollar that comes in</div></div>
+      <button class="btn btn-primary" onclick="openIncomeModal()">+ Log Payment</button>
+    </div>
+    <div class="accent-line"></div>
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-card teal"><div class="stat-num" id="income-month">$0</div><div class="stat-label">This Month</div></div>
+      <div class="stat-card amber"><div class="stat-num" id="income-year">$0</div><div class="stat-label">Year to Date</div></div>
+      <div class="stat-card slate"><div class="stat-num" id="income-all">$0</div><div class="stat-label">All Time</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Client</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead>
+        <tbody id="income-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="tab-content" id="tab-services">
+    <div class="title-bar">
+      <div><div class="page-title">Services & Pricing</div><div class="page-sub">Your offerings at a glance</div></div>
+      <button class="btn btn-primary" onclick="openServiceModal()">+ Add Service</button>
+    </div>
+    <div class="accent-line"></div>
+    <div class="info-box">💡 Store your services and pricing here — perfect for quickly quoting clients or building proposals.</div>
+    <div id="services-list"></div>
+  </div>
+
+  <!-- GOALS -->
+  <div class="tab-content" id="tab-goals">
+    <div class="title-bar">
+      <div><div class="page-title">Goals</div><div class="page-sub">Set and track your business targets</div></div>
+    </div>
+    <div class="accent-line"></div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Monthly Income Goal</div>
+        <div class="field"><label>Target ($)</label><input type="number" id="goal-monthly" placeholder="e.g. 5000" onblur="saveGoalAmounts()"></div>
+        <div id="monthly-progress"></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Annual Income Goal</div>
+        <div class="field"><label>Target ($)</label><input type="number" id="goal-annual" placeholder="e.g. 60000" onblur="saveGoalAmounts()"></div>
+        <div id="annual-progress"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title" style="margin-bottom:16px;">Business Goals</div>
+      <div class="grid-2">
+        <div class="field"><label>Goal</label><input type="text" id="goal-text" placeholder="e.g. Land 3 new clients by Q2"></div>
+        <div class="field"><label>Target Date</label><input type="date" id="goal-date"></div>
+      </div>
+      <div class="field"><label>Category</label>
+        <select id="goal-category">
+          <option>Revenue</option><option>Client Growth</option><option>Product Launch</option>
+          <option>Marketing</option><option>Skills & Certifications</option><option>Other</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="addGoal()">Add Goal</button>
+    </div>
+    <div id="goals-list"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- CLIENT MODAL -->
+<div class="modal-overlay" id="client-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Client</div><button class="modal-close" onclick="closeModal('client-modal')">×</button></div>
+    <div class="grid-2">
+      <div class="field"><label>Name / Company</label><input type="text" id="c-name" placeholder="Name or business"></div>
+      <div class="field"><label>Type</label><select id="c-type"><option>Consulting Client</option><option>Small Business</option><option>Agency</option><option>Course Creator</option><option>Content Creator</option><option>Digital Product Seller</option><option>Other</option></select></div>
+      <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="client@email.com"></div>
+      <div class="field"><label>Phone</label><input type="text" id="c-phone" placeholder="Phone number"></div>
+      <div class="field"><label>Website / Social</label><input type="text" id="c-web" placeholder="Website or handle"></div>
+      <div class="field"><label>Status</label><select id="c-status"><option>Active</option><option>Lead</option><option>Inactive</option></select></div>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="c-notes" placeholder="Important notes about this client..."></textarea></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveClient()">Save Client</button><button class="btn btn-outline" onclick="closeModal('client-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-overlay" id="project-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Project</div><button class="modal-close" onclick="closeModal('project-modal')">×</button></div>
+    <div class="field"><label>Project Name</label><input type="text" id="p-name" placeholder="Project title"></div>
+    <div class="grid-2">
+      <div class="field"><label>Client</label><select id="p-client"></select></div>
+      <div class="field"><label>Status</label><select id="p-status"><option>Active</option><option>Pending</option><option>Complete</option><option>On Hold</option></select></div>
+      <div class="field"><label>Start Date</label><input type="date" id="p-start"></div>
+      <div class="field"><label>Deadline</label><input type="date" id="p-deadline"></div>
+    </div>
+    <div class="field"><label>Project Value ($)</label><input type="number" id="p-value" placeholder="0.00"></div>
+    <div class="field"><label>Notes / Deliverables</label><textarea id="p-notes" placeholder="What are you delivering?"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveProject()">Save Project</button><button class="btn btn-outline" onclick="closeModal('project-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- PROPOSAL BUILDER -->
+<div class="modal-overlay" id="proposal-modal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title">Build Proposal</div><button class="modal-close" onclick="closeModal('proposal-modal')">×</button></div>
+    <div class="grid-2">
+      <div class="field"><label>Your Name / Business</label><input type="text" id="prop-from" placeholder="Your name or business"></div>
+      <div class="field"><label>Client Name</label><input type="text" id="prop-to" placeholder="Client name"></div>
+      <div class="field"><label>Proposal Date</label><input type="date" id="prop-date"></div>
+      <div class="field"><label>Valid Until</label><input type="date" id="prop-valid"></div>
+    </div>
+    <div class="field"><label>Project / Engagement Title</label><input type="text" id="prop-title" placeholder="e.g. Social Media Management Package"></div>
+    <div class="field"><label>Project Overview</label><textarea id="prop-overview" placeholder="Brief description of what you're proposing and why it benefits the client..." style="min-height:80px;"></textarea></div>
+    <div class="field"><label>Scope of Work / Deliverables</label><textarea id="prop-scope" placeholder="List exactly what will be delivered (one per line)..." style="min-height:90px;"></textarea></div>
+    <div class="field"><label>Timeline</label><textarea id="prop-timeline" placeholder="e.g. Week 1: Discovery & research. Week 2-3: Deliverable creation. Week 4: Review & finalization." style="min-height:60px;"></textarea></div>
+    <div class="grid-2">
+      <div class="field"><label>Investment / Pricing</label><input type="text" id="prop-price" placeholder="e.g. $1,500 flat fee or $150/hr"></div>
+      <div class="field"><label>Payment Terms</label><input type="text" id="prop-terms" placeholder="e.g. 50% upfront, 50% on completion"></div>
+    </div>
+    <div class="field"><label>Additional Notes</label><textarea id="prop-notes" placeholder="Next steps, expiry note, or anything else..." style="min-height:50px;"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="generateProposal()">Generate Proposal</button>
+      <button class="btn btn-outline" onclick="closeModal('proposal-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTRACT BUILDER -->
+<div class="modal-overlay" id="contract-modal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title">Build Contract</div><button class="modal-close" onclick="closeModal('contract-modal')">×</button></div>
+    <div class="grid-2">
+      <div class="field"><label>Your Name / Business</label><input type="text" id="con-from" placeholder="Your legal name or business name"></div>
+      <div class="field"><label>Client Name</label><input type="text" id="con-to" placeholder="Client full name or business"></div>
+      <div class="field"><label>Contract Date</label><input type="date" id="con-date"></div>
+      <div class="field"><label>Project Start Date</label><input type="date" id="con-start"></div>
+    </div>
+    <div class="field"><label>Project / Services Description</label><textarea id="con-scope" placeholder="Describe the services to be provided..." style="min-height:80px;"></textarea></div>
+    <div class="field"><label>Deliverables</label><textarea id="con-deliverables" placeholder="List specific deliverables (one per line)..." style="min-height:70px;"></textarea></div>
+    <div class="grid-2">
+      <div class="field"><label>Total Fee / Rate</label><input type="text" id="con-fee" placeholder="e.g. $2,000 or $125/hr"></div>
+      <div class="field"><label>Payment Schedule</label><input type="text" id="con-payment" placeholder="e.g. 50% upfront, balance on delivery"></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Revision Policy</label><input type="text" id="con-revisions" placeholder="e.g. Up to 2 rounds of revisions included"></div>
+      <div class="field"><label>Estimated Completion</label><input type="text" id="con-completion" placeholder="e.g. 3 weeks from project start"></div>
+    </div>
+    <div class="field"><label>Additional Terms</label><textarea id="con-terms" placeholder="Cancellation policy, confidentiality, IP ownership, etc..." style="min-height:70px;"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="generateContract()">Generate Contract</button>
+      <button class="btn btn-outline" onclick="closeModal('contract-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- STORE LINK MODAL -->
+<div class="modal-overlay" id="store-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="store-modal-title">Store Document Link</div><button class="modal-close" onclick="closeModal('store-modal')">×</button></div>
+    <input type="hidden" id="store-doc-type">
+    <div class="field"><label>Document Title</label><input type="text" id="store-title" placeholder="e.g. Smith Consulting Contract"></div>
+    <div class="field"><label>Client</label><select id="store-client"></select></div>
+    <div class="field"><label>Google Drive / Dropbox Link</label><input type="url" id="store-link" placeholder="Paste link here..."></div>
+    <div class="field"><label>Status</label><select id="store-status"></select></div>
+    <div class="field"><label>Date</label><input type="date" id="store-date"></div>
+    <div class="field"><label>Notes</label><textarea id="store-notes" placeholder="Any additional notes..." style="min-height:60px;"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveStoredDoc()">Save</button><button class="btn btn-outline" onclick="closeModal('store-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+<div class="modal-overlay" id="invoice-modal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title">Create Invoice</div><button class="modal-close" onclick="closeModal('invoice-modal')">×</button></div>
+    <div class="grid-2">
+      <div class="field"><label>Client</label><select id="inv-client"></select></div>
+      <div class="field"><label>Invoice #</label><input type="text" id="inv-num"></div>
+      <div class="field"><label>Your Name / Business</label><input type="text" id="inv-from" placeholder="Your name"></div>
+      <div class="field"><label>Invoice Date</label><input type="date" id="inv-date"></div>
+      <div class="field"><label>Due Date</label><input type="date" id="inv-due"></div>
+    </div>
+    <div class="field"><label>Line Items</label>
+      <div id="inv-lines"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addInvLine()">+ Add Line</button>
+    </div>
+    <div style="text-align:right;margin-bottom:16px;">
+      <div style="font-size:0.72rem;color:var(--ink-lt);margin-bottom:4px;">TOTAL</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--teal);" id="inv-total-display">$0.00</div>
+    </div>
+    <div class="field"><label>Notes / Payment Instructions</label><input type="text" id="inv-notes" placeholder="Payment terms, thank you message..."></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveInvoice()">Save Invoice</button><button class="btn btn-outline" onclick="closeModal('invoice-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- GENERATED DOCUMENT VIEWER -->
+<div class="modal-overlay" id="gen-doc-modal">
+  <div class="modal wide" style="max-width:760px;">
+    <div class="modal-header">
+      <div class="modal-title" id="gen-doc-title">Document</div>
+      <button class="modal-close" onclick="closeModal('gen-doc-modal')">×</button>
+    </div>
+    <div id="gen-doc-content"></div>
+    <div class="modal-actions no-print">
+      <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
+      <button class="btn btn-outline" onclick="closeModal('gen-doc-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- INCOME MODAL -->
+<div class="modal-overlay" id="income-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Log Payment</div><button class="modal-close" onclick="closeModal('income-modal')">×</button></div>
+    <div class="grid-2">
+      <div class="field"><label>Date</label><input type="date" id="inc-date"></div>
+      <div class="field"><label>Amount ($)</label><input type="number" id="inc-amount" placeholder="0.00"></div>
+      <div class="field"><label>Client</label><select id="inc-client"></select></div>
+      <div class="field"><label>Category</label><select id="inc-category"><option>Consulting</option><option>Coaching</option><option>Digital Product</option><option>Course</option><option>Content Creation</option><option>Retainer</option><option>Other</option></select></div>
+    </div>
+    <div class="field"><label>Description</label><input type="text" id="inc-desc" placeholder="What was this payment for?"></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveIncome()">Log Payment</button><button class="btn btn-outline" onclick="closeModal('income-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- SERVICE MODAL -->
+<div class="modal-overlay" id="service-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Service</div><button class="modal-close" onclick="closeModal('service-modal')">×</button></div>
+    <div class="field"><label>Service Name</label><input type="text" id="svc-name" placeholder="e.g. Process Documentation Package"></div>
+    <div class="grid-2">
+      <div class="field"><label>Price</label><input type="text" id="svc-price" placeholder="e.g. $500 or $150/hr"></div>
+      <div class="field"><label>Category</label><select id="svc-category"><option>Consulting</option><option>Coaching</option><option>Digital Product</option><option>Course</option><option>Content</option><option>Retainer</option><option>Other</option></select></div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="svc-desc" placeholder="What's included?"></textarea></div>
+    <div class="field"><label>Deliverables</label><textarea id="svc-deliv" placeholder="What does the client receive?"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveService()">Save Service</button><button class="btn btn-outline" onclick="closeModal('service-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+let D = { clients:[], projects:[], invoices:[], income:[], services:[], proposals:[], contracts:[], storedDocs:[], todos:[], goals:[], goalAmounts:{monthly:'',annual:''}, activity:[] };
+
+function load() {
+  try { const s = localStorage.getItem('fh-data'); if(s) D = {...D,...JSON.parse(s)}; } catch(e){}
+}
+function save() { try { localStorage.setItem('fh-data', JSON.stringify(D)); } catch(e){} }
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function thisMonth() { const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0'); }
+function thisYear() { return String(new Date().getFullYear()); }
+
+function logActivity(msg) {
+  D.activity = [{msg, time:new Date().toLocaleString()},...D.activity].slice(0,10);
+}
+
+function badge(type) {
+  const t = (type||'').toLowerCase().replace(/\s/g,'');
+  return `<span class="badge badge-${t}">${type}</span>`;
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(id, el) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  else { document.querySelectorAll('.nav-tab').forEach(t=>{ if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+id+"'")) t.classList.add('active'); }); }
+  renderAll();
+}
+
+function switchDocTab(id, el) {
+  document.querySelectorAll('.doc-tab-content').forEach(t=>t.style.display='none');
+  document.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('doc-'+id).style.display='block';
+  el.classList.add('active');
+  renderDocTab(id);
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderDashboard();
+  renderClients();
+  renderProjects();
+  renderProposals();
+  renderContracts();
+  renderInvoices();
+  renderIncome();
+  renderServices();
+  renderGoals();
+  updateDataSummary();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  document.getElementById('stat-clients').textContent = D.clients.filter(c=>c.status==='Active').length;
+  document.getElementById('stat-projects').textContent = D.projects.filter(p=>p.status==='Active'||p.status==='Pending').length;
+  const outstanding = D.invoices.filter(i=>i.status==='Unpaid'||i.status==='Overdue').reduce((s,i)=>s+i.total,0);
+  document.getElementById('stat-outstanding').textContent = '$'+outstanding.toFixed(0);
+  const mInc = D.income.filter(e=>e.date&&e.date.startsWith(thisMonth())).reduce((s,e)=>s+e.amount,0);
+  document.getElementById('stat-income').textContent = '$'+mInc.toFixed(0);
+
+  // Todos
+  const tEl = document.getElementById('todos-list');
+  const priColors = {high:'var(--rose)',med:'var(--amber)',low:'var(--teal)'};
+  if(D.todos.length===0) { tEl.innerHTML='<div class="empty">No tasks yet.</div>'; }
+  else {
+    tEl.innerHTML = D.todos.map(t=>`
+      <div class="todo-item">
+        <div class="pri-bar" style="background:${priColors[t.priority]||'var(--teal)'}"></div>
+        <div class="todo-check ${t.done?'done':''}" onclick="toggleTodo('${t.id}')">
+          ${t.done?'<span style="color:white;font-size:0.6rem;font-weight:700;">✓</span>':''}
+        </div>
+        <div style="flex:1;font-size:0.85rem;color:var(--ink-mid);text-decoration:${t.done?'line-through':'none'};opacity:${t.done?0.5:1}">${t.text}</div>
+        <button class="btn btn-danger" onclick="deleteTodo('${t.id}')">×</button>
+      </div>`).join('');
+  }
+
+  // Activity
+  const aEl = document.getElementById('activity-list');
+  if(D.activity.length===0) { aEl.innerHTML='<div class="empty">No activity yet.</div>'; }
+  else { aEl.innerHTML = D.activity.map(a=>`<div class="activity-item"><div style="font-size:0.85rem;color:var(--ink-mid)">${a.msg}</div><div style="font-size:0.68rem;color:var(--ink-lt);flex-shrink:0">${a.time}</div></div>`).join(''); }
+
+  // Deadlines
+  const t2 = today();
+  const upcoming = D.projects.filter(p=>p.deadline&&p.deadline>=t2&&p.status!=='Complete').sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,5);
+  const dEl = document.getElementById('deadlines-list');
+  if(upcoming.length===0) { dEl.innerHTML='<div class="empty">No upcoming deadlines.</div>'; }
+  else {
+    dEl.innerHTML = upcoming.map(p=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div><div style="font-weight:500;font-size:0.88rem;">${p.name}</div><div style="font-size:0.72rem;color:var(--ink-lt)">${p.clientName||''}</div></div>
+        <div style="text-align:right;"><div style="font-size:0.82rem;font-weight:500;color:var(--amber)">${p.deadline}</div>${badge(p.status)}</div>
+      </div>`).join('');
+  }
+}
+
+// ── CLIENTS ───────────────────────────────────────────────────────────────────
+function openClientModal() { clearFields(['c-name','c-email','c-phone','c-web','c-notes']); document.getElementById('c-status').value='Active'; openModal('client-modal'); }
+function saveClient() {
+  const name = val('c-name'); if(!name) { toast('Please enter a name.'); return; }
+  D.clients.push({id:uid(),name,type:val('c-type'),email:val('c-email'),phone:val('c-phone'),web:val('c-web'),status:val('c-status'),notes:val('c-notes')});
+  logActivity('New client: '+name); save(); closeModal('client-modal'); renderAll(); toast('Client saved.');
+}
+function deleteClient(id) { if(!confirm('Remove this client?')) return; D.clients=D.clients.filter(c=>c.id!==id); save(); renderAll(); toast('Client removed.'); }
+function renderClients() {
+  const el = document.getElementById('clients-list');
+  if(D.clients.length===0) { el.innerHTML='<div class="empty">No clients yet. Add your first client above.</div>'; return; }
+  el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">` +
+    D.clients.map(c=>`
+      <div class="card">
+        <div style="width:40px;height:40px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.1rem;color:white;margin-bottom:12px;">${c.name.charAt(0).toUpperCase()}</div>
+        <div style="font-weight:500;font-size:0.95rem;margin-bottom:4px;">${c.name}</div>
+        <div style="font-size:0.72rem;color:var(--ink-lt);margin-bottom:10px;">${c.type}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">${badge(c.status)}<button class="btn btn-danger" onclick="deleteClient('${c.id}')">Remove</button></div>
+        ${c.email?`<div style="font-size:0.75rem;color:var(--ink-lt);">✉ ${c.email}</div>`:''}
+        ${c.phone?`<div style="font-size:0.75rem;color:var(--ink-lt);">📞 ${c.phone}</div>`:''}
+        ${c.notes?`<div style="font-size:0.75rem;color:var(--ink-lt);margin-top:6px;font-style:italic;">${c.notes.substring(0,80)}</div>`:''}
+      </div>`).join('') + '</div>';
+}
+
+// ── PROJECTS ──────────────────────────────────────────────────────────────────
+function openProjectModal() { clearFields(['p-name','p-start','p-deadline','p-value','p-notes']); populateClientSelect('p-client'); openModal('project-modal'); }
+function saveProject() {
+  const name = val('p-name'); if(!name){toast('Please enter a project name.');return;}
+  const cid = val('p-client'); const client = D.clients.find(c=>c.id===cid);
+  D.projects.push({id:uid(),name,clientId:cid,clientName:client?client.name:'No Client',status:val('p-status'),start:val('p-start'),deadline:val('p-deadline'),value:parseFloat(val('p-value'))||0,notes:val('p-notes')});
+  logActivity('New project: '+name); save(); closeModal('project-modal'); renderAll(); toast('Project saved.');
+}
+function deleteProject(id){D.projects=D.projects.filter(p=>p.id!==id);save();renderAll();toast('Project removed.');}
+function renderProjects(){
+  const tbody=document.getElementById('projects-tbody');
+  const t=today();
+  if(D.projects.length===0){tbody.innerHTML='<tr><td colspan="7" class="empty">No projects yet.</td></tr>';return;}
+  tbody.innerHTML=[...D.projects].reverse().map(p=>{
+    const overdue=p.deadline&&p.deadline<t&&p.status!=='Complete';
+    return `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.clientName||'—'}</td>
+      <td>${badge(overdue?'Overdue':p.status)}</td>
+      <td>${p.deadline||'—'}</td>
+      <td>${p.value?'$'+p.value.toLocaleString():'—'}</td>
+      <td style="max-width:160px;color:var(--ink-lt)">${(p.notes||'').substring(0,60)}</td>
+      <td><button class="btn btn-danger" onclick="deleteProject('${p.id}')">×</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── PROPOSALS ─────────────────────────────────────────────────────────────────
+function openProposalBuilder(){
+  clearFields(['prop-from','prop-to','prop-title','prop-overview','prop-scope','prop-timeline','prop-price','prop-terms','prop-notes']);
+  document.getElementById('prop-date').value=today();
+  openModal('proposal-modal');
+}
+function generateProposal(){
+  const from=val('prop-from'),to=val('prop-to'),title=val('prop-title');
+  if(!from||!to||!title){toast('Please fill in your name, client name, and project title.');return;}
+  const obj={id:uid(),type:'proposal',name:title,from,to,date:val('prop-date'),valid:val('prop-valid'),
+    overview:val('prop-overview'),scope:val('prop-scope'),timeline:val('prop-timeline'),
+    price:val('prop-price'),terms:val('prop-terms'),notes:val('prop-notes'),status:'Draft',stored:false};
+  D.proposals.push(obj);
+  logActivity('Proposal created: '+title); save(); closeModal('proposal-modal');
+  renderProposals(); showGeneratedProposal(obj); toast('Proposal generated!');
+}
+function showGeneratedProposal(p){
+  document.getElementById('gen-doc-title').textContent='Proposal: '+p.name;
+  document.getElementById('gen-doc-content').innerHTML=`
+    <div class="gen-doc">
+      <div style="display:flex;justify-content:space-between;margin-bottom:32px;">
+        <div><h2>${p.name}</h2><p><strong>Prepared by:</strong> ${p.from}<br><strong>Prepared for:</strong> ${p.to}</p></div>
+        <div style="text-align:right;"><div style="font-size:0.7rem;color:var(--ink-lt);text-transform:uppercase;letter-spacing:0.15em;">PROPOSAL</div>${p.date?`<div style="font-size:0.9rem;margin-top:4px;">${p.date}</div>`:''} ${p.valid?`<div style="font-size:0.8rem;color:var(--ink-lt);">Valid until: ${p.valid}</div>`:''}</div>
+      </div>
+      ${p.overview?`<div class="section"><h3>Overview</h3><p>${p.overview.replace(/\n/g,'<br>')}</p></div>`:''}
+      ${p.scope?`<div class="section"><h3>Scope of Work</h3><p>${p.scope.replace(/\n/g,'<br>')}</p></div>`:''}
+      ${p.timeline?`<div class="section"><h3>Timeline</h3><p>${p.timeline.replace(/\n/g,'<br>')}</p></div>`:''}
+      ${p.price||p.terms?`<div class="section"><h3>Investment</h3>${p.price?`<p><strong>Fee:</strong> ${p.price}</p>`:''}${p.terms?`<p><strong>Payment Terms:</strong> ${p.terms}</p>`:''}</div>`:''}
+      ${p.notes?`<div class="section"><h3>Next Steps</h3><p>${p.notes.replace(/\n/g,'<br>')}</p></div>`:''}
+      <div class="section"><p style="font-size:0.8rem;color:var(--ink-lt);">To accept this proposal, please sign and return or reply with written confirmation.</p>
+        <div style="display:flex;gap:60px;margin-top:24px;">
+          <div><div class="sig-line">Client Signature</div></div>
+          <div><div class="sig-line">Date</div></div>
+        </div>
+      </div>
+    </div>`;
+  openModal('gen-doc-modal');
+}
+function renderProposals(){
+  const el=document.getElementById('proposals-list');
+  const all=[...D.proposals,...D.storedDocs.filter(d=>d.docType==='proposal')];
+  if(all.length===0){el.innerHTML='<div class="empty">No proposals yet.</div>';return;}
+  el.innerHTML=all.reverse().map(p=>`
+    <div class="doc-card" onclick="${p.stored?`openStoredLink('${p.link}')`:`showGeneratedProposal(D.proposals.find(x=>x.id==='${p.id}'))`}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="doc-type">${p.stored?'Stored Link · ':''} ${p.to||p.clientName||''}</div>
+          <div style="font-weight:500;font-size:0.95rem;margin-bottom:4px;">${p.name||p.title}</div>
+          <div style="font-size:0.78rem;color:var(--ink-lt);">${p.date||''} ${p.price?'· '+p.price:''}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          ${badge(p.status||'Draft')}
+          <select onclick="event.stopPropagation()" onchange="updateDocStatus('proposal','${p.id}',this.value,${!!p.stored})" style="border:1px solid var(--border);border-radius:4px;padding:3px 6px;font-size:0.68rem;background:var(--bg);">
+            ${['Draft','Sent','Accepted','Declined'].map(s=>`<option ${(p.status||'Draft')===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="btn btn-danger" onclick="event.stopPropagation();deleteDoc('proposal','${p.id}',${!!p.stored})">×</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── CONTRACTS ─────────────────────────────────────────────────────────────────
+function openContractBuilder(){
+  clearFields(['con-from','con-to','con-scope','con-deliverables','con-fee','con-payment','con-revisions','con-completion','con-terms']);
+  document.getElementById('con-date').value=today();
+  openModal('contract-modal');
+}
+function generateContract(){
+  const from=val('con-from'),to=val('con-to'),scope=val('con-scope');
+  if(!from||!to||!scope){toast('Please fill in your name, client name, and services.');return;}
+  const obj={id:uid(),type:'contract',name:`Contract – ${to}`,from,to,date:val('con-date'),start:val('con-start'),
+    scope,deliverables:val('con-deliverables'),fee:val('con-fee'),payment:val('con-payment'),
+    revisions:val('con-revisions'),completion:val('con-completion'),terms:val('con-terms'),status:'Draft',stored:false};
+  D.contracts.push(obj);
+  logActivity('Contract created: '+obj.name); save(); closeModal('contract-modal');
+  renderContracts(); showGeneratedContract(obj); toast('Contract generated!');
+}
+function showGeneratedContract(c){
+  document.getElementById('gen-doc-title').textContent='Contract: '+c.to;
+  document.getElementById('gen-doc-content').innerHTML=`
+    <div class="gen-doc">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--ink-lt);">SERVICE AGREEMENT</div>
+        <h2 style="margin:8px 0;">Freelance Services Contract</h2>
+        <div style="font-size:0.85rem;color:var(--ink-lt);">Effective Date: ${c.date||'___________'}</div>
+      </div>
+      <div class="section"><h3>Parties</h3>
+        <p><strong>Service Provider:</strong> ${c.from}<br><strong>Client:</strong> ${c.to}</p>
+      </div>
+      <div class="section"><h3>Services</h3><p>${c.scope.replace(/\n/g,'<br>')}</p></div>
+      ${c.deliverables?`<div class="section"><h3>Deliverables</h3><p>${c.deliverables.replace(/\n/g,'<br>')}</p></div>`:''}
+      <div class="section"><h3>Compensation</h3>
+        ${c.fee?`<p><strong>Fee:</strong> ${c.fee}</p>`:''}
+        ${c.payment?`<p><strong>Payment Schedule:</strong> ${c.payment}</p>`:''}
+      </div>
+      ${c.revisions||c.completion?`<div class="section"><h3>Project Terms</h3>
+        ${c.completion?`<p><strong>Estimated Completion:</strong> ${c.completion}</p>`:''}
+        ${c.revisions?`<p><strong>Revisions:</strong> ${c.revisions}</p>`:''}
+      </div>`:''}
+      ${c.terms?`<div class="section"><h3>Additional Terms</h3><p>${c.terms.replace(/\n/g,'<br>')}</p></div>`:''}
+      <div class="section"><h3>Agreement</h3>
+        <p style="font-size:0.82rem;color:var(--ink-lt);">By signing below, both parties agree to the terms outlined in this contract. This agreement constitutes the entire understanding between the parties.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px;">
+          <div><div class="sig-line">${c.from} (Service Provider)</div><div class="sig-line" style="margin-top:20px;">Date</div></div>
+          <div><div class="sig-line">${c.to} (Client)</div><div class="sig-line" style="margin-top:20px;">Date</div></div>
+        </div>
+      </div>
+    </div>`;
+  openModal('gen-doc-modal');
+}
+function renderContracts(){
+  const el=document.getElementById('contracts-list');
+  const all=[...D.contracts,...D.storedDocs.filter(d=>d.docType==='contract')];
+  if(all.length===0){el.innerHTML='<div class="empty">No contracts yet.</div>';return;}
+  el.innerHTML=all.reverse().map(c=>`
+    <div class="doc-card" onclick="${c.stored?`openStoredLink('${c.link}')`:`showGeneratedContract(D.contracts.find(x=>x.id==='${c.id}'))`}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="doc-type">${c.stored?'Stored Link · ':''} ${c.to||c.clientName||''}</div>
+          <div style="font-weight:500;font-size:0.95rem;margin-bottom:4px;">${c.name||c.title}</div>
+          <div style="font-size:0.78rem;color:var(--ink-lt);">${c.date||''} ${c.fee?'· '+c.fee:''}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          ${badge(c.status||'Draft')}
+          <select onclick="event.stopPropagation()" onchange="updateDocStatus('contract','${c.id}',this.value,${!!c.stored})" style="border:1px solid var(--border);border-radius:4px;padding:3px 6px;font-size:0.68rem;background:var(--bg);">
+            ${['Draft','Sent','Signed','Archived'].map(s=>`<option ${(c.status||'Draft')===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="btn btn-danger" onclick="event.stopPropagation();deleteDoc('contract','${c.id}',${!!c.stored})">×</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── DOC STORAGE ───────────────────────────────────────────────────────────────
+function openDocStorage(type){
+  document.getElementById('store-doc-type').value=type;
+  document.getElementById('store-modal-title').textContent = type==='proposal'?'Store Proposal Link':'Store Contract Link';
+  clearFields(['store-title','store-link','store-notes']);
+  document.getElementById('store-date').value=today();
+  const statusOpts = type==='proposal'?['Draft','Sent','Accepted','Declined']:['Draft','Sent','Signed','Archived'];
+  document.getElementById('store-status').innerHTML=statusOpts.map(s=>`<option>${s}</option>`).join('');
+  populateClientSelect('store-client');
+  openModal('store-modal');
+}
+function saveStoredDoc(){
+  const type=val('store-doc-type'),title=val('store-title'),link=val('store-link');
+  if(!title){toast('Please enter a title.');return;}
+  const cid=val('store-client'),client=D.clients.find(c=>c.id===cid);
+  D.storedDocs.push({id:uid(),docType:type,title,name:title,clientId:cid,clientName:client?client.name:'',link,status:val('store-status'),date:val('store-date'),notes:val('store-notes'),stored:true});
+  save(); closeModal('store-modal'); renderProposals(); renderContracts(); toast('Document link saved.');
+}
+function openStoredLink(link){ if(link) window.open(link,'_blank'); else toast('No link saved.'); }
+function updateDocStatus(type,id,status,stored){
+  if(stored){ const d=D.storedDocs.find(x=>x.id===id); if(d) d.status=status; }
+  else { const arr=type==='proposal'?D.proposals:D.contracts; const d=arr.find(x=>x.id===id); if(d) d.status=status; }
+  save();
+}
+function deleteDoc(type,id,stored){
+  if(stored){ D.storedDocs=D.storedDocs.filter(x=>x.id!==id); }
+  else if(type==='proposal'){ D.proposals=D.proposals.filter(x=>x.id!==id); }
+  else { D.contracts=D.contracts.filter(x=>x.id!==id); }
+  save(); renderProposals(); renderContracts(); toast('Document removed.');
+}
+function renderDocTab(id){ if(id==='proposals')renderProposals(); else if(id==='contracts')renderContracts(); else renderInvoices(); }
+
+// ── INVOICES ──────────────────────────────────────────────────────────────────
+let invLines = [];
+function openInvoiceModal(){
+  invLines=[{desc:'',qty:1,rate:''}];
+  populateClientSelect('inv-client');
+  document.getElementById('inv-num').value='INV-'+String(D.invoices.length+1).padStart(3,'0');
+  document.getElementById('inv-date').value=today();
+  clearFields(['inv-from','inv-due','inv-notes']);
+  renderInvLines(); openModal('invoice-modal');
+}
+function addInvLine(){ invLines.push({desc:'',qty:1,rate:''}); renderInvLines(); }
+function renderInvLines(){
+  document.getElementById('inv-lines').innerHTML=invLines.map((l,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 70px 90px 32px;gap:8px;margin-bottom:8px;">
+      <input type="text" placeholder="Description" value="${l.desc}" onchange="invLines[${i}].desc=this.value;calcInvTotal()">
+      <input type="number" placeholder="Qty" value="${l.qty}" onchange="invLines[${i}].qty=this.value;calcInvTotal()">
+      <input type="number" placeholder="Rate $" value="${l.rate}" onchange="invLines[${i}].rate=this.value;calcInvTotal()">
+      <button onclick="invLines.splice(${i},1);renderInvLines()" style="background:transparent;border:1px solid var(--rose-lt);border-radius:6px;color:var(--rose);cursor:pointer;font-size:1rem;">×</button>
+    </div>`).join('');
+  calcInvTotal();
+}
+function calcInvTotal(){
+  const total=invLines.reduce((s,l)=>s+(parseFloat(l.qty)||0)*(parseFloat(l.rate)||0),0);
+  document.getElementById('inv-total-display').textContent='$'+total.toFixed(2);
+  return total;
+}
+function saveInvoice(){
+  const cid=val('inv-client'),client=D.clients.find(c=>c.id===cid);
+  const total=calcInvTotal();
+  const inv={id:uid(),clientId:cid,clientName:client?client.name:'Unknown',from:val('inv-from'),
+    num:val('inv-num'),date:val('inv-date'),due:val('inv-due'),notes:val('inv-notes'),
+    lines:[...invLines],total,status:'Unpaid'};
+  D.invoices.push(inv);
+  logActivity('Invoice '+inv.num+' created — $'+total.toFixed(2)); save(); closeModal('invoice-modal'); renderInvoices(); toast('Invoice saved.');
+}
+function updateInvoiceStatus(id,status){ const inv=D.invoices.find(i=>i.id===id); if(inv){inv.status=status;save();} }
+function deleteInvoice(id){ D.invoices=D.invoices.filter(i=>i.id!==id); save(); renderInvoices(); toast('Invoice removed.'); }
+function printInvoice(id){
+  const inv=D.invoices.find(i=>i.id===id); if(!inv) return;
+  const linesHTML=inv.lines.map(l=>`
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid #eee;">${l.desc||'—'}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #eee;text-align:center;">${l.qty}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">$${parseFloat(l.rate||0).toFixed(2)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;">$${((parseFloat(l.qty)||0)*(parseFloat(l.rate)||0)).toFixed(2)}</td>
+    </tr>`).join('');
+  document.getElementById('gen-doc-title').textContent='Invoice '+inv.num;
+  document.getElementById('gen-doc-content').innerHTML=`
+    <div class="gen-doc">
+      <div style="display:flex;justify-content:space-between;margin-bottom:32px;align-items:flex-start;">
+        <div><h2 style="font-size:2rem;margin-bottom:4px;">INVOICE</h2><div style="font-size:0.85rem;color:var(--ink-lt);">Invoice #: <strong>${inv.num}</strong></div></div>
+        <div style="text-align:right;"><div style="font-weight:500;">${inv.from||''}</div><div style="font-size:0.82rem;color:var(--ink-lt);">Date: ${inv.date||'—'}</div><div style="font-size:0.82rem;color:var(--ink-lt);">Due: ${inv.due||'—'}</div></div>
+      </div>
+      <div style="margin-bottom:24px;"><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--ink-lt);margin-bottom:6px;">Bill To</div><div style="font-weight:500;">${inv.clientName}</div></div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+        <thead><tr style="border-bottom:2px solid var(--ink);">
+          <th style="text-align:left;padding:8px 0;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;">Description</th>
+          <th style="text-align:center;padding:8px 0;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;">Qty</th>
+          <th style="text-align:right;padding:8px 0;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;">Rate</th>
+          <th style="text-align:right;padding:8px 0;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;">Amount</th>
+        </tr></thead>
+        <tbody>${linesHTML}</tbody>
+      </table>
+      <div style="text-align:right;padding-top:16px;border-top:2px solid var(--ink);">
+        <div style="font-size:0.8rem;color:var(--ink-lt);text-transform:uppercase;letter-spacing:0.1em;">Total Due</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--teal);">$${inv.total.toFixed(2)}</div>
+      </div>
+      ${inv.notes?`<div style="margin-top:24px;padding:16px;background:#f8f8f8;border-radius:6px;font-size:0.82rem;color:var(--ink-lt);">${inv.notes}</div>`:''}
+    </div>`;
+  openModal('gen-doc-modal');
+}
+function renderInvoices(){
+  const tbody=document.getElementById('invoices-tbody');
+  if(D.invoices.length===0){tbody.innerHTML='<tr><td colspan="7" class="empty">No invoices yet.</td></tr>';return;}
+  tbody.innerHTML=[...D.invoices].reverse().map(inv=>`
+    <tr>
+      <td><strong>${inv.num}</strong></td>
+      <td>${inv.clientName||'—'}</td>
+      <td>${inv.date||'—'}</td>
+      <td>${inv.due||'—'}</td>
+      <td><strong>$${inv.total.toFixed(2)}</strong></td>
+      <td>
+        <select onchange="updateInvoiceStatus('${inv.id}',this.value)" style="border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:0.75rem;background:var(--bg);">
+          ${['Unpaid','Sent','Paid','Overdue','Cancelled'].map(s=>`<option ${inv.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" onclick="printInvoice('${inv.id}')">🖨 PDF</button>
+        <button class="btn btn-danger" onclick="deleteInvoice('${inv.id}')">×</button>
+      </td>
+    </tr>`).join('');
+}
+
+// ── INCOME ────────────────────────────────────────────────────────────────────
+function openIncomeModal(){ clearFields(['inc-amount','inc-desc']); document.getElementById('inc-date').value=today(); populateClientSelect('inc-client'); openModal('income-modal'); }
+function saveIncome(){
+  const amount=parseFloat(val('inc-amount')); if(!amount){toast('Please enter an amount.');return;}
+  const cid=val('inc-client'),client=D.clients.find(c=>c.id===cid);
+  D.income.push({id:uid(),date:val('inc-date'),amount,clientId:cid,clientName:client?client.name:'Other',category:val('inc-category'),desc:val('inc-desc')});
+  logActivity('Payment logged: $'+amount.toFixed(2)); save(); closeModal('income-modal'); renderIncome(); renderDashboard(); toast('Payment logged.');
+}
+function deleteIncome(id){D.income=D.income.filter(e=>e.id!==id);save();renderIncome();renderDashboard();toast('Entry removed.');}
+function renderIncome(){
+  const mT=D.income.filter(e=>e.date&&e.date.startsWith(thisMonth())).reduce((s,e)=>s+e.amount,0);
+  const yT=D.income.filter(e=>e.date&&e.date.startsWith(thisYear())).reduce((s,e)=>s+e.amount,0);
+  const aT=D.income.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('income-month').textContent='$'+mT.toFixed(0);
+  document.getElementById('income-year').textContent='$'+yT.toFixed(0);
+  document.getElementById('income-all').textContent='$'+aT.toFixed(0);
+  const tbody=document.getElementById('income-tbody');
+  if(D.income.length===0){tbody.innerHTML='<tr><td colspan="6" class="empty">No income logged yet.</td></tr>';return;}
+  tbody.innerHTML=[...D.income].reverse().map(e=>`
+    <tr>
+      <td>${e.date||'—'}</td><td>${e.clientName||'—'}</td><td>${e.desc||'—'}</td>
+      <td>${badge('Active')}</td>
+      <td style="color:var(--teal);font-weight:500;">$${e.amount.toFixed(2)}</td>
+      <td><button class="btn btn-danger" onclick="deleteIncome('${e.id}')">×</button></td>
+    </tr>`).join('');
+}
+
+// ── SERVICES ──────────────────────────────────────────────────────────────────
+function openServiceModal(){clearFields(['svc-name','svc-price','svc-desc','svc-deliv']);openModal('service-modal');}
+function saveService(){
+  const name=val('svc-name');if(!name){toast('Please enter a service name.');return;}
+  D.services.push({id:uid(),name,price:val('svc-price'),category:val('svc-category'),desc:val('svc-desc'),deliverables:val('svc-deliv')});
+  save();closeModal('service-modal');renderServices();toast('Service saved.');
+}
+function deleteService(id){D.services=D.services.filter(s=>s.id!==id);save();renderServices();toast('Service removed.');}
+function renderServices(){
+  const el=document.getElementById('services-list');
+  if(D.services.length===0){el.innerHTML='<div class="empty">No services yet.</div>';return;}
+  el.innerHTML=D.services.map(s=>`
+    <div class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-start;">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><div style="font-weight:500;">${s.name}</div>${badge('Active')}</div>
+        ${s.desc?`<div style="font-size:0.82rem;color:var(--ink-lt);margin-bottom:4px;">${s.desc}</div>`:''}
+        ${s.deliverables?`<div style="font-size:0.75rem;color:var(--ink-lt);">Includes: ${s.deliverables.substring(0,100)}</div>`:''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:20px;">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--teal);">${s.price}</div>
+        <button class="btn btn-danger" onclick="deleteService('${s.id}')">Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── GOALS ─────────────────────────────────────────────────────────────────────
+function saveGoalAmounts(){
+  D.goalAmounts={monthly:val('goal-monthly'),annual:val('goal-annual')};
+  save(); renderGoalProgress();
+}
+function renderGoalProgress(){
+  const mG=parseFloat(D.goalAmounts.monthly)||0;
+  const aG=parseFloat(D.goalAmounts.annual)||0;
+  const mI=D.income.filter(e=>e.date&&e.date.startsWith(thisMonth())).reduce((s,e)=>s+e.amount,0);
+  const yI=D.income.filter(e=>e.date&&e.date.startsWith(thisYear())).reduce((s,e)=>s+e.amount,0);
+  const mPct=mG>0?Math.min(100,(mI/mG)*100):0;
+  const aPct=aG>0?Math.min(100,(yI/aG)*100):0;
+  document.getElementById('monthly-progress').innerHTML=mG>0?`
+    <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--ink-lt);margin-bottom:6px;"><span>$${mI.toFixed(0)} earned</span><span>${mPct.toFixed(0)}%</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${mPct}%;background:var(--teal);"></div></div>`:'';
+  document.getElementById('annual-progress').innerHTML=aG>0?`
+    <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--ink-lt);margin-bottom:6px;"><span>$${yI.toFixed(0)} YTD</span><span>${aPct.toFixed(0)}%</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${aPct}%;background:var(--amber);"></div></div>`:'';
+}
+function addGoal(){
+  const text=val('goal-text');if(!text){toast('Please enter a goal.');return;}
+  D.goals.push({id:uid(),text,date:val('goal-date'),category:val('goal-category'),done:false});
+  document.getElementById('goal-text').value='';document.getElementById('goal-date').value='';
+  save();renderGoals();toast('Goal added.');
+}
+function toggleGoal(id){const g=D.goals.find(x=>x.id===id);if(g){g.done=!g.done;save();renderGoals();}}
+function deleteGoal(id){D.goals=D.goals.filter(x=>x.id!==id);save();renderGoals();toast('Goal removed.');}
+function renderGoals(){
+  if(D.goalAmounts.monthly) document.getElementById('goal-monthly').value=D.goalAmounts.monthly;
+  if(D.goalAmounts.annual) document.getElementById('goal-annual').value=D.goalAmounts.annual;
+  renderGoalProgress();
+  const el=document.getElementById('goals-list');
+  if(D.goals.length===0){el.innerHTML='<div class="empty">No goals yet.</div>';return;}
+  el.innerHTML=[...D.goals].reverse().map(g=>`
+    <div class="card" style="margin-bottom:10px;display:flex;align-items:center;gap:14px;">
+      <div class="todo-check ${g.done?'done':''}" onclick="toggleGoal('${g.id}')" style="width:20px;height:20px;flex-shrink:0;">
+        ${g.done?'<span style="color:white;font-size:0.65rem;font-weight:700;">✓</span>':''}
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:500;text-decoration:${g.done?'line-through':'none'};opacity:${g.done?0.5:1}">${g.text}</div>
+        <div style="font-size:0.72rem;color:var(--ink-lt);margin-top:3px;">${g.category}${g.date?' · '+g.date:''}</div>
+      </div>
+      <button class="btn btn-danger" onclick="deleteGoal('${g.id}')">×</button>
+    </div>`).join('');
+}
+
+// ── TODOS ─────────────────────────────────────────────────────────────────────
+function addTodo(){
+  const text=document.getElementById('todo-input').value.trim();if(!text)return;
+  D.todos.push({id:uid(),text,priority:val('todo-priority'),done:false});
+  document.getElementById('todo-input').value=''; save();renderDashboard();
+}
+function toggleTodo(id){const t=D.todos.find(x=>x.id===id);if(t){t.done=!t.done;save();renderDashboard();}}
+function deleteTodo(id){D.todos=D.todos.filter(x=>x.id!==id);save();renderDashboard();}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function val(id){return document.getElementById(id)?.value||'';}
+function clearFields(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
+function populateClientSelect(elId){
+  const el=document.getElementById(elId);if(!el)return;
+  el.innerHTML='<option value="">Select client...</option>'+D.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+
+// ── SYNC ──────────────────────────────────────────────────────────────────────
+function toggleSync(){
+  const el=document.getElementById('sync-panel');
+  el.classList.toggle('open');
+  updateDataSummary();
+}
+function updateDataSummary(){
+  document.getElementById('data-summary').innerHTML=
+    `Clients: ${D.clients.length} · Projects: ${D.projects.length}<br>Proposals: ${D.proposals.length+D.storedDocs.filter(d=>d.docType==='proposal').length} · Contracts: ${D.contracts.length+D.storedDocs.filter(d=>d.docType==='contract').length}<br>Invoices: ${D.invoices.length} · Income entries: ${D.income.length}<br>Services: ${D.services.length} · Goals: ${D.goals.length}`;
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`freelancer-hub-${today()}.json`;a.click();URL.revokeObjectURL(a.href);
+  toast('Data exported!');
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{const p=JSON.parse(ev.target.result);if(p.clients){D={...D,...p};save();renderAll();toast('Data restored!');}}catch{toast('Could not read file.');}};
+  r.readAsText(file);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+renderAll();
+</script>
+<script>
+// ── DARK MODE ──────────────────────────────────────────────────────────────────
+function toggleDarkMode() {
+  var isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('flh-dark', isDark ? '1' : '0');
+  document.getElementById('dark-toggle-btn').textContent = isDark ? '☀️' : '🌙';
+}
+
+(function initDark() {
+  if (localStorage.getItem('flh-dark') === '1') {
+    document.body.classList.add('dark-mode');
+    var btn = document.getElementById('dark-toggle-btn');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
+// ── PWA ────────────────────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  var swCode = "const CACHE='flh-v1';" +
+    "self.addEventListener('install',function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(['/']);}));});" +
+    "self.addEventListener('fetch',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request);}));});";
+  var swBlob = new Blob([swCode], {type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(function(){});
+}
+
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(function() {
+    if (deferredPrompt) {
+      var hint = document.createElement('button');
+      hint.className = 'dark-toggle-btn';
+      hint.textContent = '⊕ Install App';
+      hint.title = 'Install Freelancer Hub as an app';
+      hint.onclick = function() {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function() { hint.remove(); deferredPrompt = null; });
+      };
+      var actions = document.querySelector('.header-actions');
+      if (actions) actions.insertBefore(hint, actions.firstChild);
+    }
+  }, 3000);
+});
+</script>
+
+</body>
+</html>

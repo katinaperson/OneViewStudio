@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneView Studio — Solopreneur Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:       #FAF6F0;
+      --cream-2:     #F2EBE0;
+      --card:        rgba(255,252,247,0.92);
+      --caramel-lt:  #E8D5B7;
+      --caramel:     #C49A6C;
+      --caramel-dk:  #9B7144;
+      --teal-lt:     #D4EEEB;
+      --teal:        #4FA89A;
+      --teal-dk:     #2D7A6E;
+      --text:        #2C1F0E;
+      --text-md:     #5C4530;
+      --text-lt:     #9B856A;
+      --border:      #E0CDB5;
+      --shadow:      0 8px 32px rgba(100,70,30,0.10);
+      --shadow-sm:   0 2px 12px rgba(100,70,30,0.08);
+      --radius:      20px;
+      --radius-sm:   12px;
+      --input-bg:    #FFFDF9;
+      --success:     #2D7A6E;
+      --danger:      #C0392B;
+      --gold:        #D4A843;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--cream-2) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── LOCK SCREEN ── */
+    #lockScreen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--cream-2) 100%);
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .lock-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      max-width: 440px; width: 100%;
+      text-align: center;
+    }
+    .lock-logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--caramel-dk); margin-bottom: 4px; }
+    .lock-sub { font-size: 0.85rem; color: var(--text-lt); margin-bottom: 28px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .lock-card input {
+      width: 100%; padding: 14px 16px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--input-bg);
+      color: var(--text); font-size: 1.1rem; text-align: center;
+      letter-spacing: 6px; font-family: 'DM Sans', sans-serif;
+      margin-bottom: 8px;
+    }
+    .lock-card input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(79,168,154,0.15); }
+    .lock-error { color: var(--danger); font-size: 0.88rem; min-height: 20px; margin-bottom: 12px; }
+    .lock-note { color: var(--text-lt); font-size: 0.84rem; line-height: 1.5; margin-top: 12px; }
+
+    /* ── SHELL ── */
+    #appShell { display: none; height: 100vh; overflow: hidden; display: none; flex-direction: column; }
+    #appShell.visible { display: flex; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+    .topbar-brand { display: flex; flex-direction: column; }
+    .topbar-brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: var(--caramel-dk);
+      letter-spacing: 0.02em;
+    }
+    .topbar-brand span { font-size: 0.78rem; color: var(--text-lt); letter-spacing: 0.1em; text-transform: uppercase; }
+    .topbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .topbar-date { font-size: 0.88rem; color: var(--text-lt); }
+
+    /* ── NAV ── */
+    .nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex; gap: 0; overflow-x: auto;
+      flex-shrink: 0;
+    }
+    .nav-tab {
+      padding: 12px 18px;
+      font-size: 0.85rem; font-weight: 500;
+      color: var(--text-lt); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .nav-tab:hover { color: var(--caramel-dk); }
+    .nav-tab.active { color: var(--teal-dk); border-bottom-color: var(--teal); font-weight: 600; }
+
+    /* ── CONTENT ── */
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+    .tab-panel { display: none; max-width: 1100px; margin: 0 auto; }
+    .tab-panel.active { display: block; }
+
+    /* ── SECTION HEADERS ── */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: var(--caramel-dk);
+      margin-bottom: 4px;
+    }
+    .section-sub { font-size: 0.85rem; color: var(--text-lt); margin-bottom: 20px; letter-spacing: 0.03em; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 20px; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; color: var(--caramel-dk);
+      margin-bottom: 14px; font-weight: 600;
+    }
+    .card-sub { font-size: 0.82rem; color: var(--text-lt); margin-bottom: 14px; }
+
+    /* ── DASHBOARD GRID ── */
+    .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .dash-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    .dash-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--text-lt); text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--caramel-dk); }
+    .stat-value.teal { color: var(--teal-dk); }
+    .stat-value.gold { color: var(--gold); }
+    .stat-sub { font-size: 0.8rem; color: var(--text-lt); }
+
+    /* ── TOP 3 ── */
+    .top3-card {
+      background: linear-gradient(135deg, var(--teal-lt) 0%, var(--cream) 100%);
+      border: 1px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+    .top3-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; color: var(--teal-dk);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .top3-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; margin-bottom: 8px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--teal-lt);
+      border-radius: var(--radius-sm);
+    }
+    .top3-num {
+      width: 24px; height: 24px;
+      background: var(--teal);
+      color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+    }
+    .top3-check {
+      width: 20px; height: 20px;
+      border: 2px solid var(--teal);
+      border-radius: 50%; cursor: pointer;
+      flex-shrink: 0; transition: background 0.2s;
+      accent-color: var(--teal);
+    }
+    .top3-text { flex: 1; font-size: 0.93rem; }
+    .top3-text.done { text-decoration: line-through; color: var(--text-lt); }
+
+    /* ── FORMS ── */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .field label { font-size: 0.82rem; font-weight: 600; color: var(--text-md); letter-spacing: 0.03em; }
+    input, textarea, select {
+      font-family: 'DM Sans', sans-serif;
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 0.92rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none; border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(79,168,154,0.12);
+    }
+    textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+    .textarea-lg { min-height: 200px; }
+
+    /* ── BUTTONS ── */
+    button {
+      font-family: 'DM Sans', sans-serif;
+      border: none; border-radius: 999px;
+      padding: 10px 20px; font-weight: 600;
+      cursor: pointer; font-size: 0.88rem;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    button:hover { transform: translateY(-1px); opacity: 0.95; }
+    .btn-primary { background: var(--caramel); color: #fff; }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-ghost { background: var(--caramel-lt); color: var(--caramel-dk); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 7px 14px; font-size: 0.82rem; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+    /* ── LIST ITEMS ── */
+    .list-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--input-bg);
+      margin-bottom: 8px;
+    }
+    .list-item.done { opacity: 0.6; }
+    .item-check {
+      width: 20px; height: 20px;
+      border: 2px solid var(--caramel);
+      border-radius: 50%; cursor: pointer; flex-shrink: 0;
+      margin-top: 2px; transition: background 0.2s;
+    }
+    .item-check.checked { background: var(--caramel); border-color: var(--caramel); }
+    .item-text { font-size: 0.92rem; flex: 1; line-height: 1.4; }
+    .item-text.done { text-decoration: line-through; color: var(--text-lt); }
+    .item-meta { font-size: 0.78rem; color: var(--text-lt); margin-top: 2px; }
+    .item-remove {
+      background: none; border: none; color: var(--text-lt);
+      cursor: pointer; padding: 2px 6px; border-radius: 50%;
+      font-size: 1rem; line-height: 1;
+      transition: background 0.15s; flex-shrink: 0;
+    }
+    .item-remove:hover { background: #fee; color: var(--danger); transform: none; }
+
+    .tag {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .tag-teal { background: var(--teal-lt); color: var(--teal-dk); }
+    .tag-caramel { background: var(--caramel-lt); color: var(--caramel-dk); }
+    .tag-gold { background: #FDF0D0; color: #8A6A10; }
+    .tag-gray { background: var(--cream-2); color: var(--text-lt); }
+
+    /* ── PROGRESS BAR ── */
+    .prog-wrap { background: var(--cream-2); border-radius: 999px; height: 8px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--caramel), var(--teal)); transition: width 0.3s; }
+
+    /* ── NOTES ── */
+    .note-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px; margin-bottom: 10px;
+      background: var(--input-bg);
+    }
+    .note-title { font-weight: 600; font-size: 0.92rem; margin-bottom: 4px; }
+    .note-body { font-size: 0.88rem; color: var(--text-md); line-height: 1.6; white-space: pre-wrap; }
+    .note-meta { font-size: 0.76rem; color: var(--text-lt); margin-top: 6px; }
+
+    /* ── LINKS ── */
+    .link-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--input-bg);
+      margin-bottom: 8px;
+    }
+    .link-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .link-title { font-size: 0.92rem; font-weight: 500; flex: 1; }
+    .link-url { font-size: 0.78rem; color: var(--teal-dk); text-decoration: none; }
+    .link-url:hover { text-decoration: underline; }
+
+    /* ── PRODUCT CARD ── */
+    .product-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px; background: var(--input-bg);
+      margin-bottom: 12px;
+    }
+    .product-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    .product-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--caramel-dk); }
+    .product-price { font-weight: 700; color: var(--teal-dk); font-size: 0.95rem; }
+    .product-meta { font-size: 0.82rem; color: var(--text-lt); margin-bottom: 8px; }
+
+    /* ── TEMPLATE ── */
+    .template-section {
+      border: 1px solid var(--teal-lt);
+      border-radius: var(--radius-sm);
+      margin-top: 12px; overflow: hidden;
+    }
+    .template-header {
+      background: var(--teal-lt);
+      padding: 10px 14px;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--teal-dk); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .template-body { padding: 14px; display: none; }
+    .template-body.open { display: block; }
+    .template-field { margin-bottom: 12px; }
+    .template-field label { font-size: 0.8rem; font-weight: 600; color: var(--text-md); display: block; margin-bottom: 5px; }
+
+    /* ── CONTENT CALENDAR ── */
+    .cal-item {
+      display: grid; grid-template-columns: 100px 1fr auto;
+      gap: 10px; align-items: center;
+      padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--input-bg);
+      margin-bottom: 8px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px; text-align: center;
+      color: var(--text-lt); font-size: 0.88rem;
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* ── STATUS ── */
+    .status-msg { font-size: 0.85rem; color: var(--text-lt); margin-top: 8px; }
+    .status-msg.ok { color: var(--success); }
+    .status-msg.err { color: var(--danger); }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--caramel-dk); color: #fff;
+      padding: 12px 24px; border-radius: 999px;
+      font-size: 0.88rem; font-weight: 500;
+      transition: transform 0.3s ease; z-index: 1000;
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── DIALOG ── */
+    dialog {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      width: min(520px, calc(100vw - 24px)); padding: 0;
+      background: var(--card); color: var(--text);
+      box-shadow: var(--shadow);
+    }
+    dialog::backdrop { background: rgba(0,0,0,0.35); }
+    .dialog-inner { padding: 24px; display: grid; gap: 14px; }
+    .dialog-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--caramel-dk); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream-2); }
+    ::-webkit-scrollbar-thumb { background: var(--caramel-lt); border-radius: 999px; }
+
+    @media (max-width: 760px) {
+      .dash-grid, .dash-grid-4 { grid-template-columns: 1fr 1fr; }
+      .dash-grid-2, .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+      .content { padding: 14px; }
+      .cal-item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOCK SCREEN ══ -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div style="font-size:2.4rem;margin-bottom:12px;">✦</div>
+    <div class="lock-logo">OneView Studio</div>
+    <div class="lock-sub">Solopreneur Hub</div>
+    <input type="password" id="lockInput" placeholder="Enter your PIN" maxlength="20" />
+    <div class="lock-error" id="lockError"></div>
+    <button class="btn-teal" style="width:100%;padding:13px;" id="unlockBtn">Open My Hub</button>
+    <div class="lock-note" id="lockNote"></div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══ -->
+<div id="appShell">
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <h1>OneView Studio</h1>
+      <span>Solopreneur Hub</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-date" id="topbarDate"></span>
+      <button class="btn-outline btn-sm" id="changePinBtn">Change PIN</button>
+      <button class="btn-outline btn-sm" id="lockBtn">🔒 Lock</button>
+      <button class="btn-outline btn-sm" id="exportAllBtn">⬇ Backup</button>
+      <label class="btn-outline btn-sm" style="cursor:pointer;">⬆ Restore <input type="file" id="importFile" accept=".json" style="display:none;" /></label>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <div class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</div>
+    <div class="nav-tab" onclick="switchTab('products')">Products</div>
+    <div class="nav-tab" onclick="switchTab('revenue')">Revenue</div>
+    <div class="nav-tab" onclick="switchTab('launches')">Launches</div>
+    <div class="nav-tab" onclick="switchTab('content')">Content</div>
+    <div class="nav-tab" onclick="switchTab('platforms')">Platforms</div>
+    <div class="nav-tab" onclick="switchTab('tasks')">Tasks</div>
+    <div class="nav-tab" onclick="switchTab('contacts')">Contacts</div>
+    <div class="nav-tab" onclick="switchTab('links')">Saved Links</div>
+    <div class="nav-tab" onclick="switchTab('notes')">Notes</div>
+    <div class="nav-tab" onclick="switchTab('sop')">SOPs</div>
+  </nav>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div id="tab-dashboard" class="tab-panel active">
+      <div class="section-title">Good morning ✦</div>
+      <div class="section-sub" id="dashDate"></div>
+
+      <!-- Stats -->
+      <div class="dash-grid-4">
+        <div class="stat-card">
+          <div class="stat-label">Revenue This Month</div>
+          <div class="stat-value teal" id="dash-revenue">$0</div>
+          <div class="stat-sub" id="dash-revenue-sub">0 sales logged</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Expenses This Month</div>
+          <div class="stat-value" id="dash-expenses">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net Profit</div>
+          <div class="stat-value gold" id="dash-profit">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Products</div>
+          <div class="stat-value" id="dash-products">0</div>
+          <div class="stat-sub" id="dash-products-sub"></div>
+        </div>
+      </div>
+
+      <!-- Top 3 Tasks -->
+      <div class="top3-card">
+        <div class="top3-title">👑 Today's Top 3</div>
+        <div id="top3-list"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <input type="text" id="top3-input" placeholder="Add a top priority task..." style="flex:1;min-width:200px;" />
+          <button class="btn-teal btn-sm" onclick="addTop3()">Add</button>
+        </div>
+      </div>
+
+      <!-- Dashboard 2-col -->
+      <div class="dash-grid-2">
+        <!-- Upcoming Launches -->
+        <div class="card">
+          <div class="card-title">🚀 Upcoming Launches</div>
+          <div id="dash-launches"></div>
+        </div>
+        <!-- Content Due -->
+        <div class="card">
+          <div class="card-title">📅 Content This Week</div>
+          <div id="dash-content"></div>
+        </div>
+      </div>
+
+      <!-- Recent Revenue -->
+      <div class="card">
+        <div class="card-title">💰 Recent Sales</div>
+        <div id="dash-recent-sales"></div>
+      </div>
+    </div>
+
+    <!-- ══ PRODUCTS ══ -->
+    <div id="tab-products" class="tab-panel">
+      <div class="section-title">Products</div>
+      <div class="section-sub">Everything you sell — with embedded templates and pricing</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Add New Product</div>
+        <div class="form-grid-3">
+          <div class="field"><label>Product Name</label><input type="text" id="prod-name" placeholder="e.g. Grace Journal 365" /></div>
+          <div class="field"><label>Platform</label><select id="prod-platform"><option>Etsy</option><option>Gumroad</option><option>Facebook Group</option><option>Website</option><option>Other</option></select></div>
+          <div class="field"><label>Status</label><select id="prod-status"><option>Active</option><option>In Development</option><option>Coming Soon</option><option>Paused</option><option>Retired</option></select></div>
+        </div>
+        <div class="form-grid-3">
+          <div class="field"><label>Base Price ($)</label><input type="number" id="prod-price" placeholder="9.00" step="0.01" /></div>
+          <div class="field"><label>Sale Price ($)</label><input type="number" id="prod-sale" placeholder="7.00" step="0.01" /></div>
+          <div class="field"><label>Bundle Price ($)</label><input type="number" id="prod-bundle" placeholder="25.00" step="0.01" /></div>
+        </div>
+        <div class="field"><label>Description / Value Proposition</label><textarea id="prod-desc" placeholder="What problem does this solve? Who is it for?"></textarea></div>
+        <div class="field"><label>Target Audience</label><input type="text" id="prod-audience" placeholder="e.g. Single Christian women 40+" /></div>
+        <div class="field"><label>Revenue Goal — how many sales to hit target?</label><input type="text" id="prod-goal" placeholder="e.g. 30 sales/month = $270" /></div>
+        <div class="field"><label>Notes</label><textarea id="prod-notes" placeholder="Marketing angle, competitor notes, ideas..."></textarea></div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="saveProduct()">Save Product</button>
+        </div>
+      </div>
+      <div id="product-list"></div>
+    </div>
+
+    <!-- ══ REVENUE ══ -->
+    <div id="tab-revenue" class="tab-panel">
+      <div class="section-title">Revenue & Expenses</div>
+      <div class="section-sub">Track income, expenses, and profitability</div>
+      <hr class="divider" />
+
+      <div class="dash-grid">
+        <div class="stat-card"><div class="stat-label">Revenue This Month</div><div class="stat-value teal" id="rev-month-total">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Expenses This Month</div><div class="stat-value" id="exp-month-total">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Net Profit</div><div class="stat-value gold" id="profit-month-total">$0</div></div>
+      </div>
+
+      <div class="dash-grid-2">
+        <div class="card">
+          <div class="card-title">Log a Sale</div>
+          <div class="field"><label>Date</label><input type="date" id="rev-date" /></div>
+          <div class="field"><label>Product</label><select id="rev-product"><option>General</option></select></div>
+          <div class="field"><label>Amount ($)</label><input type="number" id="rev-amount" placeholder="0.00" step="0.01" /></div>
+          <div class="field"><label>Platform</label><select id="rev-platform"><option>Etsy</option><option>Gumroad</option><option>Facebook Group</option><option>Other</option></select></div>
+          <div class="field"><label>Notes</label><input type="text" id="rev-notes" placeholder="Optional notes" /></div>
+          <div class="btn-row"><button class="btn-teal" onclick="saveRevenue()">Log Sale</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Log an Expense</div>
+          <div class="field"><label>Date</label><input type="date" id="exp-date" /></div>
+          <div class="field"><label>Category</label><select id="exp-category"><option>Tools & Software</option><option>Marketing</option><option>Education</option><option>Design Assets</option><option>Platform Fees</option><option>Other</option></select></div>
+          <div class="field"><label>Amount ($)</label><input type="number" id="exp-amount" placeholder="0.00" step="0.01" /></div>
+          <div class="field"><label>Description</label><input type="text" id="exp-desc" placeholder="What was this for?" /></div>
+          <div class="btn-row"><button class="btn-primary" onclick="saveExpense()">Log Expense</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sales History</div>
+        <div id="revenue-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Expense History</div>
+        <div id="expense-list"></div>
+      </div>
+    </div>
+
+    <!-- ══ LAUNCHES ══ -->
+    <div id="tab-launches" class="tab-panel">
+      <div class="section-title">Launch Planner</div>
+      <div class="section-sub">What are you building and launching next?</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Plan a Launch</div>
+        <div class="form-grid-2">
+          <div class="field"><label>Product / Project Name</label><input type="text" id="launch-name" placeholder="e.g. Solopreneur Hub" /></div>
+          <div class="field"><label>Target Launch Date</label><input type="date" id="launch-date" /></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field"><label>Platform</label><select id="launch-platform"><option>Etsy</option><option>Gumroad</option><option>Facebook Group</option><option>Website</option><option>Other</option></select></div>
+          <div class="field"><label>Status</label><select id="launch-status"><option>Planning</option><option>Building</option><option>Testing</option><option>Ready</option><option>Launched</option></select></div>
+        </div>
+        <div class="field"><label>Goal for this Launch</label><input type="text" id="launch-goal" placeholder="e.g. 20 sales in first month" /></div>
+        <div class="field"><label>Marketing Plan</label><textarea id="launch-marketing" placeholder="How will you promote this? Facebook group, email, blog post..."></textarea></div>
+        <div class="field"><label>Launch Checklist (one item per line)</label><textarea id="launch-checklist" placeholder="Finalize product file&#10;Write Etsy listing&#10;Create mockup images&#10;Post in Facebook group&#10;Send to email list"></textarea></div>
+        <div class="field"><label>Notes</label><textarea id="launch-notes" placeholder="Any other notes, ideas, or reminders for this launch..."></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="saveLaunch()">Save Launch Plan</button></div>
+      </div>
+      <div id="launch-list"></div>
+    </div>
+
+    <!-- ══ CONTENT ══ -->
+    <div id="tab-content" class="tab-panel">
+      <div class="section-title">Content Planner</div>
+      <div class="section-sub">Blog, Facebook, email — plan what you're publishing and where</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Plan a Content Piece</div>
+        <div class="form-grid-2">
+          <div class="field"><label>Title / Topic</label><input type="text" id="content-title" placeholder="e.g. The Little Foxes that Spoil the Vine" /></div>
+          <div class="field"><label>Platform</label><select id="content-platform"><option>Blog</option><option>Facebook Group</option><option>Email List</option><option>Instagram</option><option>YouTube</option><option>Other</option></select></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field"><label>Publish Date</label><input type="date" id="content-date" /></div>
+          <div class="field"><label>Status</label><select id="content-status"><option>Idea</option><option>Drafting</option><option>Scheduled</option><option>Published</option></select></div>
+        </div>
+        <div class="field"><label>Content Type</label><select id="content-type"><option>Article / Blog Post</option><option>Social Post</option><option>Email Newsletter</option><option>Video</option><option>Product Promo</option><option>Community Post</option></select></div>
+        <div class="field"><label>Notes / Outline</label><textarea id="content-notes" placeholder="Key points, angle, call to action..."></textarea></div>
+        <div class="btn-row"><button class="btn-teal" onclick="saveContent()">Save Content Plan</button></div>
+      </div>
+      <div id="content-list"></div>
+    </div>
+
+    <!-- ══ PLATFORMS ══ -->
+    <div id="tab-platforms" class="tab-panel">
+      <div class="section-title">Platform Manager</div>
+      <div class="section-sub">Your presence across every platform — links, notes, and status</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Add a Platform</div>
+        <div class="form-grid-3">
+          <div class="field"><label>Platform Name</label><input type="text" id="plat-name" placeholder="e.g. Etsy Shop" /></div>
+          <div class="field"><label>URL / Link</label><input type="url" id="plat-url" placeholder="https://..." /></div>
+          <div class="field"><label>Status</label><select id="plat-status"><option>Active</option><option>Growing</option><option>Planned</option><option>Paused</option></select></div>
+        </div>
+        <div class="field"><label>Notes — stats, goals, to-dos for this platform</label><textarea id="plat-notes" placeholder="Followers, sales count, what you're working on here..."></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="savePlatform()">Save Platform</button></div>
+      </div>
+      <div id="platform-list"></div>
+    </div>
+
+    <!-- ══ TASKS ══ -->
+    <div id="tab-tasks" class="tab-panel">
+      <div class="section-title">Task Manager</div>
+      <div class="section-sub">Business tasks — deadlines, priorities, notes</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Add a Task</div>
+        <div class="form-grid-3">
+          <div class="field"><label>Task</label><input type="text" id="task-title" placeholder="What needs to be done?" /></div>
+          <div class="field"><label>Due Date</label><input type="date" id="task-due" /></div>
+          <div class="field"><label>Priority</label><select id="task-priority"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field"><label>Category</label><select id="task-cat"><option>General</option><option>Product</option><option>Marketing</option><option>Admin</option><option>Finance</option><option>Content</option><option>Community</option></select></div>
+          <div class="field"><label>Related Product (optional)</label><select id="task-product"><option>—</option></select></div>
+        </div>
+        <div class="field"><label>Notes</label><textarea id="task-notes" placeholder="Any context, details, or next steps..."></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="saveTask()">Add Task</button></div>
+      </div>
+      <div id="task-list"></div>
+    </div>
+
+    <!-- ══ CONTACTS ══ -->
+    <div id="tab-contacts" class="tab-panel">
+      <div class="section-title">Contacts & Vendors</div>
+      <div class="section-sub">Collaborators, vendors, tools, and key contacts</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Add a Contact</div>
+        <div class="form-grid-3">
+          <div class="field"><label>Name / Company</label><input type="text" id="contact-name" placeholder="Name or company" /></div>
+          <div class="field"><label>Role</label><input type="text" id="contact-role" placeholder="e.g. Graphic Designer, VA, Tool" /></div>
+          <div class="field"><label>Category</label><select id="contact-cat"><option>Vendor</option><option>Collaborator</option><option>Tool / Service</option><option>Mentor</option><option>Community Member</option><option>Other</option></select></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field"><label>Email / Contact</label><input type="text" id="contact-email" placeholder="Email or contact info" /></div>
+          <div class="field"><label>Website / Link</label><input type="url" id="contact-url" placeholder="https://..." /></div>
+        </div>
+        <div class="field"><label>Notes</label><textarea id="contact-notes" placeholder="What do they do for you? Rates, notes, context..."></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="saveContact()">Save Contact</button></div>
+      </div>
+      <div id="contact-list"></div>
+    </div>
+
+    <!-- ══ LINKS ══ -->
+    <div id="tab-links" class="tab-panel">
+      <div class="section-title">Saved Links & Documents</div>
+      <div class="section-sub">Save any URL — articles, tools, Google Docs, resources</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Save a Link</div>
+        <div class="form-grid-2">
+          <div class="field"><label>Title</label><input type="text" id="link-title" placeholder="What is this?" /></div>
+          <div class="field"><label>URL</label><input type="url" id="link-url" placeholder="https://..." /></div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field"><label>Category</label><select id="link-cat"><option>Resource</option><option>Tool</option><option>Article</option><option>Google Doc</option><option>Research</option><option>Inspiration</option><option>Other</option></select></div>
+          <div class="field"><label>Tags</label><input type="text" id="link-tags" placeholder="e.g. pricing, etsy, faith" /></div>
+        </div>
+        <div class="field"><label>Notes</label><input type="text" id="link-notes" placeholder="Why did you save this?" /></div>
+        <div class="btn-row"><button class="btn-teal" onclick="saveLink()">Save Link</button></div>
+      </div>
+      <div style="margin-bottom:12px;"><input type="search" id="link-search" placeholder="Search saved links..." style="max-width:360px;" oninput="renderLinks()" /></div>
+      <div id="link-list"></div>
+    </div>
+
+    <!-- ══ NOTES ══ -->
+    <div id="tab-notes" class="tab-panel">
+      <div class="section-title">Notes</div>
+      <div class="section-sub">Research from Claude, ChatGPT, ideas, strategy — everything you want to reference later</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Add a Note</div>
+        <div class="form-grid-2">
+          <div class="field"><label>Title</label><input type="text" id="note-title" placeholder="What is this note about?" /></div>
+          <div class="field"><label>Category / Tag</label><input type="text" id="note-tag" placeholder="e.g. pricing strategy, claude research, etsy tips" /></div>
+        </div>
+        <div class="field"><label>Note</label><textarea class="textarea-lg" id="note-body" placeholder="Paste research, write strategy, capture ideas — anything you want to find later..."></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="saveNote()">Save Note</button></div>
+      </div>
+      <div style="margin-bottom:12px;"><input type="search" id="note-search" placeholder="Search all notes..." style="max-width:360px;" oninput="renderNotes()" /></div>
+      <div id="note-list"></div>
+    </div>
+
+    <!-- ══ SOPs ══ -->
+    <div id="tab-sop" class="tab-panel">
+      <div class="section-title">SOPs — Standard Operating Procedures</div>
+      <div class="section-sub">Document your processes so you can repeat what works</div>
+      <hr class="divider" />
+      <div class="card">
+        <div class="card-title">Create an SOP</div>
+        <div class="form-grid-2">
+          <div class="field"><label>Process Name</label><input type="text" id="sop-name" placeholder="e.g. New Product Launch Process" /></div>
+          <div class="field"><label>Category</label><select id="sop-cat"><option>Product Creation</option><option>Launch</option><option>Marketing</option><option>Admin</option><option>Finance</option><option>Content</option><option>Customer Service</option><option>Other</option></select></div>
+        </div>
+        <div class="field"><label>Purpose — what does this process accomplish?</label><input type="text" id="sop-purpose" placeholder="e.g. Ensures every product launch is consistent and complete" /></div>
+        <div class="field"><label>Tools Needed</label><input type="text" id="sop-tools" placeholder="e.g. Claude, Canva, Etsy, Google Drive" /></div>
+        <div class="field"><label>Time Estimate</label><input type="text" id="sop-time" placeholder="e.g. 2-3 hours" /></div>
+        <div class="field"><label>Step-by-Step Instructions (one step per line)</label><textarea class="textarea-lg" id="sop-steps" placeholder="Step 1: Finalize product file and test on all devices&#10;Step 2: Write product description using value proposition&#10;Step 3: Create mockup images in Canva&#10;Step 4: Set up Etsy listing with SEO tags&#10;Step 5: Announce in Facebook Group&#10;Step 6: Send email to list"></textarea></div>
+        <div class="field"><label>Notes</label><textarea id="sop-notes" placeholder="Tips, exceptions, lessons learned..."></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="saveSOP()">Save SOP</button></div>
+      </div>
+      <div id="sop-list"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /appShell -->
+
+<div id="toast"></div>
+
+<dialog id="confirmDialog">
+  <div class="dialog-inner">
+    <div class="dialog-title" id="confirmTitle">Are you sure?</div>
+    <p class="card-sub" id="confirmMsg"></p>
+    <div class="btn-row">
+      <button class="btn-danger" id="confirmYes">Delete</button>
+      <button class="btn-outline" id="confirmNo">Cancel</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+const STORE = 'ovs_hub_v1';
+const PIN_KEY = 'ovs_pin_v1';
+
+const state = {
+  top3: [],
+  products: [],
+  revenue: [],
+  expenses: [],
+  launches: [],
+  content: [],
+  platforms: [],
+  tasks: [],
+  contacts: [],
+  links: [],
+  notes: [],
+  sops: []
+};
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE));
+    if (s) Object.assign(state, s);
+  } catch {}
+}
+function save() { localStorage.setItem(STORE, JSON.stringify(state)); }
+function getPin() { try { return localStorage.getItem(PIN_KEY); } catch { return null; } }
+function setPin(p) { localStorage.setItem(PIN_KEY, p); }
+
+// ── LOCK ────────────────────────────────────────────────────────────────────
+const lockScreen = document.getElementById('lockScreen');
+const appShell   = document.getElementById('appShell');
+const lockInput  = document.getElementById('lockInput');
+const lockError  = document.getElementById('lockError');
+const lockNote   = document.getElementById('lockNote');
+
+function showApp() {
+  lockScreen.style.display = 'none';
+  appShell.classList.add('visible');
+}
+function showLock() {
+  lockInput.value = ''; lockError.textContent = '';
+  lockScreen.style.display = 'flex';
+  appShell.classList.remove('visible');
+  lockInput.focus();
+}
+function initLock() {
+  if (!getPin()) lockNote.textContent = 'First time? Enter a PIN of your choice (min 4 characters) to protect your hub.';
+  lockInput.focus();
+}
+document.getElementById('unlockBtn').addEventListener('click', () => {
+  const pin = lockInput.value.trim();
+  if (!pin) { lockError.textContent = 'Please enter a PIN.'; return; }
+  const saved = getPin();
+  if (!saved) {
+    if (pin.length < 4) { lockError.textContent = 'Choose a PIN of at least 4 characters.'; return; }
+    setPin(pin); showApp(); initApp();
+  } else {
+    if (pin === saved) { showApp(); initApp(); }
+    else { lockError.textContent = 'Incorrect PIN. Try again.'; lockInput.value = ''; lockInput.focus(); }
+  }
+});
+lockInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('unlockBtn').click(); });
+document.getElementById('lockBtn').addEventListener('click', showLock);
+document.getElementById('changePinBtn').addEventListener('click', () => {
+  const cur = prompt('Enter your current PIN:');
+  if (cur === null) return;
+  if (cur !== getPin()) { alert('Incorrect PIN.'); return; }
+  const np = prompt('Enter new PIN (min 4 characters):');
+  if (!np || np.length < 4) { alert('PIN must be at least 4 characters.'); return; }
+  if (np !== prompt('Confirm new PIN:')) { alert('PINs did not match.'); return; }
+  setPin(np); toast('PIN updated ✦');
+});
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = ['dashboard','products','revenue','launches','content','platforms','tasks','contacts','links','notes','sop'];
+  const idx = tabs.indexOf(name);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function fmt(d) {
+  if (!d) return '—';
+  return new Date(d + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function fmtMoney(n) { return '$' + (n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function currentMonth() { return new Date().toISOString().slice(0,7); }
+function currentDate() { const n = new Date(); return new Date(n - n.getTimezoneOffset()*60000).toISOString().split('T')[0]; }
+function esc(v='') { return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function uid() { return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
+
+// Confirm dialog
+let confirmCb = null;
+const confirmDialog = document.getElementById('confirmDialog');
+document.getElementById('confirmYes').addEventListener('click', () => { if(confirmCb) confirmCb(); confirmDialog.close(); });
+document.getElementById('confirmNo').addEventListener('click', () => confirmDialog.close());
+function confirm2(title, msg, cb) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  confirmCb = cb; confirmDialog.showModal();
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const month = currentMonth();
+  const rev = state.revenue.filter(r => r.date && r.date.startsWith(month)).reduce((s,r) => s+r.amount, 0);
+  const exp = state.expenses.filter(e => e.date && e.date.startsWith(month)).reduce((s,e) => s+e.amount, 0);
+  const sales = state.revenue.filter(r => r.date && r.date.startsWith(month)).length;
+  const activeProd = state.products.filter(p => p.status === 'Active').length;
+
+  document.getElementById('dash-revenue').textContent = fmtMoney(rev);
+  document.getElementById('dash-revenue-sub').textContent = sales + ' sale' + (sales!==1?'s':'') + ' logged';
+  document.getElementById('dash-expenses').textContent = fmtMoney(exp);
+  const profit = rev - exp;
+  const profEl = document.getElementById('dash-profit');
+  profEl.textContent = fmtMoney(profit);
+  profEl.style.color = profit >= 0 ? 'var(--gold)' : 'var(--danger)';
+  document.getElementById('dash-products').textContent = activeProd;
+
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('dashDate').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  document.getElementById('topbarDate').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
+
+  // Top 3
+  const t3 = document.getElementById('top3-list');
+  if (!state.top3.length) {
+    t3.innerHTML = '<div class="empty-state">Add up to 3 priority tasks for today</div>';
+  } else {
+    t3.innerHTML = state.top3.map((t,i) => `
+      <div class="top3-item">
+        <div class="top3-num">${i+1}</div>
+        <input type="checkbox" class="top3-check" ${t.done?'checked':''} onchange="toggleTop3('${t.id}')" />
+        <div class="top3-text ${t.done?'done':''}">${esc(t.text)}</div>
+        <button class="item-remove" onclick="removeTop3('${t.id}')">×</button>
+      </div>`).join('');
+  }
+
+  // Upcoming launches
+  const ul = document.getElementById('dash-launches');
+  const upcoming = state.launches.filter(l => l.status !== 'Launched').sort((a,b) => new Date(a.date||'9999') - new Date(b.date||'9999')).slice(0,3);
+  ul.innerHTML = upcoming.length ? upcoming.map(l => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(l.name)}</div>
+        <div class="item-meta">${fmt(l.date)} · <span class="tag tag-teal" style="font-size:0.72rem;">${esc(l.status)}</span></div>
+      </div>
+    </div>`).join('') : '<div class="empty-state">No launches planned yet</div>';
+
+  // Content this week
+  const wStart = new Date(); wStart.setDate(wStart.getDate() - wStart.getDay());
+  const wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate() + 6);
+  const weekContent = state.content.filter(c => { const d = new Date(c.date+'T12:00:00'); return d >= wStart && d <= wEnd; }).slice(0,4);
+  const dc = document.getElementById('dash-content');
+  dc.innerHTML = weekContent.length ? weekContent.map(c => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(c.title)}</div>
+        <div class="item-meta">${fmt(c.date)} · ${esc(c.platform)} · <span class="tag tag-caramel" style="font-size:0.72rem;">${esc(c.status)}</span></div>
+      </div>
+    </div>`).join('') : '<div class="empty-state">No content planned this week</div>';
+
+  // Recent sales
+  const rs = document.getElementById('dash-recent-sales');
+  const recent = [...state.revenue].sort((a,b) => new Date(b.date||0)-new Date(a.date||0)).slice(0,5);
+  rs.innerHTML = recent.length ? recent.map(r => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(r.product)} <span style="color:var(--teal-dk);font-weight:600;">${fmtMoney(r.amount)}</span></div>
+        <div class="item-meta">${fmt(r.date)} · ${esc(r.platform)}</div>
+      </div>
+    </div>`).join('') : '<div class="empty-state">No sales logged yet — your first one is coming! 🙏</div>';
+}
+
+// ── TOP 3 ────────────────────────────────────────────────────────────────────
+function addTop3() {
+  const text = document.getElementById('top3-input').value.trim();
+  if (!text) return;
+  if (state.top3.length >= 3) { toast('Top 3 is full — finish one first! 👑'); return; }
+  state.top3.push({ id: uid(), text, done: false });
+  document.getElementById('top3-input').value = '';
+  save(); renderDashboard();
+}
+function toggleTop3(id) {
+  const t = state.top3.find(t => t.id === id);
+  if (t) { t.done = !t.done; save(); renderDashboard(); }
+}
+function removeTop3(id) {
+  state.top3 = state.top3.filter(t => t.id !== id);
+  save(); renderDashboard();
+}
+document.getElementById('top3-input').addEventListener('keydown', e => { if(e.key==='Enter') addTop3(); });
+
+// ── PRODUCTS ─────────────────────────────────────────────────────────────────
+function saveProduct() {
+  const name = document.getElementById('prod-name').value.trim();
+  if (!name) { toast('Please enter a product name.'); return; }
+  state.products.push({
+    id: uid(),
+    name,
+    platform: document.getElementById('prod-platform').value,
+    status: document.getElementById('prod-status').value,
+    price: parseFloat(document.getElementById('prod-price').value) || 0,
+    salePrice: parseFloat(document.getElementById('prod-sale').value) || 0,
+    bundlePrice: parseFloat(document.getElementById('prod-bundle').value) || 0,
+    desc: document.getElementById('prod-desc').value,
+    audience: document.getElementById('prod-audience').value,
+    goal: document.getElementById('prod-goal').value,
+    notes: document.getElementById('prod-notes').value,
+    template: { tagline: '', problem: '', features: '', marketingAngle: '', competitorNotes: '' }
+  });
+  ['prod-name','prod-desc','prod-audience','prod-goal','prod-notes','prod-price','prod-sale','prod-bundle'].forEach(id => document.getElementById(id).value='');
+  save(); renderProducts(); populateProductSelects(); toast('Product saved ✦');
+}
+function renderProducts() {
+  const el = document.getElementById('product-list');
+  if (!state.products.length) { el.innerHTML = '<div class="empty-state">No products yet — add your first one above.</div>'; return; }
+  el.innerHTML = state.products.map(p => `
+    <div class="product-card">
+      <div class="product-header">
+        <div>
+          <div class="product-name">${esc(p.name)}</div>
+          <div class="product-meta">${esc(p.platform)} · <span class="tag ${p.status==='Active'?'tag-teal':'tag-gray'}">${esc(p.status)}</span></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="product-price">${fmtMoney(p.price)}</div>
+          ${p.salePrice ? `<div style="font-size:0.78rem;color:var(--text-lt);">Sale: ${fmtMoney(p.salePrice)}</div>` : ''}
+          ${p.bundlePrice ? `<div style="font-size:0.78rem;color:var(--text-lt);">Bundle: ${fmtMoney(p.bundlePrice)}</div>` : ''}
+        </div>
+      </div>
+      ${p.audience ? `<div style="font-size:0.82rem;color:var(--text-lt);margin-bottom:6px;">👥 ${esc(p.audience)}</div>` : ''}
+      ${p.goal ? `<div style="font-size:0.82rem;color:var(--teal-dk);margin-bottom:6px;">🎯 ${esc(p.goal)}</div>` : ''}
+      ${p.desc ? `<div style="font-size:0.88rem;color:var(--text-md);margin-bottom:8px;">${esc(p.desc)}</div>` : ''}
+
+      <div class="template-section">
+        <div class="template-header" onclick="toggleTemplate('ptpl-${p.id}')">
+          📋 Product Template <span id="ptpl-arrow-${p.id}">▾</span>
+        </div>
+        <div class="template-body" id="ptpl-${p.id}">
+          <div class="template-field"><label>Tagline / Hook</label>
+            <input type="text" value="${esc(p.template?.tagline||'')}" onchange="updateProdTemplate('${p.id}','tagline',this.value)" placeholder="One line that sells this product..." /></div>
+          <div class="template-field"><label>Problem It Solves</label>
+            <textarea onchange="updateProdTemplate('${p.id}','problem',this.value)" placeholder="What pain does this product solve?">${esc(p.template?.problem||'')}</textarea></div>
+          <div class="template-field"><label>Key Features / Benefits</label>
+            <textarea onchange="updateProdTemplate('${p.id}','features',this.value)" placeholder="What makes this worth the price?">${esc(p.template?.features||'')}</textarea></div>
+          <div class="template-field"><label>Marketing Angle</label>
+            <textarea onchange="updateProdTemplate('${p.id}','marketingAngle',this.value)" placeholder="How will you talk about this to your audience?">${esc(p.template?.marketingAngle||'')}</textarea></div>
+          <div class="template-field"><label>Competitor / Pricing Notes</label>
+            <textarea onchange="updateProdTemplate('${p.id}','competitorNotes',this.value)" placeholder="What else is out there? How do you compare?">${esc(p.template?.competitorNotes||'')}</textarea></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <button class="btn-outline btn-sm" onclick="confirm2('Remove Product','Remove ${esc(p.name)} from your hub?', ()=>deleteProduct('${p.id}'))">Remove</button>
+      </div>
+    </div>`).join('');
+}
+function toggleTemplate(id) {
+  const el = document.getElementById(id);
+  const arrow = document.getElementById(id.replace('ptpl-','ptpl-arrow-'));
+  const open = el.classList.toggle('open');
+  if (arrow) arrow.textContent = open ? '▴' : '▾';
+}
+function updateProdTemplate(id, field, value) {
+  const p = state.products.find(p => p.id === id);
+  if (p) { if (!p.template) p.template = {}; p.template[field] = value; save(); }
+}
+function deleteProduct(id) {
+  state.products = state.products.filter(p => p.id !== id);
+  save(); renderProducts(); populateProductSelects(); toast('Product removed');
+}
+function populateProductSelects() {
+  const names = ['—', ...state.products.map(p => p.name)];
+  ['rev-product','task-product'].forEach(id => {
+    const sel = document.getElementById(id); if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+    if (names.includes(cur)) sel.value = cur;
+  });
+}
+
+// ── REVENUE ──────────────────────────────────────────────────────────────────
+function saveRevenue() {
+  const amount = parseFloat(document.getElementById('rev-amount').value);
+  if (!amount || amount <= 0) { toast('Please enter an amount.'); return; }
+  state.revenue.push({
+    id: uid(),
+    date: document.getElementById('rev-date').value || currentDate(),
+    product: document.getElementById('rev-product').value,
+    amount,
+    platform: document.getElementById('rev-platform').value,
+    notes: document.getElementById('rev-notes').value
+  });
+  ['rev-amount','rev-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderRevenue(); renderDashboard(); toast('Sale logged 💰');
+}
+function saveExpense() {
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  if (!amount || amount <= 0) { toast('Please enter an amount.'); return; }
+  state.expenses.push({
+    id: uid(),
+    date: document.getElementById('exp-date').value || currentDate(),
+    category: document.getElementById('exp-category').value,
+    amount,
+    desc: document.getElementById('exp-desc').value
+  });
+  ['exp-amount','exp-desc'].forEach(id => document.getElementById(id).value='');
+  save(); renderRevenue(); renderDashboard(); toast('Expense logged');
+}
+function renderRevenue() {
+  const month = currentMonth();
+  const rev = state.revenue.filter(r => r.date && r.date.startsWith(month)).reduce((s,r) => s+r.amount, 0);
+  const exp = state.expenses.filter(e => e.date && e.date.startsWith(month)).reduce((s,e) => s+e.amount, 0);
+  document.getElementById('rev-month-total').textContent = fmtMoney(rev);
+  document.getElementById('exp-month-total').textContent = fmtMoney(exp);
+  const profit = rev - exp;
+  const pel = document.getElementById('profit-month-total');
+  pel.textContent = fmtMoney(profit);
+  pel.style.color = profit >= 0 ? 'var(--gold)' : 'var(--danger)';
+
+  const rl = document.getElementById('revenue-list');
+  const sorted = [...state.revenue].sort((a,b) => new Date(b.date||0)-new Date(a.date||0));
+  rl.innerHTML = sorted.length ? sorted.map(r => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(r.product)} — <strong>${fmtMoney(r.amount)}</strong></div>
+        <div class="item-meta">${fmt(r.date)} · ${esc(r.platform)} ${r.notes ? '· '+esc(r.notes) : ''}</div>
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove sale','Remove this sale entry?',()=>{state.revenue=state.revenue.filter(x=>x.id!=='${r.id}');save();renderRevenue();renderDashboard();})">×</button>
+    </div>`).join('') : '<div class="empty-state">No sales logged yet.</div>';
+
+  const el = document.getElementById('expense-list');
+  const esorted = [...state.expenses].sort((a,b) => new Date(b.date||0)-new Date(a.date||0));
+  el.innerHTML = esorted.length ? esorted.map(e => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(e.category)} — <strong>${fmtMoney(e.amount)}</strong></div>
+        <div class="item-meta">${fmt(e.date)} ${e.desc ? '· '+esc(e.desc) : ''}</div>
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove expense','Remove this expense?',()=>{state.expenses=state.expenses.filter(x=>x.id!=='${e.id}');save();renderRevenue();renderDashboard();})">×</button>
+    </div>`).join('') : '<div class="empty-state">No expenses logged yet.</div>';
+}
+
+// ── LAUNCHES ─────────────────────────────────────────────────────────────────
+function saveLaunch() {
+  const name = document.getElementById('launch-name').value.trim();
+  if (!name) { toast('Please enter a project name.'); return; }
+  state.launches.push({
+    id: uid(), name,
+    date: document.getElementById('launch-date').value,
+    platform: document.getElementById('launch-platform').value,
+    status: document.getElementById('launch-status').value,
+    goal: document.getElementById('launch-goal').value,
+    marketing: document.getElementById('launch-marketing').value,
+    checklist: document.getElementById('launch-checklist').value,
+    notes: document.getElementById('launch-notes').value
+  });
+  ['launch-name','launch-goal','launch-marketing','launch-checklist','launch-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderLaunches(); renderDashboard(); toast('Launch plan saved 🚀');
+}
+function renderLaunches() {
+  const el = document.getElementById('launch-list');
+  if (!state.launches.length) { el.innerHTML = '<div class="empty-state">No launches planned yet.</div>'; return; }
+  el.innerHTML = state.launches.map(l => {
+    const items = (l.checklist||'').split('\n').filter(Boolean);
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div>
+          <div class="card-title" style="margin-bottom:4px;">${esc(l.name)}</div>
+          <div style="font-size:0.82rem;color:var(--text-lt);">${fmt(l.date)} · ${esc(l.platform)} · <span class="tag tag-teal">${esc(l.status)}</span></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <select onchange="updateLaunchStatus('${l.id}',this.value)" style="max-width:140px;padding:6px 10px;font-size:0.82rem;">
+            ${['Planning','Building','Testing','Ready','Launched'].map(s=>`<option ${l.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="item-remove" onclick="confirm2('Remove Launch','Remove ${esc(l.name)}?',()=>deleteLaunch('${l.id}'))">×</button>
+        </div>
+      </div>
+      ${l.goal ? `<div style="font-size:0.85rem;color:var(--teal-dk);margin-bottom:8px;">🎯 ${esc(l.goal)}</div>` : ''}
+      ${items.length ? `<div style="font-size:0.85rem;font-weight:600;margin-bottom:6px;">Checklist:</div>${items.map(item=>`<div style="font-size:0.85rem;padding:4px 0;color:var(--text-md);">☐ ${esc(item)}</div>`).join('')}` : ''}
+    </div>`;
+  }).join('');
+}
+function updateLaunchStatus(id, status) {
+  const l = state.launches.find(l => l.id === id);
+  if (l) { l.status = status; save(); renderLaunches(); renderDashboard(); }
+}
+function deleteLaunch(id) { state.launches = state.launches.filter(l => l.id !== id); save(); renderLaunches(); renderDashboard(); toast('Removed'); }
+
+// ── CONTENT ──────────────────────────────────────────────────────────────────
+function saveContent() {
+  const title = document.getElementById('content-title').value.trim();
+  if (!title) { toast('Please enter a title.'); return; }
+  state.content.push({
+    id: uid(), title,
+    platform: document.getElementById('content-platform').value,
+    date: document.getElementById('content-date').value,
+    status: document.getElementById('content-status').value,
+    type: document.getElementById('content-type').value,
+    notes: document.getElementById('content-notes').value
+  });
+  ['content-title','content-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderContent(); renderDashboard(); toast('Content planned 📅');
+}
+function renderContent() {
+  const el = document.getElementById('content-list');
+  const sorted = [...state.content].sort((a,b) => new Date(a.date||'9999')-new Date(b.date||'9999'));
+  el.innerHTML = sorted.length ? sorted.map(c => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(c.title)}</div>
+        <div class="item-meta">${fmt(c.date)} · ${esc(c.platform)} · ${esc(c.type)}</div>
+        <div style="margin-top:4px;">
+          <select onchange="updateContentStatus('${c.id}',this.value)" style="padding:4px 8px;font-size:0.78rem;border-radius:8px;">
+            ${['Idea','Drafting','Scheduled','Published'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        ${c.notes ? `<div style="font-size:0.82rem;color:var(--text-lt);margin-top:4px;">${esc(c.notes)}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove','Remove this content plan?',()=>deleteContent('${c.id}'))">×</button>
+    </div>`).join('') : '<div class="empty-state">No content planned yet.</div>';
+}
+function updateContentStatus(id, status) {
+  const c = state.content.find(c => c.id === id);
+  if (c) { c.status = status; save(); renderContent(); renderDashboard(); }
+}
+function deleteContent(id) { state.content = state.content.filter(c => c.id !== id); save(); renderContent(); renderDashboard(); toast('Removed'); }
+
+// ── PLATFORMS ────────────────────────────────────────────────────────────────
+function savePlatform() {
+  const name = document.getElementById('plat-name').value.trim();
+  if (!name) { toast('Please enter a platform name.'); return; }
+  state.platforms.push({
+    id: uid(), name,
+    url: document.getElementById('plat-url').value,
+    status: document.getElementById('plat-status').value,
+    notes: document.getElementById('plat-notes').value
+  });
+  ['plat-name','plat-url','plat-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderPlatforms(); toast('Platform saved ✦');
+}
+function renderPlatforms() {
+  const el = document.getElementById('platform-list');
+  el.innerHTML = state.platforms.length ? state.platforms.map(p => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(p.name)} <span class="tag tag-teal" style="font-size:0.72rem;">${esc(p.status)}</span></div>
+        ${p.url ? `<div class="item-meta"><a href="${esc(p.url)}" target="_blank" class="link-url">${esc(p.url)}</a></div>` : ''}
+        ${p.notes ? `<div style="font-size:0.85rem;color:var(--text-md);margin-top:4px;">${esc(p.notes)}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove','Remove ${esc(p.name)}?',()=>deletePlatform('${p.id}'))">×</button>
+    </div>`).join('') : '<div class="empty-state">No platforms added yet.</div>';
+}
+function deletePlatform(id) { state.platforms = state.platforms.filter(p => p.id !== id); save(); renderPlatforms(); toast('Removed'); }
+
+// ── TASKS ────────────────────────────────────────────────────────────────────
+function saveTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if (!title) { toast('Please enter a task.'); return; }
+  state.tasks.push({
+    id: uid(), title,
+    due: document.getElementById('task-due').value,
+    priority: document.getElementById('task-priority').value,
+    category: document.getElementById('task-cat').value,
+    product: document.getElementById('task-product').value,
+    notes: document.getElementById('task-notes').value,
+    done: false
+  });
+  ['task-title','task-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderTasks(); toast('Task added');
+}
+function renderTasks() {
+  const el = document.getElementById('task-list');
+  const sorted = [...state.tasks].sort((a,b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    const pa = a.priority==='high'?0:a.priority==='normal'?1:2;
+    const pb = b.priority==='high'?0:b.priority==='normal'?1:2;
+    return pa - pb;
+  });
+  el.innerHTML = sorted.length ? sorted.map(t => `
+    <div class="list-item ${t.done?'done':''}">
+      <div class="item-check ${t.done?'checked':''}" onclick="toggleTask('${t.id}')"></div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <div class="item-text ${t.done?'done':''}">${esc(t.title)}</div>
+          ${t.priority==='high' ? '<span class="tag" style="background:#FDE8E8;color:#C0392B;font-size:0.72rem;">High</span>' : ''}
+          ${t.category ? `<span class="tag tag-caramel" style="font-size:0.72rem;">${esc(t.category)}</span>` : ''}
+        </div>
+        <div class="item-meta">${t.due ? 'Due: '+fmt(t.due) : ''}${t.product && t.product!=='—' ? ' · '+esc(t.product) : ''}</div>
+        ${t.notes ? `<div style="font-size:0.82rem;color:var(--text-lt);margin-top:4px;padding:8px;background:var(--cream-2);border-radius:8px;">${esc(t.notes)}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove Task','Remove this task?',()=>deleteTask('${t.id}'))">×</button>
+    </div>`).join('') : '<div class="empty-state">No tasks yet.</div>';
+}
+function toggleTask(id) {
+  const t = state.tasks.find(t => t.id === id);
+  if (t) { t.done = !t.done; save(); renderTasks(); }
+}
+function deleteTask(id) { state.tasks = state.tasks.filter(t => t.id !== id); save(); renderTasks(); toast('Removed'); }
+
+// ── CONTACTS ─────────────────────────────────────────────────────────────────
+function saveContact() {
+  const name = document.getElementById('contact-name').value.trim();
+  if (!name) { toast('Please enter a name.'); return; }
+  state.contacts.push({
+    id: uid(), name,
+    role: document.getElementById('contact-role').value,
+    category: document.getElementById('contact-cat').value,
+    email: document.getElementById('contact-email').value,
+    url: document.getElementById('contact-url').value,
+    notes: document.getElementById('contact-notes').value
+  });
+  ['contact-name','contact-role','contact-email','contact-url','contact-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderContacts(); toast('Contact saved');
+}
+function renderContacts() {
+  const el = document.getElementById('contact-list');
+  el.innerHTML = state.contacts.length ? state.contacts.map(c => `
+    <div class="list-item">
+      <div style="flex:1;">
+        <div class="item-text">${esc(c.name)} <span class="tag tag-gray" style="font-size:0.72rem;">${esc(c.category)}</span></div>
+        ${c.role ? `<div class="item-meta">${esc(c.role)}</div>` : ''}
+        ${c.email ? `<div class="item-meta">${esc(c.email)}</div>` : ''}
+        ${c.url ? `<div class="item-meta"><a href="${esc(c.url)}" target="_blank" class="link-url">${esc(c.url)}</a></div>` : ''}
+        ${c.notes ? `<div style="font-size:0.82rem;color:var(--text-md);margin-top:4px;">${esc(c.notes)}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove','Remove ${esc(c.name)}?',()=>deleteContact('${c.id}'))">×</button>
+    </div>`).join('') : '<div class="empty-state">No contacts yet.</div>';
+}
+function deleteContact(id) { state.contacts = state.contacts.filter(c => c.id !== id); save(); renderContacts(); toast('Removed'); }
+
+// ── LINKS ────────────────────────────────────────────────────────────────────
+function saveLink() {
+  const title = document.getElementById('link-title').value.trim();
+  const url = document.getElementById('link-url').value.trim();
+  if (!title || !url) { toast('Please enter a title and URL.'); return; }
+  state.links.push({
+    id: uid(), title, url,
+    category: document.getElementById('link-cat').value,
+    tags: document.getElementById('link-tags').value,
+    notes: document.getElementById('link-notes').value,
+    saved: currentDate()
+  });
+  ['link-title','link-url','link-tags','link-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderLinks(); toast('Link saved 🔗');
+}
+function renderLinks() {
+  const el = document.getElementById('link-list');
+  const term = document.getElementById('link-search').value.toLowerCase();
+  const filtered = state.links.filter(l => !term || [l.title,l.url,l.category,l.tags,l.notes].join(' ').toLowerCase().includes(term));
+  el.innerHTML = filtered.length ? filtered.map(l => `
+    <div class="link-item">
+      <div class="link-icon">🔗</div>
+      <div style="flex:1;">
+        <div class="link-title">${esc(l.title)} <span class="tag tag-caramel" style="font-size:0.72rem;">${esc(l.category)}</span></div>
+        <a href="${esc(l.url)}" target="_blank" class="link-url">${esc(l.url)}</a>
+        ${l.tags ? `<div class="item-meta">🏷 ${esc(l.tags)}</div>` : ''}
+        ${l.notes ? `<div style="font-size:0.82rem;color:var(--text-lt);">${esc(l.notes)}</div>` : ''}
+      </div>
+      <button class="item-remove" onclick="confirm2('Remove','Remove this link?',()=>deleteLink('${l.id}'))">×</button>
+    </div>`).join('') : '<div class="empty-state">No links saved yet.</div>';
+}
+function deleteLink(id) { state.links = state.links.filter(l => l.id !== id); save(); renderLinks(); toast('Removed'); }
+
+// ── NOTES ────────────────────────────────────────────────────────────────────
+function saveNote() {
+  const title = document.getElementById('note-title').value.trim();
+  const body = document.getElementById('note-body').value.trim();
+  if (!title || !body) { toast('Please enter a title and note.'); return; }
+  state.notes.push({
+    id: uid(), title,
+    tag: document.getElementById('note-tag').value,
+    body,
+    saved: currentDate()
+  });
+  ['note-title','note-tag','note-body'].forEach(id => document.getElementById(id).value='');
+  save(); renderNotes(); toast('Note saved ✦');
+}
+function renderNotes() {
+  const el = document.getElementById('note-list');
+  const term = document.getElementById('note-search').value.toLowerCase();
+  const filtered = state.notes.filter(n => !term || [n.title,n.tag,n.body].join(' ').toLowerCase().includes(term));
+  const sorted = [...filtered].sort((a,b) => new Date(b.saved||0)-new Date(a.saved||0));
+  el.innerHTML = sorted.length ? sorted.map(n => `
+    <div class="note-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div>
+          <div class="note-title">${esc(n.title)}</div>
+          ${n.tag ? `<div style="margin-bottom:6px;"><span class="tag tag-teal" style="font-size:0.72rem;">🏷 ${esc(n.tag)}</span></div>` : ''}
+        </div>
+        <button class="item-remove" onclick="confirm2('Delete Note','Delete ${esc(n.title)}?',()=>deleteNote('${n.id}'))">×</button>
+      </div>
+      <div class="note-body">${esc(n.body)}</div>
+      <div class="note-meta">Saved ${fmt(n.saved)}</div>
+    </div>`).join('') : '<div class="empty-state">No notes yet. Paste research, strategy, AI insights — anything you want to find later.</div>';
+}
+function deleteNote(id) { state.notes = state.notes.filter(n => n.id !== id); save(); renderNotes(); toast('Note deleted'); }
+
+// ── SOPs ─────────────────────────────────────────────────────────────────────
+function saveSOP() {
+  const name = document.getElementById('sop-name').value.trim();
+  if (!name) { toast('Please enter a process name.'); return; }
+  state.sops.push({
+    id: uid(), name,
+    category: document.getElementById('sop-cat').value,
+    purpose: document.getElementById('sop-purpose').value,
+    tools: document.getElementById('sop-tools').value,
+    time: document.getElementById('sop-time').value,
+    steps: document.getElementById('sop-steps').value,
+    notes: document.getElementById('sop-notes').value
+  });
+  ['sop-name','sop-purpose','sop-tools','sop-time','sop-steps','sop-notes'].forEach(id => document.getElementById(id).value='');
+  save(); renderSOPs(); toast('SOP saved ✦');
+}
+function renderSOPs() {
+  const el = document.getElementById('sop-list');
+  el.innerHTML = state.sops.length ? state.sops.map(s => {
+    const steps = (s.steps||'').split('\n').filter(Boolean);
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
+        <div>
+          <div class="card-title" style="margin-bottom:4px;">${esc(s.name)}</div>
+          <span class="tag tag-caramel">${esc(s.category)}</span>
+          ${s.time ? `<span class="tag tag-gray" style="margin-left:6px;">⏱ ${esc(s.time)}</span>` : ''}
+        </div>
+        <button class="item-remove" onclick="confirm2('Delete SOP','Delete ${esc(s.name)}?',()=>deleteSOP('${s.id}'))">×</button>
+      </div>
+      ${s.purpose ? `<div style="font-size:0.85rem;color:var(--teal-dk);margin-bottom:8px;">🎯 ${esc(s.purpose)}</div>` : ''}
+      ${s.tools ? `<div style="font-size:0.82rem;color:var(--text-lt);margin-bottom:10px;">🛠 ${esc(s.tools)}</div>` : ''}
+      ${steps.length ? `<div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;color:var(--text-md);">Steps:</div>
+        ${steps.map((step,i) => `<div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--cream-2);font-size:0.85rem;">
+          <span style="color:var(--teal);font-weight:700;min-width:24px;">${i+1}.</span>
+          <span>${esc(step.replace(/^step\s*\d+:\s*/i,''))}</span>
+        </div>`).join('')}` : ''}
+      ${s.notes ? `<div style="font-size:0.82rem;color:var(--text-lt);margin-top:10px;padding:10px;background:var(--cream-2);border-radius:8px;">${esc(s.notes)}</div>` : ''}
+    </div>`;
+  }).join('') : '<div class="empty-state">No SOPs yet — document your first process above.</div>';
+}
+function deleteSOP(id) { state.sops = state.sops.filter(s => s.id !== id); save(); renderSOPs(); toast('SOP deleted'); }
+
+// ── BACKUP / RESTORE ─────────────────────────────────────────────────────────
+document.getElementById('exportAllBtn').addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: 'oneview-studio-backup.json' });
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  toast('Backup downloaded ⬇');
+});
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      Object.assign(state, data); save(); initApp();
+      toast('Backup restored ✦');
+    } catch { toast('Could not read that backup file.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+function initApp() {
+  // Set default dates
+  const today = currentDate();
+  ['rev-date','exp-date','task-due','content-date','launch-date'].forEach(id => {
+    const el = document.getElementById(id); if (el && !el.value) el.value = today;
+  });
+  populateProductSelects();
+  renderDashboard();
+  renderProducts();
+  renderRevenue();
+  renderLaunches();
+  renderContent();
+  renderPlatforms();
+  renderTasks();
+  renderContacts();
+  renderLinks();
+  renderNotes();
+  renderSOPs();
+}
+
+load();
+initLock();
+</script>
+</body>
+</html>

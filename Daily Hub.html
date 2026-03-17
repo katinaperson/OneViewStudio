@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/Katina%20Person/Downloads/daily-hub%20(4).html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A1A18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Daily Hub">
+<title>Daily Hub</title>
+<link href="./Daily Hub_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F7F4; --surface: #FFFFFF; --border: #E8E4DC;
+  --ink: #1A1A18; --ink-mid: #4A4A44; --ink-lt: #8A8880;
+  --teal: #2A7B6F; --teal-lt: #E8F4F2; --teal-mid: #4A9B8E;
+  --amber: #C4872A; --amber-lt: #FDF3E3;
+  --rose: #C4546A; --rose-lt: #FDE8EC;
+  --slate: #3A4A5C; --slate-lt: #EAF0F8;
+  --header-bg: #1A1A18;
+  --nav-bg: #1E1E1C;
+  --accent: #4AB8A8;
+  --accent-text: #7DD3C8;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+body.dark-mode {
+  --bg: #161614; --surface: #1E1E1C; --border: #2E2E2A;
+  --ink: #F0EFEC; --ink-mid: #C8C6C0; --ink-lt: #888680;
+  --teal: #4AB8A8; --teal-lt: #0E2420; --teal-mid: #5AC8B8;
+  --amber: #D4982A; --amber-lt: #2A1E08;
+  --rose: #E06880; --rose-lt: #2A1018;
+  --slate: #6A8AAC; --slate-lt: #0E1A28;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--header-bg);
+  border-bottom: 3px solid var(--accent);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-lockup { display: flex; align-items: center; gap: 14px; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 2rem; color: white; letter-spacing: 0.02em; line-height: 1; }
+.logo span { color: #7DD3C8; }
+.logo-sub { font-size: 0.54rem; color: rgba(255,255,255,0.28); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 5px; }
+
+.header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* Date display in header */
+.header-date-info { display: flex; flex-direction: column; align-items: flex-end; margin-right: 8px; }
+.header-day-name { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+.header-date-str { font-family: 'DM Serif Display', serif; font-size: 1rem; color: white; }
+
+.header-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+}
+.header-btn:hover { background: rgba(255,255,255,0.14); color: white; }
+
+.day-nav-group { display: flex; gap: 4px; }
+.day-nav-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.55);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.62rem;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.day-nav-btn.today-btn { color: var(--accent); border-color: rgba(74,184,168,0.3); }
+.day-nav-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+
+.cal-group { display: flex; gap: 4px; }
+.cal-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.6rem;
+  padding: 5px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.cal-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+
+/* Weather widget */
+.weather-widget {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 5px 12px;
+}
+.weather-loading { font-size: 0.62rem; color: rgba(255,255,255,0.35); }
+.weather-icon { font-size: 1.1rem; }
+.weather-temp { font-size: 0.82rem; font-weight: 500; color: white; }
+.weather-desc { font-size: 0.58rem; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; }
+.weather-loc  { font-size: 0.58rem; color: rgba(255,255,255,0.3); }
+
+/* ── NAV ── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid #2A2A28;
+  padding: 0 32px;
+  display: flex;
+  overflow-x: auto;
+  gap: 0;
+}
+
+.nav-tab {
+  padding: 12px 16px;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #585650;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.nav-tab:hover { color: #888680; }
+.nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── MAIN ── */
+.main { padding: 32px 36px; width: 100%; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ── STAT CARDS (dashboard row) ── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid transparent;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.stat-card.teal { border-top-color: var(--teal); }
+.stat-card.amber { border-top-color: var(--amber); }
+.stat-card.rose { border-top-color: var(--rose); }
+.stat-card.slate { border-top-color: var(--slate); }
+
+.stat-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-lt);
+}
+
+/* ── DASHBOARD GRID ── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.dash-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.dash-card.wide { grid-column: span 2; }
+.dash-card.full { grid-column: span 3; }
+
+.dash-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.dash-card-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: color 0.15s;
+}
+.dash-card-title[onclick]:hover { color: var(--teal); }
+
+.stat-card-link { cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+.stat-card-link:hover { border-color: var(--teal); box-shadow: 0 2px 8px rgba(42,123,111,0.12); }
+.dash-count {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-lt);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.icon {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  flex-shrink: 0;
+}
+
+/* ── FOCUS CARD ── */
+.focus-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--teal);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.focus-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.focus-card-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+.focus-badge {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rose);
+  background: var(--rose-lt);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.focus-empty { font-size: 0.78rem; color: var(--ink-lt); text-align: center; padding: 16px 0; }
+
+.focus-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.focus-item:hover { background: var(--teal-lt); }
+.focus-item.done { opacity: 0.45; }
+.focus-num { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--teal); width: 18px; text-align: center; flex-shrink: 0; }
+.focus-check { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 3px; flex-shrink: 0; transition: all 0.15s; }
+.focus-check.checked { background: var(--teal); border-color: var(--teal); }
+.focus-item-text { flex: 1; font-size: 0.82rem; color: var(--ink); }
+.focus-item-cat { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-lt); }
+
+/* ── QUICK ADD ── */
+.quick-add {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── ITEM LISTS ── */
+.item-list { display: flex; flex-direction: column; gap: 5px; }
+.list-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 7px 8px;
+  border-radius: 5px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.item-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); margin-top: 5px; flex-shrink: 0; }
+.item-text { font-size: 0.82rem; color: var(--ink); flex: 1; }
+.item-meta { font-size: 0.68rem; color: var(--ink-lt); margin-top: 2px; }
+.item-remove { background: none; border: none; color: var(--ink-lt); cursor: pointer; font-size: 1rem; padding: 0 2px; line-height: 1; }
+.item-remove:hover { color: var(--rose); }
+.empty-state { font-size: 0.75rem; color: var(--ink-lt); text-align: center; padding: 14px 0; }
+
+/* ── BUDGET WIDGETS ── */
+.budget-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
+.budget-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+.budget-stat-num { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--ink); }
+.budget-stat-label { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-lt); margin-top: 3px; }
+.budget-bar-wrap { margin-bottom: 14px; }
+.budget-bar-label { display: flex; justify-content: space-between; font-size: 0.62rem; color: var(--ink-lt); margin-bottom: 5px; letter-spacing: 0.06em; }
+.budget-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.budget-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.budget-fill.safe { background: var(--teal); }
+.budget-fill.warn { background: var(--amber); }
+.budget-fill.over { background: var(--rose); }
+
+/* ── MEALS ── */
+.meal-dash-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 10px; }
+.meal-dash-label { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 5px; }
+.meal-dash-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+.meal-dash-input:focus { outline: none; border-color: var(--teal); }
+
+/* Water tracker */
+.water-track { display: flex; gap: 5px; flex-wrap: wrap; }
+.water-glass {
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+.water-glass.filled { background: var(--slate); border-color: var(--slate); }
+.water-glass:hover { border-color: var(--slate); }
+
+/* ── CALENDAR LAUNCHERS ── */
+.cal-launch-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.cal-launch-btn:hover { border-color: var(--teal); background: var(--teal-lt); }
+.cal-icon { font-size: 1.2rem; }
+.cal-btn-title { font-size: 0.78rem; color: var(--ink); font-weight: 500; }
+.cal-btn-sub { font-size: 0.62rem; color: var(--ink-lt); margin-top: 1px; }
+
+/* ── NOTES AREA ── */
+.notes-area {
+  width: 100%;
+  min-height: 140px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.6;
+  resize: vertical;
+}
+.notes-area:focus { outline: none; border-color: var(--teal); }
+
+/* ── FORMS ── */
+.section-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); margin-bottom: 4px; }
+.section-sub { font-size: 0.72rem; color: var(--ink-lt); letter-spacing: 0.08em; margin-bottom: 16px; }
+.divider { height: 1px; background: var(--border); margin-bottom: 20px; }
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.form-card-title { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 14px; }
+
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.field label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-lt); }
+
+.field-row { display: grid; gap: 12px; margin-bottom: 0; }
+.field-row.cols-2 { grid-template-columns: repeat(2,1fr); }
+.field-row.cols-3 { grid-template-columns: repeat(3,1fr); }
+
+input[type="text"], input[type="number"], input[type="date"], input[type="month"],
+input[type="email"], input[type="time"], select, textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 8px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--teal); }
+textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+.btn-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+.btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--ink-mid);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--ink-lt); color: var(--ink); }
+
+.btn-primary {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+.btn-primary:hover { background: var(--teal-mid); border-color: var(--teal-mid); color: white; }
+
+.btn-rose { background: var(--rose); border-color: var(--rose); color: white; }
+.btn-rose:hover { opacity: 0.9; }
+
+.btn-amber { background: var(--amber); border-color: var(--amber); color: white; }
+
+.quick-add-btn {
+  background: var(--teal);
+  border: none;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  padding: 7px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.quick-add-btn:hover { background: var(--teal-mid); }
+.quick-add-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink-lt);
+}
+.quick-add-btn.secondary:hover { border-color: var(--ink-lt); color: var(--ink); }
+
+/* Habits */
+.habit-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.habit-item:hover { background: var(--teal-lt); }
+.habit-check { width: 18px; height: 18px; border: 1.5px solid var(--border); border-radius: 4px; flex-shrink: 0; transition: all 0.15s; }
+.habit-check.done { background: var(--teal); border-color: var(--teal); }
+.habit-name { flex: 1; font-size: 0.82rem; color: var(--ink); }
+.habit-cat { font-size: 0.6rem; color: var(--ink-lt); letter-spacing: 0.08em; }
+.habit-streak { font-size: 0.65rem; color: var(--amber); }
+
+/* Groceries */
+.grocery-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 5px; border: 1px solid var(--border); margin-bottom: 4px; background: var(--bg); }
+.grocery-check { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 3px; cursor: pointer; flex-shrink: 0; }
+.grocery-check.checked { background: var(--teal); border-color: var(--teal); }
+.grocery-name { flex: 1; font-size: 0.8rem; color: var(--ink); }
+.grocery-item.picked .grocery-name { text-decoration: line-through; color: var(--ink-lt); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: white; font-size: 0.75rem; padding: 8px 18px;
+  border-radius: 20px; opacity: 0; transition: all 0.2s; pointer-events: none; z-index: 999; letter-spacing: 0.06em;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* AI Panel */
+.ai-panel {
+  position: fixed; bottom: 0; right: 0; width: 380px; height: 480px;
+  background: var(--surface); border: 1px solid var(--border); border-bottom: none; border-right: none;
+  border-radius: 12px 0 0 0; box-shadow: -2px -2px 20px rgba(0,0,0,0.12);
+  display: flex; flex-direction: column; z-index: 200;
+  transform: translateY(100%); transition: transform 0.3s ease;
+}
+.ai-panel.open { transform: translateY(0); }
+.ai-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.ai-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); }
+.ai-close { background: none; border: none; color: var(--ink-lt); cursor: pointer; font-size: 1.1rem; }
+.ai-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.ai-msg { display: flex; }
+.ai-msg.user { justify-content: flex-end; }
+.ai-bubble { max-width: 80%; padding: 9px 13px; border-radius: 12px; font-size: 0.8rem; line-height: 1.5; }
+.ai-msg.user .ai-bubble { background: var(--teal); color: white; border-radius: 12px 12px 4px 12px; }
+.ai-msg.assistant .ai-bubble { background: var(--bg); border: 1px solid var(--border); color: var(--ink); border-radius: 12px 12px 12px 4px; }
+.ai-typing { display: flex; gap: 4px; align-items: center; padding: 10px 14px; }
+.ai-typing span { width: 6px; height: 6px; background: var(--ink-lt); border-radius: 50%; animation: bounce 1.2s infinite; }
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100% { transform: none; } 30% { transform: translateY(-4px); } }
+.ai-quick-prompts { padding: 8px 16px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid var(--border); }
+.ai-quick-btn { background: var(--bg); border: 1px solid var(--border); color: var(--ink-mid); font-size: 0.65rem; padding: 5px 10px; border-radius: 12px; cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+.ai-quick-btn:hover { border-color: var(--teal); color: var(--teal); }
+.ai-input-row { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.ai-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 0.8rem; color: var(--ink); font-family: 'DM Sans', sans-serif; }
+.ai-input-row input:focus { outline: none; border-color: var(--teal); }
+.ai-send-btn { background: var(--teal); border: none; color: white; font-size: 0.78rem; padding: 7px 14px; border-radius: 20px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* Dark mode overrides for inputs */
+body.dark-mode input, body.dark-mode select, body.dark-mode textarea,
+body.dark-mode .meal-dash-input { color: var(--ink) !important; }
+body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color: var(--ink-lt); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr 1fr; }
+  .dash-card.wide, .dash-card.full { grid-column: span 2; }
+  .stat-row { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 600px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dash-card.wide, .dash-card.full { grid-column: span 1; }
+  .stat-row { grid-template-columns: repeat(2,1fr); }
+  .field-row.cols-2, .field-row.cols-3 { grid-template-columns: 1fr; }
+  .header { flex-wrap: wrap; gap: 10px; }
+  .header-right { width: 100%; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body class="dark-mode">
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="logo-lockup">
+    <svg width="36" height="36" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="18" height="18" rx="3" fill="#4AB8A8"></rect>
+      <rect x="24" y="2" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.8"></rect>
+      <rect x="2" y="24" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.8"></rect>
+      <rect x="24" y="24" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.55"></rect>
+      <circle cx="22" cy="22" r="3" fill="#7DD3C8"></circle>
+    </svg>
+    <div>
+      <div class="logo">Daily<span>Hub</span></div>
+      <div class="logo-sub">by OneView Studio &nbsp;·&nbsp; Simple Tools. Total Clarity.</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="weather-widget" class="weather-widget"><div class="weather-icon">☀️</div><div><div class="weather-temp">65°F</div><div class="weather-desc">Clear Sky</div><div class="weather-loc">Washington</div></div></div>
+    <div class="header-date-info">
+      <div class="header-day-name" id="header-day">Wednesday</div>
+      <div class="header-date-str" id="header-date">March 11, 2026</div>
+    </div>
+    <div class="day-nav-group">
+      <button class="day-nav-btn" onclick="changeDay(-1)">← Prev</button>
+      <button class="day-nav-btn today-btn" onclick="goToday()" style="opacity: 0.4;">Today</button>
+      <button class="day-nav-btn" onclick="changeDay(1)">Next →</button>
+    </div>
+    <div class="cal-group">
+      <button class="cal-btn" onclick="window.open(&#39;https://calendar.google.com&#39;,&#39;_blank&#39;)">📅 Google</button>
+      <button class="cal-btn" onclick="window.open(&#39;https://outlook.live.com/calendar&#39;,&#39;_blank&#39;)">📅 Outlook</button>
+      <button class="cal-btn" onclick="window.open(&#39;https://www.icloud.com/calendar&#39;,&#39;_blank&#39;)">📅 iCal</button>
+    </div>
+    <button class="header-btn" onclick="exportData()">⬇ Backup</button>
+    <label class="header-btn" style="cursor:pointer;">⬆ Restore <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"></label>
+    <button class="header-btn" id="dark-toggle-btn" onclick="toggleDarkMode()">☀️</button>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-tab active" onclick="switchTab(&#39;dashboard&#39;)">Dashboard</div>
+  <div class="nav-tab" onclick="switchTab(&#39;appointments&#39;)">Appointments</div>
+  <div class="nav-tab" onclick="switchTab(&#39;tasks&#39;)">Tasks</div>
+  <div class="nav-tab" onclick="switchTab(&#39;reminders&#39;)">Reminders</div>
+  <div class="nav-tab" onclick="switchTab(&#39;budget&#39;)">Budget</div>
+  <div class="nav-tab" onclick="switchTab(&#39;habits&#39;)">Habits</div>
+  <div class="nav-tab" onclick="switchTab(&#39;meals&#39;)">Meals</div>
+  <div class="nav-tab" onclick="switchTab(&#39;notes&#39;)">Notes</div>
+</nav>
+
+<div class="main">
+
+  <!-- ══ DASHBOARD ══ -->
+  <div id="tab-dashboard" class="tab-panel active">
+
+    <!-- STAT ROW -->
+    <div class="stat-row">
+      <div class="stat-card teal stat-card-link" onclick="switchTab(&#39;appointments&#39;)">
+        <div class="stat-num" id="dash-stat-appts">1</div>
+        <div class="stat-label">Appointments Today</div>
+      </div>
+      <div class="stat-card amber stat-card-link" onclick="switchTab(&#39;tasks&#39;)">
+        <div class="stat-num" id="dash-stat-tasks">0</div>
+        <div class="stat-label">Tasks Remaining</div>
+      </div>
+      <div class="stat-card rose stat-card-link" onclick="switchTab(&#39;budget&#39;)">
+        <div class="stat-num" id="dash-stat-spent">$0.00</div>
+        <div class="stat-label">Spent Today</div>
+      </div>
+      <div class="stat-card slate stat-card-link" onclick="switchTab(&#39;habits&#39;)">
+        <div class="stat-num" id="dash-stat-habits">0/0</div>
+        <div class="stat-label">Habits Done</div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+      <!-- APPOINTMENTS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;appointments&#39;)" style="cursor:pointer;"><span class="icon"></span> Appointments ›</div>
+          <span class="dash-count" id="appt-count">1 today</span>
+        </div>
+        <div class="quick-add">
+          <input type="text" id="appt-quick" placeholder="Add appointment..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddAppt()" style="flex:1;min-width:100px;">
+          <input type="text" id="appt-time-quick" placeholder="Time" style="max-width:80px;">
+          <button class="quick-add-btn" onclick="quickAddAppt()">+ Add</button>
+        </div>
+        <div class="item-list" id="appt-dash-list">
+      <div class="list-item">
+        <div class="item-dot"></div>
+        <div style="flex:1;">
+          <div class="item-text">Annual Review</div>
+          <div class="item-meta">11:00 AM · Zoom</div>
+        </div>
+        <button class="item-remove" onclick="deleteAppt(1773161143149)">×</button>
+      </div></div>
+      </div>
+
+      <!-- REMINDERS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;reminders&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--amber)"></span> Reminders ›</div>
+          <span class="dash-count" id="reminder-count">0 today</span>
+        </div>
+        <div class="quick-add">
+          <input type="text" id="reminder-quick" placeholder="Add reminder..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddReminder()" style="flex:1;">
+          <button class="quick-add-btn" onclick="quickAddReminder()">+ Add</button>
+        </div>
+        <div class="item-list" id="reminder-dash-list"><div class="empty-state">No reminders today</div></div>
+      </div>
+
+      <!-- TASKS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;tasks&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--slate)"></span> Tasks ›</div>
+          <span class="dash-count" id="task-count">0 remaining</span>
+        </div>
+        <div class="quick-add">
+          <input type="text" id="task-quick" placeholder="Add task..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddTask()" style="flex:1;min-width:80px;">
+          <select id="task-priority-quick" style="max-width:90px;">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+          <select id="task-cat-quick" style="max-width:110px;">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Side Project">Side Project</option>
+            <option value="Errands">Errands</option>
+            <option value="Learning">Learning</option>
+          </select>
+          <button class="quick-add-btn" onclick="quickAddTask()">+ Add</button>
+        </div>
+        <div class="item-list" id="task-dash-list"><div class="empty-state">No tasks today</div></div>
+      </div>
+
+      <!-- TOP 3 FOCUS -->
+      <div class="focus-card">
+        <div class="focus-card-header">
+          <div class="focus-card-title">✦ Today's Focus 3</div>
+          <span class="focus-badge">High Priority</span>
+        </div>
+        <div id="focus-3-list"><div class="focus-empty">No high-priority tasks yet.<br>Add tasks and mark them High.</div></div>
+      </div>
+
+      <!-- BUDGET SNAPSHOT -->
+      <div class="dash-card wide">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;budget&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--amber)"></span> Budget — <span id="budget-month-label" style="font-size:0.82rem;font-weight:300;text-transform:none;letter-spacing:0;">Mar 2026</span> ›</div>
+          <span class="dash-count" id="budget-dash-count">$0.00 spent today</span>
+        </div>
+        <div class="budget-summary">
+          <div class="budget-stat">
+            <div class="budget-stat-num" id="dash-total-budget">$0.00</div>
+            <div class="budget-stat-label">Monthly Budget</div>
+          </div>
+          <div class="budget-stat">
+            <div class="budget-stat-num" id="dash-total-spent">$0.00</div>
+            <div class="budget-stat-label">Spent This Month</div>
+          </div>
+          <div class="budget-stat">
+            <div class="budget-stat-num" id="dash-remaining">$0.00</div>
+            <div class="budget-stat-label">Remaining</div>
+          </div>
+        </div>
+        <div class="budget-bar-wrap">
+          <div class="budget-bar-label">
+            <span>Monthly Progress</span>
+            <span id="budget-pct">0%</span>
+          </div>
+          <div class="budget-bar"><div class="budget-fill safe" id="budget-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="quick-add">
+          <input type="number" id="spend-amount-quick" placeholder="Amount $" style="max-width:110px;" step="0.01">
+          <input type="text" id="spend-desc-quick" placeholder="Description..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddSpend()" style="flex:1;">
+          <select id="spend-cat-quick"><option value="General">General</option></select>
+          <button class="quick-add-btn" onclick="quickAddSpend()">+ Log Spend</button>
+        </div>
+        <div class="item-list" id="spend-dash-list"></div>
+      </div>
+
+      <!-- HABITS -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;habits&#39;)" style="cursor:pointer;"><span class="icon" style="background:#8CAA60"></span> Habits ›</div>
+          <span class="dash-count" id="habit-count">0 / 0 done</span>
+        </div>
+        <div id="habit-dash-list"><div class="empty-state">No habits yet. Add some in the Habits tab.</div></div>
+        <div style="margin-top:10px;text-align:center;">
+          <button class="quick-add-btn secondary" onclick="switchTab(&#39;habits&#39;)">Manage Habits →</button>
+        </div>
+      </div>
+
+      <!-- MEALS -->
+      <div class="dash-card wide">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;meals&#39;)" style="cursor:pointer;"><span class="icon" style="background:#7A9A6A"></span> Today's Meals ›</div>
+          <button class="quick-add-btn secondary" style="padding:4px 10px;" onclick="saveMealsDash()">Save</button>
+        </div>
+        <div class="meal-dash-grid">
+          <div class="meal-dash-item"><div class="meal-dash-label">🌅 Breakfast</div><input type="text" class="meal-dash-input" id="meal-breakfast-dash" placeholder="What&#39;s for breakfast?"></div>
+          <div class="meal-dash-item"><div class="meal-dash-label">☀️ Lunch</div><input type="text" class="meal-dash-input" id="meal-lunch-dash" placeholder="What&#39;s for lunch?"></div>
+          <div class="meal-dash-item"><div class="meal-dash-label">🌙 Dinner</div><input type="text" class="meal-dash-input" id="meal-dinner-dash" placeholder="What&#39;s for dinner?"></div>
+          <div class="meal-dash-item"><div class="meal-dash-label">🍎 Snack</div><input type="text" class="meal-dash-input" id="meal-snack-dash" placeholder="Snack or dessert?"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:8px;">
+          <div class="meal-dash-label" style="margin:0;">💧 Water</div>
+          <div class="water-track" id="water-dash-track">
+    <div class="water-glass " onclick="toggleWater(0,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(1,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(2,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(3,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(4,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(5,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(6,&#39;water-dash-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(7,&#39;water-dash-track&#39;)"></div></div>
+          <span style="font-size:0.68rem;color:var(--ink-lt);" id="water-dash-count">0 / 8 glasses</span>
+        </div>
+      </div>
+
+      <!-- NOTES DASH -->
+      <div class="dash-card full">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab(&#39;notes&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--ink-lt)"></span> Brain Dump ›</div>
+          <button class="quick-add-btn secondary" style="padding:4px 10px;" onclick="saveNotes()">Save Note</button>
+        </div>
+        <textarea class="notes-area" id="notes-dash" placeholder="Whatever&#39;s on your mind today — thoughts, ideas, reminders, overflow..."></textarea>
+      </div>
+
+      <!-- CALENDARS -->
+      <div class="dash-card full">
+        <div class="dash-card-header">
+          <div class="dash-card-title"><span class="icon" style="background:var(--rose)"></span> My Calendars</div>
+          <span style="font-size:0.6rem;color:var(--ink-lt);letter-spacing:0.08em;">Opens in a new tab</span>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="cal-launch-btn" onclick="window.open(&#39;https://calendar.google.com&#39;,&#39;_blank&#39;)">
+            <span class="cal-icon">📅</span>
+            <div><div class="cal-btn-title">Google Calendar</div><div class="cal-btn-sub">calendar.google.com</div></div>
+          </button>
+          <button class="cal-launch-btn" onclick="window.open(&#39;https://outlook.live.com/calendar&#39;,&#39;_blank&#39;)">
+            <span class="cal-icon">📅</span>
+            <div><div class="cal-btn-title">Outlook Calendar</div><div class="cal-btn-sub">outlook.live.com</div></div>
+          </button>
+          <button class="cal-launch-btn" onclick="window.open(&#39;https://www.icloud.com/calendar&#39;,&#39;_blank&#39;)">
+            <span class="cal-icon">📅</span>
+            <div><div class="cal-btn-title">Apple iCal</div><div class="cal-btn-sub">icloud.com/calendar</div></div>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ APPOINTMENTS ══ -->
+  <div id="tab-appointments" class="tab-panel">
+    <div class="section-title">Appointments</div>
+    <div class="section-sub">Meetings, calls &amp; commitments</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add Appointment</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Date</label><input type="date" id="appt-date"></div>
+        <div class="field"><label>Time</label><input type="text" id="appt-time" placeholder="e.g. 10:00 AM"></div>
+        <div class="field"><label>Location / Link</label><input type="text" id="appt-location" placeholder="Office, Zoom, Phone..."></div>
+      </div>
+      <div class="field"><label>Title / Description</label><input type="text" id="appt-title" placeholder="What is this appointment?"></div>
+      <div class="field"><label>Notes</label><textarea id="appt-notes" placeholder="Any prep, notes, or details..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveAppt()">Save Appointment</button>
+        <button class="btn" onclick="clearAppt()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card-title" style="margin-bottom:12px;">All Appointments</div>
+    <div id="appt-full-list">
+        <div class="list-item" style="margin-bottom:6px;">
+          <div class="item-dot" style="margin-top:4px;"></div>
+          <div style="flex:1;">
+            <div class="item-text">Annual Review</div>
+            <div class="item-meta">Mar 11, 2026 · 11:00 AM · Zoom</div>
+            <div style="font-size:0.75rem;color:var(--ink-lt);margin-top:2px;">Annual Review with Stacey</div>
+          </div>
+          <button class="item-remove" onclick="deleteAppt(1773161143149)">×</button>
+        </div></div>
+  </div>
+
+  <!-- ══ TASKS ══ -->
+  <div id="tab-tasks" class="tab-panel">
+    <div class="section-title">Tasks</div>
+    <div class="section-sub">To-dos, carried forward automatically</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add Task</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Due Date</label><input type="date" id="task-date"></div>
+        <div class="field"><label>Priority</label>
+          <select id="task-priority">
+            <option value="normal">Normal</option>
+            <option value="high">High Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+        </div>
+        <div class="field"><label>Category</label>
+          <select id="task-category">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Side Project">Side Project</option>
+            <option value="Errands">Errands</option>
+            <option value="Learning">Learning</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Task</label><input type="text" id="task-title" placeholder="What needs to be done?"></div>
+      <div class="field"><label>Notes</label><textarea id="task-notes" placeholder="Any additional details..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveTask()">Add Task</button>
+        <button class="btn" onclick="clearTask()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card-title" style="margin-bottom:12px;">All Tasks</div>
+    <div id="task-full-list"><div class="empty-state">No tasks yet.</div></div>
+  </div>
+
+  <!-- ══ REMINDERS ══ -->
+  <div id="tab-reminders" class="tab-panel">
+    <div class="section-title">Reminders &amp; Follow-Ups</div>
+    <div class="section-sub">Don't let anything slip through</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add Reminder</div>
+      <div class="field-row cols-2">
+        <div class="field"><label>Date</label><input type="date" id="reminder-date"></div>
+        <div class="field"><label>Type</label>
+          <select id="reminder-type">
+            <option>Follow-Up</option><option>Reminder</option><option>Call Back</option>
+            <option>Check In</option><option>Deadline</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Reminder</label><input type="text" id="reminder-title" placeholder="What do you need to remember?"></div>
+      <div class="field"><label>Notes</label><textarea id="reminder-notes" placeholder="Any context or details..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveReminder()">Save Reminder</button>
+        <button class="btn" onclick="clearReminder()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card-title" style="margin-bottom:12px;">All Reminders</div>
+    <div id="reminder-full-list"><div class="empty-state">No reminders yet.</div></div>
+  </div>
+
+  <!-- ══ BUDGET ══ -->
+  <div id="tab-budget" class="tab-panel">
+    <div class="section-title">Budget</div>
+    <div class="section-sub">Monthly budget · category tracking · daily spending</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Monthly Budget Setup — <span id="budget-setup-month">Mar 2026</span></div>
+      <div class="field-row cols-2">
+        <div class="field"><label>Month</label><input type="month" id="budget-month"></div>
+        <div class="field"><label>Total Monthly Budget ($)</label><input type="number" id="budget-total" placeholder="e.g. 3000" step="0.01"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveBudgetSetup()">Save Budget</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Budget Categories</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Category Name</label><input type="text" id="cat-name" placeholder="e.g. Groceries"></div>
+        <div class="field"><label>Monthly Limit ($)</label><input type="number" id="cat-limit" placeholder="e.g. 400" step="0.01"></div>
+        <div class="field" style="display:flex;align-items:flex-end;">
+          <button class="btn btn-primary" style="width:100%;" onclick="addCategory()">Add Category</button>
+        </div>
+      </div>
+      <div id="category-list"><div class="empty-state">No categories yet.</div></div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Log a Purchase</div>
+      <div class="field-row cols-3">
+        <div class="field"><label>Date</label><input type="date" id="spend-date"></div>
+        <div class="field"><label>Amount ($)</label><input type="number" id="spend-amount" placeholder="0.00" step="0.01"></div>
+        <div class="field"><label>Category</label><select id="spend-category"><option value="General">General</option></select></div>
+      </div>
+      <div class="field"><label>Description</label><input type="text" id="spend-desc" placeholder="What did you buy?"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveSpend()">Log Purchase</button>
+        <button class="btn" onclick="clearSpend()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Category Breakdown</div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;">
+        <span style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);">Category</span>
+        <span style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Budget</span>
+        <span style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Spent</span>
+        <span style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Left</span>
+        <span></span>
+      </div>
+      <div id="category-breakdown">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center;">
+          <span style="font-size:0.82rem;color:var(--ink);">General</span>
+          <span style="font-size:0.78rem;color:var(--ink-lt);text-align:right;">—</span>
+          <span style="font-size:0.82rem;font-weight:500;color:var(--ink);text-align:right;">$0.00</span>
+          <span style="font-size:0.78rem;text-align:right;color:var(--teal);">—</span>
+          <span></span>
+        </div></div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Daily Spending — <span id="daily-spend-date-label">Mar 11, 2026</span></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <input type="date" id="daily-spend-filter" style="max-width:180px;">
+        <button class="btn" onclick="filterDailySpend()">View Day</button>
+        <button class="btn" onclick="viewToday()">Today</button>
+      </div>
+      <div id="daily-spend-total" style="font-size:1.1rem;font-weight:600;color:var(--ink);margin-bottom:10px;">Total: $0.00</div>
+      <div id="daily-spend-list"><div class="empty-state">No spending on this date.</div></div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Spending History</div>
+      <div id="spend-full-list"><div class="empty-state">No spending logged yet.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ HABITS ══ -->
+  <div id="tab-habits" class="tab-panel">
+    <div class="section-title">Habit Tracker</div>
+    <div class="section-sub">Build your own daily habit list</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Add a New Habit</div>
+      <div class="field-row cols-2">
+        <div class="field"><label>Habit Name</label><input type="text" id="habit-name" placeholder="e.g. Read for 20 minutes"></div>
+        <div class="field"><label>Category (optional)</label><input type="text" id="habit-cat" placeholder="Health, Faith, Work..."></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addHabit()">Add Habit</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Today's Habits — <span id="habit-date-label">Mar 11, 2026</span></div>
+      <div id="habit-full-list"><div class="empty-state">No habits yet. Add some in the Habits tab.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ MEALS ══ -->
+  <div id="tab-meals" class="tab-panel">
+    <div class="section-title">Meals &amp; Nutrition</div>
+    <div class="section-sub">What you eat today shapes tomorrow</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Today's Meal Plan — <span id="meals-date-label">Mar 11, 2026</span></div>
+      <div class="field-row cols-2">
+        <div class="field"><label>🌅 Breakfast</label><input type="text" id="meal-breakfast" placeholder="e.g. Oatmeal with berries"></div>
+        <div class="field"><label>☀️ Lunch</label><input type="text" id="meal-lunch" placeholder="e.g. Grilled chicken salad"></div>
+        <div class="field"><label>🌙 Dinner</label><input type="text" id="meal-dinner" placeholder="e.g. Brown rice and vegetables"></div>
+        <div class="field"><label>🍎 Snack / Dessert</label><input type="text" id="meal-snack" placeholder="e.g. Apple and almond butter"></div>
+      </div>
+      <div class="field"><label>📝 Notes</label><textarea id="meal-notes" placeholder="Calories, macros, how you felt, cravings, wins..."></textarea></div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-lt);display:block;margin-bottom:8px;">💧 Water Intake</label>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="water-track" id="water-full-track">
+    <div class="water-glass " onclick="toggleWater(0,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(1,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(2,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(3,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(4,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(5,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(6,&#39;water-full-track&#39;)"></div>
+    <div class="water-glass " onclick="toggleWater(7,&#39;water-full-track&#39;)"></div></div>
+          <span style="font-size:0.72rem;color:var(--ink-lt);" id="water-full-count">0 / 8 glasses</span>
+          <button class="btn" style="padding:5px 12px;font-size:0.62rem;" onclick="resetWater()">Reset</button>
+        </div>
+        <div style="font-size:0.62rem;color:var(--ink-lt);margin-top:6px;">Click each glass to track. Goal: 8 per day.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveMeals()">Save Meals</button>
+        <button class="btn" onclick="clearMeals()">Clear</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Grocery List</div>
+      <div class="quick-add">
+        <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key===&#39;Enter&#39;) addGrocery()" style="flex:1;">
+        <select id="grocery-cat" style="max-width:130px;">
+          <option value="Produce">Produce</option><option value="Protein">Protein</option>
+          <option value="Dairy">Dairy</option><option value="Grains">Grains</option>
+          <option value="Frozen">Frozen</option><option value="Pantry">Pantry</option><option value="Other">Other</option>
+        </select>
+        <button class="quick-add-btn" onclick="addGrocery()">+ Add</button>
+      </div>
+      <div id="grocery-list"><div class="empty-state">Your grocery list is empty.</div></div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Past Meals</div>
+      <div id="meals-history">
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:0.62rem;letter-spacing:0.14em;color:var(--teal);font-weight:500;margin-bottom:8px;text-transform:uppercase;">Mar 10, 2026</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+            
+            
+            
+            <div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Snack · </span>Apples and Almond Butter</div>
+          </div>
+          
+        </div></div>
+    </div>
+  </div>
+
+  <!-- ══ NOTES ══ -->
+  <div id="tab-notes" class="tab-panel">
+    <div class="section-title">Brain Dump</div>
+    <div class="section-sub">One place for everything on your mind</div>
+    <div class="divider"></div>
+    <div class="form-card">
+      <div class="form-card-title">Today's Notes — <span id="notes-date-label">Mar 11, 2026</span></div>
+      <div class="field">
+        <textarea class="notes-area" id="notes-full" style="min-height:280px;" placeholder="Let it all out — thoughts, ideas, reminders, things you don&#39;t want to forget..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveNotesFull()">Save Notes</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-card-title">Past Notes</div>
+      <div id="notes-history"><div class="empty-state">No past notes.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- AI Panel -->
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-header">
+    <div class="ai-title">✦ Daily Assistant</div>
+    <button class="ai-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-messages" id="ai-messages">
+    <div class="ai-msg assistant"><div class="ai-bubble">Hey! I'm your Daily Assistant. I can help you plan your day, prioritize tasks, think through meals, or just chat through what's on your mind. What do you need?</div></div>
+  </div>
+  <div class="ai-quick-prompts" id="ai-quick-prompts">
+    <button class="ai-quick-btn" onclick="sendQuick(&#39;Help me plan my day&#39;)">Plan my day</button>
+    <button class="ai-quick-btn" onclick="sendQuick(&#39;What should I focus on first?&#39;)">What to focus on</button>
+    <button class="ai-quick-btn" onclick="sendQuick(&#39;Give me a quick meal idea for tonight&#39;)">Meal idea</button>
+    <button class="ai-quick-btn" onclick="sendQuick(&#39;Help me stay motivated today&#39;)">Motivation</button>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" id="ai-input" placeholder="Ask your assistant..." onkeydown="if(event.key===&#39;Enter&#39;) sendAI()">
+    <button class="ai-send-btn" id="ai-send-btn" onclick="sendAI()">Send</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let state = {
+  appointments: [],
+  tasks: [],
+  reminders: [],
+  spending: [],
+  habits: [],
+  habitLog: {},
+  notes: {},
+  budget: {},
+  meals: {},
+  groceries: []
+};
+
+let currentDate = new Date().toISOString().split('T')[0];
+
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('myDailyView') || '{}');
+    state.appointments = saved.appointments || [];
+    state.tasks        = saved.tasks        || [];
+    state.reminders    = saved.reminders    || [];
+    state.spending     = saved.spending     || [];
+    state.habits       = saved.habits       || [];
+    state.habitLog     = saved.habitLog     || {};
+    state.notes        = saved.notes        || {};
+    state.budget       = saved.budget       || {};
+    state.meals        = saved.meals        || {};
+    state.groceries    = saved.groceries    || [];
+  } catch(e) {}
+}
+
+function save() { localStorage.setItem('myDailyView', JSON.stringify(state)); }
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function fmt(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
+}
+
+function currentMonth() { return currentDate.substring(0,7); }
+function fmtMoney(n) { return '$' + parseFloat(n||0).toFixed(2); }
+
+// ── DATE NAV ──────────────────────────────────────────────────────────────────
+function updateDateDisplay() {
+  const d = new Date(currentDate + 'T12:00:00');
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('header-day').textContent = days[d.getDay()];
+  document.getElementById('header-date').textContent = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelector('.today-btn').style.opacity = currentDate === today ? '0.4' : '1';
+}
+
+function changeDay(delta) {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  currentDate = d.toISOString().split('T')[0];
+  updateDateDisplay(); renderAll(); carryOverTasks();
+}
+
+function goToday() {
+  currentDate = new Date().toISOString().split('T')[0];
+  updateDateDisplay(); renderAll();
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const tabs = ['dashboard','appointments','tasks','reminders','budget','habits','meals','notes'];
+  const idx = tabs.indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  renderAll();
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderAppts(); renderTasks(); renderReminders(); renderHabits();
+  renderBudget();
+  setTimeout(() => { if (document.getElementById('daily-spend-filter')) { document.getElementById('daily-spend-filter').value = currentDate; renderDailySpend(currentDate); } }, 100);
+  renderNotes(); renderFocus3(); renderMeals(); renderGroceries();
+  updateDashStats();
+}
+
+function updateDashStats() {
+  const todayAppts = state.appointments.filter(a => a.date === currentDate).length;
+  const todayTasks = state.tasks.filter(t => t.date === currentDate && !t.done).length;
+  const todaySpend = (state.spending || []).filter(s => s.date === currentDate).reduce((a,s) => a + parseFloat(s.amount||0), 0);
+  const todayHabitLog = state.habitLog[currentDate] || {};
+  const habitDone = state.habits.filter(h => todayHabitLog[h.id]).length;
+  const habitTotal = state.habits.length;
+
+  document.getElementById('dash-stat-appts').textContent = todayAppts;
+  document.getElementById('dash-stat-tasks').textContent = todayTasks;
+  document.getElementById('dash-stat-spent').textContent = fmtMoney(todaySpend);
+  document.getElementById('dash-stat-habits').textContent = habitTotal ? `${habitDone}/${habitTotal}` : '0/0';
+}
+
+// ── APPOINTMENTS ──────────────────────────────────────────────────────────────
+function quickAddAppt() {
+  const title = document.getElementById('appt-quick').value.trim();
+  const time  = document.getElementById('appt-time-quick').value.trim();
+  if (!title) return;
+  state.appointments.push({ id: Date.now(), date: currentDate, time, title, location: '', notes: '' });
+  save(); renderAppts(); updateDashStats();
+  document.getElementById('appt-quick').value = '';
+  document.getElementById('appt-time-quick').value = '';
+  toast('Appointment added');
+}
+
+function saveAppt() {
+  const title = document.getElementById('appt-title').value.trim();
+  if (!title) { toast('Please add a title.'); return; }
+  state.appointments.push({
+    id: Date.now(),
+    date: document.getElementById('appt-date').value || currentDate,
+    time: document.getElementById('appt-time').value,
+    title,
+    location: document.getElementById('appt-location').value,
+    notes: document.getElementById('appt-notes').value
+  });
+  save(); renderAppts(); clearAppt(); updateDashStats(); toast('Appointment saved');
+}
+
+function clearAppt() {
+  ['appt-title','appt-time','appt-location','appt-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('appt-date').value = currentDate;
+}
+
+function deleteAppt(id) {
+  state.appointments = state.appointments.filter(a => a.id !== id);
+  save(); renderAppts(); updateDashStats(); toast('Removed');
+}
+
+function renderAppts() {
+  const todayList = state.appointments.filter(a => a.date === currentDate);
+  const allList   = state.appointments.slice().sort((a,b) => a.date.localeCompare(b.date));
+  document.getElementById('appt-count').textContent = todayList.length + ' today';
+
+  const dashEl = document.getElementById('appt-dash-list');
+  dashEl.innerHTML = !todayList.length ? '<div class="empty-state">No appointments today</div>' :
+    todayList.map(a => `
+      <div class="list-item">
+        <div class="item-dot"></div>
+        <div style="flex:1;">
+          <div class="item-text">${a.title}</div>
+          ${a.time ? `<div class="item-meta">${a.time}${a.location ? ' · ' + a.location : ''}</div>` : ''}
+        </div>
+        <button class="item-remove" onclick="deleteAppt(${a.id})">×</button>
+      </div>`).join('');
+
+  const fullEl = document.getElementById('appt-full-list');
+  if (fullEl) {
+    fullEl.innerHTML = !allList.length ? '<div class="empty-state">No appointments yet.</div>' :
+      allList.map(a => `
+        <div class="list-item" style="margin-bottom:6px;">
+          <div class="item-dot" style="margin-top:4px;"></div>
+          <div style="flex:1;">
+            <div class="item-text">${a.title}</div>
+            <div class="item-meta">${fmt(a.date)}${a.time ? ' · ' + a.time : ''}${a.location ? ' · ' + a.location : ''}</div>
+            ${a.notes ? `<div style="font-size:0.75rem;color:var(--ink-lt);margin-top:2px;">${a.notes}</div>` : ''}
+          </div>
+          <button class="item-remove" onclick="deleteAppt(${a.id})">×</button>
+        </div>`).join('');
+  }
+}
+
+// ── TASKS ─────────────────────────────────────────────────────────────────────
+function quickAddTask() {
+  const title    = document.getElementById('task-quick').value.trim();
+  const priority = document.getElementById('task-priority-quick').value;
+  const category = document.getElementById('task-cat-quick').value;
+  if (!title) return;
+  state.tasks.push({ id: Date.now(), date: currentDate, title, priority, category, notes: '', done: false });
+  save(); renderTasks(); renderFocus3(); updateDashStats();
+  document.getElementById('task-quick').value = '';
+  toast('Task added');
+}
+
+function saveTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if (!title) { toast('Please add a title.'); return; }
+  state.tasks.push({
+    id: Date.now(),
+    date: document.getElementById('task-date').value || currentDate,
+    title,
+    priority: document.getElementById('task-priority').value,
+    category: document.getElementById('task-category').value,
+    notes: document.getElementById('task-notes').value,
+    done: false
+  });
+  save(); renderTasks(); renderFocus3(); clearTask(); updateDashStats(); toast('Task saved');
+}
+
+function clearTask() {
+  ['task-title','task-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('task-date').value = currentDate;
+  document.getElementById('task-priority').value = 'normal';
+  document.getElementById('task-category').value = 'Work';
+}
+
+function toggleTask(id) {
+  const t = state.tasks.find(t => t.id === id);
+  if (t) { t.done = !t.done; save(); renderTasks(); renderFocus3(); updateDashStats(); }
+}
+
+function deleteTask(id) {
+  state.tasks = state.tasks.filter(t => t.id !== id);
+  save(); renderTasks(); renderFocus3(); updateDashStats(); toast('Removed');
+}
+
+function carryOverTasks() {
+  const today = new Date().toISOString().split('T')[0];
+  state.tasks.forEach(t => {
+    if (!t.done && t.date < today) t.date = today;
+  });
+  save();
+}
+
+function renderTasks() {
+  const todayList = state.tasks.filter(t => t.date === currentDate);
+  const allList   = state.tasks.slice().sort((a,b) => {
+    const p = { high: 0, normal: 1, low: 2 };
+    return (p[a.priority]||1) - (p[b.priority]||1) || a.date.localeCompare(b.date);
+  });
+
+  const remaining = todayList.filter(t => !t.done).length;
+  document.getElementById('task-count').textContent = remaining + ' remaining';
+
+  const priorityColor = { high: 'var(--rose)', normal: 'var(--teal)', low: 'var(--ink-lt)' };
+
+  const dashEl = document.getElementById('task-dash-list');
+  dashEl.innerHTML = !todayList.length ? '<div class="empty-state">No tasks today</div>' :
+    todayList.map(t => `
+      <div class="list-item" style="${t.done ? 'opacity:0.5;' : ''}">
+        <div class="item-dot" style="background:${priorityColor[t.priority]||'var(--teal)'};cursor:pointer;" onclick="toggleTask(${t.id})"></div>
+        <div style="flex:1;cursor:pointer;" onclick="toggleTask(${t.id})">
+          <div class="item-text" style="${t.done ? 'text-decoration:line-through;' : ''}">${t.title}</div>
+          ${t.category ? `<div class="item-meta">${t.category} · ${t.priority}</div>` : ''}
+        </div>
+        <button class="item-remove" onclick="deleteTask(${t.id})">×</button>
+      </div>`).join('');
+
+  const fullEl = document.getElementById('task-full-list');
+  if (fullEl) {
+    fullEl.innerHTML = !allList.length ? '<div class="empty-state">No tasks yet.</div>' :
+      allList.map(t => `
+        <div class="list-item" style="${t.done ? 'opacity:0.5;' : ''}margin-bottom:6px;">
+          <div class="item-dot" style="background:${priorityColor[t.priority]||'var(--teal)'};cursor:pointer;margin-top:4px;" onclick="toggleTask(${t.id})"></div>
+          <div style="flex:1;cursor:pointer;" onclick="toggleTask(${t.id})">
+            <div class="item-text" style="${t.done ? 'text-decoration:line-through;' : ''}">${t.title}</div>
+            <div class="item-meta">${fmt(t.date)} · ${t.category} · ${t.priority}</div>
+            ${t.notes ? `<div style="font-size:0.75rem;color:var(--ink-lt);margin-top:2px;">${t.notes}</div>` : ''}
+          </div>
+          <button class="item-remove" onclick="deleteTask(${t.id})">×</button>
+        </div>`).join('');
+  }
+}
+
+// ── REMINDERS ─────────────────────────────────────────────────────────────────
+function quickAddReminder() {
+  const title = document.getElementById('reminder-quick').value.trim();
+  if (!title) return;
+  state.reminders.push({ id: Date.now(), date: currentDate, type: 'Reminder', title, notes: '', done: false });
+  save(); renderReminders(); updateDashStats();
+  document.getElementById('reminder-quick').value = '';
+  toast('Reminder added');
+}
+
+function saveReminder() {
+  const title = document.getElementById('reminder-title').value.trim();
+  if (!title) { toast('Please add a title.'); return; }
+  state.reminders.push({
+    id: Date.now(),
+    date: document.getElementById('reminder-date').value || currentDate,
+    type: document.getElementById('reminder-type').value,
+    title,
+    notes: document.getElementById('reminder-notes').value,
+    done: false
+  });
+  save(); renderReminders(); clearReminder(); toast('Reminder saved');
+}
+
+function clearReminder() {
+  ['reminder-title','reminder-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('reminder-date').value = currentDate;
+}
+
+function toggleReminder(id) {
+  const r = state.reminders.find(r => r.id === id);
+  if (r) { r.done = !r.done; save(); renderReminders(); }
+}
+
+function deleteReminder(id) {
+  state.reminders = state.reminders.filter(r => r.id !== id);
+  save(); renderReminders(); toast('Removed');
+}
+
+function renderReminders() {
+  const todayList = state.reminders.filter(r => r.date === currentDate);
+  const allList   = state.reminders.slice().sort((a,b) => a.date.localeCompare(b.date));
+  document.getElementById('reminder-count').textContent = todayList.filter(r => !r.done).length + ' today';
+
+  const dashEl = document.getElementById('reminder-dash-list');
+  dashEl.innerHTML = !todayList.length ? '<div class="empty-state">No reminders today</div>' :
+    todayList.map(r => `
+      <div class="list-item" style="${r.done ? 'opacity:0.5;' : ''}">
+        <div class="item-dot" style="background:var(--amber);cursor:pointer;" onclick="toggleReminder(${r.id})"></div>
+        <div style="flex:1;cursor:pointer;" onclick="toggleReminder(${r.id})">
+          <div class="item-text" style="${r.done ? 'text-decoration:line-through;' : ''}">${r.title}</div>
+          ${r.type ? `<div class="item-meta">${r.type}</div>` : ''}
+        </div>
+        <button class="item-remove" onclick="deleteReminder(${r.id})">×</button>
+      </div>`).join('');
+
+  const fullEl = document.getElementById('reminder-full-list');
+  if (fullEl) {
+    fullEl.innerHTML = !allList.length ? '<div class="empty-state">No reminders yet.</div>' :
+      allList.map(r => `
+        <div class="list-item" style="${r.done ? 'opacity:0.5;' : ''}margin-bottom:6px;">
+          <div class="item-dot" style="background:var(--amber);cursor:pointer;margin-top:4px;" onclick="toggleReminder(${r.id})"></div>
+          <div style="flex:1;cursor:pointer;" onclick="toggleReminder(${r.id})">
+            <div class="item-text" style="${r.done ? 'text-decoration:line-through;' : ''}">${r.title}</div>
+            <div class="item-meta">${fmt(r.date)} · ${r.type}</div>
+            ${r.notes ? `<div style="font-size:0.75rem;color:var(--ink-lt);margin-top:2px;">${r.notes}</div>` : ''}
+          </div>
+          <button class="item-remove" onclick="deleteReminder(${r.id})">×</button>
+        </div>`).join('');
+  }
+}
+
+// ── BUDGET ────────────────────────────────────────────────────────────────────
+function saveBudgetSetup() {
+  const month = document.getElementById('budget-month').value;
+  const total = parseFloat(document.getElementById('budget-total').value) || 0;
+  if (!month) { toast('Please select a month.'); return; }
+  if (!state.budget[month]) state.budget[month] = { total: 0, categories: [] };
+  state.budget[month].total = total;
+  save(); renderBudget(); toast('Budget saved');
+}
+
+function addCategory() {
+  const name  = document.getElementById('cat-name').value.trim();
+  const limit = parseFloat(document.getElementById('cat-limit').value) || 0;
+  if (!name) { toast('Please enter a category name.'); return; }
+  const month = currentMonth();
+  if (!state.budget[month]) state.budget[month] = { total: 0, categories: [] };
+  state.budget[month].categories.push({ name, limit });
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-limit').value = '';
+  save(); renderBudget(); toast('Category added');
+}
+
+function deleteCategory(month, idx) {
+  state.budget[month].categories.splice(idx, 1);
+  save(); renderBudget();
+}
+
+function saveSpend() {
+  const amount = parseFloat(document.getElementById('spend-amount').value);
+  const desc   = document.getElementById('spend-desc').value.trim();
+  if (!amount || !desc) { toast('Please fill in amount and description.'); return; }
+  state.spending.push({
+    id: Date.now(),
+    date: document.getElementById('spend-date').value || currentDate,
+    amount,
+    description: desc,
+    category: document.getElementById('spend-category').value
+  });
+  save(); renderBudget(); clearSpend(); updateDashStats(); toast('Purchase logged');
+}
+
+function clearSpend() {
+  document.getElementById('spend-amount').value = '';
+  document.getElementById('spend-desc').value = '';
+  document.getElementById('spend-date').value = currentDate;
+}
+
+function quickAddSpend() {
+  const amount = parseFloat(document.getElementById('spend-amount-quick').value);
+  const desc   = document.getElementById('spend-desc-quick').value.trim();
+  if (!amount || !desc) { toast('Enter amount and description.'); return; }
+  const cat = document.getElementById('spend-cat-quick').value;
+  state.spending.push({ id: Date.now(), date: currentDate, amount, description: desc, category: cat });
+  document.getElementById('spend-amount-quick').value = '';
+  document.getElementById('spend-desc-quick').value = '';
+  save(); renderBudget(); updateDashStats(); toast('Spend logged');
+}
+
+function deleteSpend(id) {
+  state.spending = state.spending.filter(s => s.id !== id);
+  save(); renderBudget(); updateDashStats(); toast('Removed');
+}
+
+function filterDailySpend() {
+  const date = document.getElementById('daily-spend-filter').value;
+  if (date) renderDailySpend(date);
+}
+
+function viewToday() {
+  document.getElementById('daily-spend-filter').value = currentDate;
+  renderDailySpend(currentDate);
+}
+
+function renderDailySpend(date) {
+  const entries = (state.spending || []).filter(s => s.date === date);
+  const total = entries.reduce((a,s) => a + parseFloat(s.amount||0), 0);
+  const el = document.getElementById('daily-spend-list');
+  const totEl = document.getElementById('daily-spend-total');
+  const labelEl = document.getElementById('daily-spend-date-label');
+  if (labelEl) labelEl.textContent = fmt(date);
+  if (totEl) totEl.textContent = `Total: ${fmtMoney(total)}`;
+  if (!el) return;
+  el.innerHTML = !entries.length ? '<div class="empty-state">No spending on this date.</div>' :
+    entries.map(s => `
+      <div class="list-item" style="margin-bottom:5px;">
+        <div class="item-dot" style="background:var(--amber);margin-top:4px;"></div>
+        <div style="flex:1;"><div class="item-text">${s.description}</div><div class="item-meta">${s.category}</div></div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--ink);margin-right:8px;">${fmtMoney(s.amount)}</div>
+        <button class="item-remove" onclick="deleteSpend(${s.id})">×</button>
+      </div>`).join('');
+}
+
+function renderBudget() {
+  const month = currentMonth();
+  const budgetData = state.budget[month] || { total: 0, categories: [] };
+  const monthlyTotal = budgetData.total || 0;
+  const monthSpend = (state.spending||[]).filter(s => s.date && s.date.startsWith(month));
+  const spent = monthSpend.reduce((a,s) => a + parseFloat(s.amount||0), 0);
+  const remaining = monthlyTotal - spent;
+  const pct = monthlyTotal > 0 ? Math.min(100, Math.round(spent/monthlyTotal*100)) : 0;
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const [y,m] = month.split('-');
+  const monthLabel = `${months[parseInt(m)-1]} ${y}`;
+
+  const mlEl = document.getElementById('budget-month-label');
+  if (mlEl) mlEl.textContent = monthLabel;
+  const setupEl = document.getElementById('budget-setup-month');
+  if (setupEl) setupEl.textContent = monthLabel;
+
+  const todaySpend = (state.spending||[]).filter(s => s.date === currentDate).reduce((a,s) => a + parseFloat(s.amount||0), 0);
+  const bdEl = document.getElementById('budget-dash-count');
+  if (bdEl) bdEl.textContent = fmtMoney(todaySpend) + ' spent today';
+
+  const tbEl = document.getElementById('dash-total-budget');
+  if (tbEl) tbEl.textContent = fmtMoney(monthlyTotal);
+  const tsEl = document.getElementById('dash-total-spent');
+  if (tsEl) tsEl.textContent = fmtMoney(spent);
+  const remEl = document.getElementById('dash-remaining');
+  if (remEl) remEl.textContent = fmtMoney(remaining);
+  const pctEl = document.getElementById('budget-pct');
+  if (pctEl) pctEl.textContent = pct + '%';
+  const fillEl = document.getElementById('budget-bar-fill');
+  if (fillEl) {
+    fillEl.style.width = pct + '%';
+    fillEl.className = 'budget-fill ' + (pct > 90 ? 'over' : pct > 70 ? 'warn' : 'safe');
+  }
+
+  // Update category dropdown
+  const catSelectors = ['spend-category','spend-cat-quick'];
+  catSelectors.forEach(selId => {
+    const sel = document.getElementById(selId);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="General">General</option>';
+    budgetData.categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.name; opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
+    if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+  });
+
+  // Category list
+  const catListEl = document.getElementById('category-list');
+  if (catListEl) {
+    catListEl.innerHTML = !budgetData.categories.length ? '<div class="empty-state">No categories yet.</div>' :
+      budgetData.categories.map((c,i) => `
+        <div class="list-item" style="margin-bottom:5px;">
+          <div class="item-dot" style="background:var(--amber);margin-top:4px;"></div>
+          <div style="flex:1;"><div class="item-text">${c.name}</div><div class="item-meta">Limit: ${fmtMoney(c.limit)}</div></div>
+          <button class="item-remove" onclick="deleteCategory('${month}',${i})">×</button>
+        </div>`).join('');
+  }
+
+  // Category breakdown
+  const breakdownEl = document.getElementById('category-breakdown');
+  if (breakdownEl) {
+    const allCats = [{ name: 'General', limit: 0 }, ...budgetData.categories];
+    breakdownEl.innerHTML = allCats.map(c => {
+      const catSpent = monthSpend.filter(s => s.category === c.name).reduce((a,s) => a + parseFloat(s.amount||0), 0);
+      const catLeft = c.limit > 0 ? c.limit - catSpent : null;
+      return `
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center;">
+          <span style="font-size:0.82rem;color:var(--ink);">${c.name}</span>
+          <span style="font-size:0.78rem;color:var(--ink-lt);text-align:right;">${c.limit ? fmtMoney(c.limit) : '—'}</span>
+          <span style="font-size:0.82rem;font-weight:500;color:var(--ink);text-align:right;">${fmtMoney(catSpent)}</span>
+          <span style="font-size:0.78rem;text-align:right;color:${catLeft !== null && catLeft < 0 ? 'var(--rose)' : 'var(--teal)'};">${catLeft !== null ? fmtMoney(catLeft) : '—'}</span>
+          <span></span>
+        </div>`;
+    }).join('');
+  }
+
+  // Spend history
+  const fullEl = document.getElementById('spend-full-list');
+  if (fullEl) {
+    const all = (state.spending||[]).slice().sort((a,b) => b.date.localeCompare(a.date));
+    fullEl.innerHTML = !all.length ? '<div class="empty-state">No spending logged yet.</div>' :
+      all.map(s => `
+        <div class="list-item" style="margin-bottom:5px;">
+          <div class="item-dot" style="background:var(--amber);margin-top:4px;"></div>
+          <div style="flex:1;"><div class="item-text">${s.description}</div><div class="item-meta">${fmt(s.date)} · ${s.category}</div></div>
+          <div style="font-size:0.82rem;font-weight:600;color:var(--ink);margin-right:8px;">${fmtMoney(s.amount)}</div>
+          <button class="item-remove" onclick="deleteSpend(${s.id})">×</button>
+        </div>`).join('');
+  }
+
+  // Initialize spend-date
+  const sdEl = document.getElementById('spend-date');
+  if (sdEl && !sdEl.value) sdEl.value = currentDate;
+}
+
+// ── HABITS ────────────────────────────────────────────────────────────────────
+function addHabit() {
+  const name = document.getElementById('habit-name').value.trim();
+  if (!name) { toast('Please enter a habit name.'); return; }
+  state.habits.push({ id: Date.now(), name, category: document.getElementById('habit-cat').value.trim() });
+  document.getElementById('habit-name').value = '';
+  document.getElementById('habit-cat').value = '';
+  save(); renderHabits(); updateDashStats(); toast('Habit added');
+}
+
+function toggleHabit(id) {
+  if (!state.habitLog[currentDate]) state.habitLog[currentDate] = {};
+  state.habitLog[currentDate][id] = !state.habitLog[currentDate][id];
+  save(); renderHabits(); renderFocus3(); updateDashStats();
+}
+
+function deleteHabit(id) {
+  state.habits = state.habits.filter(h => h.id !== id);
+  save(); renderHabits(); updateDashStats(); toast('Habit removed');
+}
+
+function renderHabits() {
+  const log = state.habitLog[currentDate] || {};
+  const done = state.habits.filter(h => log[h.id]).length;
+  const total = state.habits.length;
+
+  document.getElementById('habit-count').textContent = `${done} / ${total} done`;
+
+  const dateLabel = document.getElementById('habit-date-label');
+  if (dateLabel) dateLabel.textContent = fmt(currentDate);
+
+  const dashEl = document.getElementById('habit-dash-list');
+  const fullEl = document.getElementById('habit-full-list');
+
+  const habitHTML = !state.habits.length ? '<div class="empty-state">No habits yet. Add some in the Habits tab.</div>' :
+    state.habits.map(h => `
+      <div class="habit-item" onclick="toggleHabit(${h.id})">
+        <div class="habit-check ${log[h.id] ? 'done' : ''}"></div>
+        <div class="habit-name" style="${log[h.id] ? 'text-decoration:line-through;opacity:0.6;' : ''}">${h.name}</div>
+        ${h.category ? `<div class="habit-cat">${h.category}</div>` : ''}
+        <button class="item-remove" onclick="event.stopPropagation();deleteHabit(${h.id})">×</button>
+      </div>`).join('');
+
+  if (dashEl) dashEl.innerHTML = habitHTML;
+  if (fullEl) fullEl.innerHTML = habitHTML;
+}
+
+// ── MEALS ─────────────────────────────────────────────────────────────────────
+function saveMeals() {
+  if (!state.meals[currentDate]) state.meals[currentDate] = {};
+  state.meals[currentDate].breakfast = document.getElementById('meal-breakfast').value;
+  state.meals[currentDate].lunch     = document.getElementById('meal-lunch').value;
+  state.meals[currentDate].dinner    = document.getElementById('meal-dinner').value;
+  state.meals[currentDate].snack     = document.getElementById('meal-snack').value;
+  state.meals[currentDate].notes     = document.getElementById('meal-notes').value;
+  save(); renderMeals(); toast('Meals saved');
+}
+
+function saveMealsDash() {
+  if (!state.meals[currentDate]) state.meals[currentDate] = {};
+  state.meals[currentDate].breakfast = document.getElementById('meal-breakfast-dash').value;
+  state.meals[currentDate].lunch     = document.getElementById('meal-lunch-dash').value;
+  state.meals[currentDate].dinner    = document.getElementById('meal-dinner-dash').value;
+  state.meals[currentDate].snack     = document.getElementById('meal-snack-dash').value;
+  save(); toast('Meals saved');
+}
+
+function clearMeals() {
+  ['meal-breakfast','meal-lunch','meal-dinner','meal-snack','meal-notes'].forEach(id => document.getElementById(id).value = '');
+}
+
+function resetWater() {
+  if (!state.meals[currentDate]) state.meals[currentDate] = {};
+  state.meals[currentDate].water = 0;
+  save(); renderMeals();
+}
+
+function toggleWater(idx, trackId) {
+  if (!state.meals[currentDate]) state.meals[currentDate] = {};
+  const cur = state.meals[currentDate].water || 0;
+  state.meals[currentDate].water = idx + 1 <= cur ? idx : idx + 1;
+  save(); renderWaterTrack(trackId, state.meals[currentDate].water || 0);
+  const countId = trackId === 'water-dash-track' ? 'water-dash-count' : 'water-full-count';
+  const el = document.getElementById(countId);
+  if (el) el.textContent = `${state.meals[currentDate].water || 0} / 8 glasses`;
+}
+
+function renderWaterTrack(trackId, filled) {
+  const el = document.getElementById(trackId);
+  if (!el) return;
+  el.innerHTML = Array.from({length:8}, (_,i) => `
+    <div class="water-glass ${i < filled ? 'filled' : ''}" onclick="toggleWater(${i},'${trackId}')"></div>`).join('');
+}
+
+function renderMeals() {
+  const meal = state.meals[currentDate] || {};
+  const water = meal.water || 0;
+
+  // Populate inputs
+  ['breakfast','lunch','dinner','snack','notes'].forEach(f => {
+    const el = document.getElementById('meal-' + f);
+    if (el) el.value = meal[f] || '';
+    const dashEl = document.getElementById('meal-' + f + '-dash');
+    if (dashEl) dashEl.value = meal[f] || '';
+  });
+
+  renderWaterTrack('water-dash-track', water);
+  renderWaterTrack('water-full-track', water);
+
+  const wdc = document.getElementById('water-dash-count');
+  if (wdc) wdc.textContent = `${water} / 8 glasses`;
+  const wfc = document.getElementById('water-full-count');
+  if (wfc) wfc.textContent = `${water} / 8 glasses`;
+
+  const mlEl = document.getElementById('meals-date-label');
+  if (mlEl) mlEl.textContent = fmt(currentDate);
+
+  const histEl = document.getElementById('meals-history');
+  if (histEl) {
+    const entries = Object.entries(state.meals||{})
+      .filter(([d, m]) => d !== currentDate && (m.breakfast || m.lunch || m.dinner || m.snack))
+      .sort(([a],[b]) => b.localeCompare(a)).slice(0,10);
+    histEl.innerHTML = !entries.length ? '<div class="empty-state">No past meal history yet.</div>' :
+      entries.map(([d, m]) => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:0.62rem;letter-spacing:0.14em;color:var(--teal);font-weight:500;margin-bottom:8px;text-transform:uppercase;">${fmt(d)}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+            ${m.breakfast ? `<div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Breakfast · </span>${m.breakfast}</div>` : ''}
+            ${m.lunch     ? `<div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Lunch · </span>${m.lunch}</div>` : ''}
+            ${m.dinner    ? `<div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Dinner · </span>${m.dinner}</div>` : ''}
+            ${m.snack     ? `<div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Snack · </span>${m.snack}</div>` : ''}
+          </div>
+          ${m.water ? `<div style="font-size:0.68rem;color:var(--slate);margin-top:4px;">💧 ${m.water} glasses</div>` : ''}
+        </div>`).join('');
+  }
+}
+
+// ── GROCERIES ──────────────────────────────────────────────────────────────────
+function addGrocery() {
+  const name = document.getElementById('grocery-input').value.trim();
+  if (!name) return;
+  if (!state.groceries) state.groceries = [];
+  state.groceries.push({ id: Date.now(), name, category: document.getElementById('grocery-cat').value, picked: false });
+  document.getElementById('grocery-input').value = '';
+  save(); renderGroceries(); toast('Item added');
+}
+
+function toggleGrocery(id) {
+  const item = (state.groceries||[]).find(g => g.id === id);
+  if (item) { item.picked = !item.picked; save(); renderGroceries(); }
+}
+
+function deleteGrocery(id) {
+  state.groceries = (state.groceries||[]).filter(g => g.id !== id);
+  save(); renderGroceries(); toast('Removed');
+}
+
+function renderGroceries() {
+  const el = document.getElementById('grocery-list');
+  if (!el) return;
+  const list = state.groceries || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state">Your grocery list is empty.</div>'; return; }
+  const cats = [...new Set(list.map(g => g.category))];
+  el.innerHTML = cats.map(cat => {
+    const items = list.filter(g => g.category === cat);
+    return `<div style="margin-bottom:12px;">
+      <div style="font-size:0.6rem;color:var(--teal);letter-spacing:0.16em;text-transform:uppercase;font-weight:500;margin-bottom:6px;">${cat}</div>
+      ${items.map(g => `
+        <div class="grocery-item ${g.picked ? 'picked' : ''}">
+          <div class="grocery-check ${g.picked ? 'checked' : ''}" onclick="toggleGrocery(${g.id})"></div>
+          <div class="grocery-name">${g.name}</div>
+          <button class="item-remove" onclick="deleteGrocery(${g.id})">×</button>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ── NOTES ─────────────────────────────────────────────────────────────────────
+function saveNotes() {
+  if (!state.notes) state.notes = {};
+  state.notes[currentDate] = document.getElementById('notes-dash').value;
+  save(); toast('Note saved');
+}
+
+function saveNotesFull() {
+  if (!state.notes) state.notes = {};
+  state.notes[currentDate] = document.getElementById('notes-full').value;
+  document.getElementById('notes-dash').value = state.notes[currentDate];
+  save(); renderNotes(); toast('Notes saved');
+}
+
+function renderNotes() {
+  const note = state.notes ? state.notes[currentDate] || '' : '';
+  const dashEl = document.getElementById('notes-dash');
+  const fullEl = document.getElementById('notes-full');
+  if (dashEl && dashEl !== document.activeElement) dashEl.value = note;
+  if (fullEl && fullEl !== document.activeElement) fullEl.value = note;
+
+  const dateLabel = document.getElementById('notes-date-label');
+  if (dateLabel) dateLabel.textContent = fmt(currentDate);
+
+  const histEl = document.getElementById('notes-history');
+  if (histEl) {
+    const entries = Object.entries(state.notes||{})
+      .filter(([d,n]) => d !== currentDate && n && n.trim())
+      .sort(([a],[b]) => b.localeCompare(a)).slice(0,10);
+    histEl.innerHTML = !entries.length ? '<div class="empty-state">No past notes.</div>' :
+      entries.map(([d,n]) => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:0.6rem;letter-spacing:0.14em;color:var(--teal);font-weight:500;margin-bottom:6px;text-transform:uppercase;">${fmt(d)}</div>
+          <div style="font-size:0.8rem;color:var(--ink-mid);white-space:pre-wrap;line-height:1.6;">${n.substring(0,300)}${n.length>300?'…':''}</div>
+        </div>`).join('');
+  }
+}
+
+// ── FOCUS 3 ───────────────────────────────────────────────────────────────────
+function renderFocus3() {
+  const el = document.getElementById('focus-3-list');
+  if (!el) return;
+  const todayTasks = state.tasks.filter(t => t.date === currentDate);
+  const high   = todayTasks.filter(t => !t.done && t.priority === 'high');
+  const medium = todayTasks.filter(t => !t.done && t.priority === 'medium');
+  const allHigh = state.tasks.filter(t => !t.done && t.priority === 'high' && t.date !== currentDate);
+  let focusTasks = [...high];
+  if (focusTasks.length < 3) focusTasks = [...focusTasks, ...medium].slice(0,3);
+  if (focusTasks.length < 3) focusTasks = [...focusTasks, ...allHigh].slice(0,3);
+  const doneHigh = todayTasks.filter(t => t.done && t.priority === 'high');
+  const display = [...focusTasks, ...doneHigh].slice(0,3);
+  if (!display.length) { el.innerHTML = '<div class="focus-empty">No high-priority tasks yet.<br>Add tasks and mark them High.</div>'; return; }
+  el.innerHTML = display.map((t,i) => `
+    <div class="focus-item ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id}); renderFocus3()">
+      <div class="focus-num">${i+1}</div>
+      <div class="focus-check ${t.done ? 'checked' : ''}"></div>
+      <div class="focus-item-text">${t.title}</div>
+      <div class="focus-item-cat">${t.category || ''}</div>
+    </div>`).join('');
+}
+
+// ── BACKUP / RESTORE ──────────────────────────────────────────────────────────
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `daily-hub-backup-${currentDate}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Backup downloaded');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      Object.assign(state, imported);
+      save(); renderAll(); toast('Data restored successfully');
+    } catch(err) { toast('Error importing file. Please check the format.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ── WEATHER ───────────────────────────────────────────────────────────────────
+const WMO_CODES = { 0:'Clear Sky',1:'Mainly Clear',2:'Partly Cloudy',3:'Overcast',45:'Foggy',48:'Icy Fog',51:'Light Drizzle',53:'Drizzle',55:'Heavy Drizzle',61:'Light Rain',63:'Rain',65:'Heavy Rain',71:'Light Snow',73:'Snow',75:'Heavy Snow',77:'Snow Grains',80:'Light Showers',81:'Showers',82:'Heavy Showers',85:'Snow Showers',86:'Heavy Snow Showers',95:'Thunderstorm',96:'Thunderstorm w/ Hail',99:'Heavy Thunderstorm' };
+const WMO_ICONS = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'❄️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',85:'🌨️',86:'❄️',95:'⛈️',96:'⛈️',99:'⛈️' };
+
+function fetchWeather() {
+  const widget = document.getElementById('weather-widget');
+  if (!navigator.geolocation) { widget.innerHTML = '<div class="weather-loading">Weather unavailable</div>'; return; }
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph`);
+      const data = await res.json();
+      const cw = data.current_weather;
+      const icon = WMO_ICONS[cw.weathercode] || '🌡️';
+      const desc = WMO_CODES[cw.weathercode] || 'Current Conditions';
+      let city = '';
+      try {
+        const gr = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+        const gd = await gr.json();
+        city = gd.address?.city || gd.address?.town || gd.address?.county || '';
+      } catch(e) {}
+      widget.innerHTML = `<div class="weather-icon">${icon}</div><div><div class="weather-temp">${Math.round(cw.temperature)}°F</div><div class="weather-desc">${desc}</div>${city ? `<div class="weather-loc">${city}</div>` : ''}</div>`;
+    } catch(e) { widget.innerHTML = '<div class="weather-loading">Weather unavailable</div>'; }
+  }, () => { widget.innerHTML = '<div class="weather-loading">Allow location for weather</div>'; });
+}
+
+// ── DARK MODE ─────────────────────────────────────────────────────────────────
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('dh-dark', isDark ? '1' : '0');
+  document.getElementById('dark-toggle-btn').textContent = isDark ? '☀️' : '🌙';
+}
+
+(function initDark() {
+  if (localStorage.getItem('dh-dark') === '1') {
+    document.body.classList.add('dark-mode');
+    const btn = document.getElementById('dark-toggle-btn');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
+// ── AI ────────────────────────────────────────────────────────────────────────
+let aiOpen = false, aiHistory = [], aiTyping = false;
+
+function toggleAI() {
+  aiOpen = !aiOpen;
+  document.getElementById('ai-panel').classList.toggle('open', aiOpen);
+  if (aiOpen) setTimeout(() => document.getElementById('ai-input').focus(), 300);
+}
+
+function sendQuick(text) {
+  document.getElementById('ai-input').value = text;
+  document.getElementById('ai-quick-prompts').style.display = 'none';
+  sendAI();
+}
+
+async function sendAI() {
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if (!text || aiTyping) return;
+  input.value = '';
+  appendAIMsg('user', text);
+  aiHistory.push({ role: 'user', content: text });
+  aiTyping = true;
+  document.getElementById('ai-send-btn').disabled = true;
+  const typingEl = showTyping();
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are a warm, practical Daily Assistant embedded in "Daily Hub" — a personal life operating system. Help with: planning days, prioritizing tasks, meal planning, habit building, budgeting, motivation, and productivity. Keep responses concise and encouraging. Reference the tool's features (Tasks, Habits, Budget, Meals, Appointments, Reminders, Notes) when relevant. Prefer conversational prose over bullet points.`,
+        messages: aiHistory
+      })
+    });
+    const data = await res.json();
+    typingEl.remove();
+    const reply = data.content?.[0]?.text || "I'm having trouble responding right now.";
+    appendAIMsg('assistant', reply);
+    aiHistory.push({ role: 'assistant', content: reply });
+    if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
+  } catch(err) {
+    typingEl.remove();
+    appendAIMsg('assistant', "Sorry, couldn't connect right now. Check your internet and try again.");
+  }
+  aiTyping = false;
+  document.getElementById('ai-send-btn').disabled = false;
+  document.getElementById('ai-input').focus();
+}
+
+function appendAIMsg(role, text) {
+  const container = document.getElementById('ai-messages');
+  const msg = document.createElement('div');
+  msg.className = `ai-msg ${role}`;
+  const formatted = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
+  msg.innerHTML = `<div class="ai-bubble">${formatted}</div>`;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+  const container = document.getElementById('ai-messages');
+  const el = document.createElement('div');
+  el.className = 'ai-msg assistant';
+  el.innerHTML = `<div class="ai-typing"><span></span><span></span><span></span></div>`;
+  container.appendChild(el);
+  container.scrollTop = container.scrollHeight;
+  return el;
+}
+
+// ── PWA ───────────────────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  const swCode = "const CACHE='dh-v1';self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/'  ])));});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});";
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  setTimeout(() => {
+    if (!deferredPrompt) return;
+    const hint = document.createElement('button');
+    hint.className = 'header-btn';
+    hint.style.marginLeft = '4px';
+    hint.textContent = '⊕ Install';
+    hint.title = 'Install Daily Hub as an app';
+    hint.onclick = () => { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { hint.remove(); deferredPrompt = null; }); };
+    document.querySelector('.header-right').appendChild(hint);
+  }, 3000);
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+updateDateDisplay();
+carryOverTasks();
+renderAll();
+fetchWeather();
+
+// Initialize date inputs
+const today = new Date().toISOString().split('T')[0];
+['appt-date','task-date','reminder-date','spend-date'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.value = currentDate;
+});
+const bmEl = document.getElementById('budget-month');
+if (bmEl) bmEl.value = currentMonth();
+</script>
+
+
+
+</body></html>
