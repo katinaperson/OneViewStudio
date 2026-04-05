@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A1A18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paw Tracker">
+<title>Paw Tracker · OneView Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F8F7F4; --surface:#FFFFFF; --border:#E8E4DC;
+  --ink:#1A1A18; --ink-mid:#4A4A44; --ink-lt:#8A8880;
+  --teal:#2A7B6F; --teal-lt:#E8F4F2; --teal-mid:#4A9B8E;
+  --amber:#C4872A; --amber-lt:#FDF3E3;
+  --rose:#C4546A; --rose-lt:#FDE8EC;
+  --slate:#3A4A5C; --slate-lt:#EAF0F8;
+  --accent:#4AB8A8; --accent-text:#7DD3C8;
+  --header-bg:#1A1A18; --nav-bg:#1E1E1C;
+  --radius:8px; --shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+body.dark-mode {
+  --bg:#161614; --surface:#1E1E1C; --border:#2E2E2A;
+  --ink:#F0EFEC; --ink-mid:#C8C6C0; --ink-lt:#888680;
+  --teal:#4AB8A8; --teal-lt:#0E2420; --teal-mid:#5AC8B8;
+  --amber:#D4982A; --amber-lt:#2A1E08;
+  --rose:#E06880; --rose-lt:#2A1018;
+  --slate:#6A8AAC; --slate-lt:#0E1A28;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;}
+
+/* HEADER */
+.header{background:var(--header-bg);border-bottom:3px solid var(--accent);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;}
+.logo-wrap{display:flex;align-items:center;gap:12px;}
+.logo{font-family:'DM Serif Display',serif;font-size:1.7rem;color:white;letter-spacing:0.02em;line-height:1;}
+.logo span{color:#7DD3C8;}
+.logo-sub{font-size:0.56rem;color:rgba(255,255,255,0.32);letter-spacing:0.16em;text-transform:uppercase;margin-top:4px;}
+.header-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.hbtn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.65);font-family:'DM Sans',sans-serif;font-size:0.68rem;padding:7px 12px;border-radius:4px;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;white-space:nowrap;}
+.hbtn:hover{background:rgba(255,255,255,0.14);color:white;}
+
+/* NAV */
+.nav{background:var(--nav-bg);border-bottom:1px solid #2A2A28;padding:0 20px;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.nav-tab{padding:12px 16px;font-size:0.63rem;letter-spacing:0.12em;text-transform:uppercase;color:#585650;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color 0.15s;}
+.nav-tab:hover{color:#888680;}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* CAT SWITCHER */
+.cat-switcher{background:var(--nav-bg);border-bottom:1px solid #2A2A28;padding:8px 20px;display:flex;gap:8px;overflow-x:auto;}
+.cat-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid #3A3A38;color:#888680;font-size:0.68rem;cursor:pointer;white-space:nowrap;transition:all 0.15s;background:transparent;}
+.cat-pill:hover{border-color:#585650;color:#C8C6C0;}
+.cat-pill.active{border-color:var(--accent);color:var(--accent);background:rgba(74,184,168,0.08);}
+.cat-pill .paw{font-size:0.9rem;}
+
+/* MAIN */
+.main{padding:20px;max-width:900px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* PAGE HEADER */
+.page-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--ink);margin-bottom:3px;}
+.page-sub{font-size:0.68rem;color:var(--ink-lt);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;}
+.accent-line{width:32px;height:2px;background:var(--accent);margin-bottom:20px;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow);}
+.card-title{font-size:0.68rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;margin-right:6px;flex-shrink:0;}
+.card-dot.amber{background:var(--amber);}
+.card-dot.rose{background:var(--rose);}
+.card-dot.slate{background:var(--slate);}
+
+/* SNAPSHOT */
+.snap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:601px){.snap-grid{grid-template-columns:repeat(4,1fr);}}
+.snap-card{background:var(--surface);border:1px solid var(--border);border-top:3px solid transparent;border-radius:var(--radius);padding:14px;}
+.snap-card.teal{border-top-color:var(--teal);}
+.snap-card.amber{border-top-color:var(--amber);}
+.snap-card.rose{border-top-color:var(--rose);}
+.snap-card.slate{border-top-color:var(--slate);}
+.snap-num{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--ink);line-height:1;margin-bottom:4px;}
+.snap-label{font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);}
+.snap-sub{font-size:0.62rem;color:var(--ink-lt);margin-top:3px;}
+
+/* FORMS */
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.field label{font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-lt);}
+.field-row{display:grid;gap:12px;}
+.field-row.c2{grid-template-columns:1fr 1fr;}
+.field-row.c3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:600px){.field-row.c2,.field-row.c3{grid-template-columns:1fr;}}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--ink);transition:border-color 0.15s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);}
+textarea{resize:vertical;min-height:70px;}
+body.dark-mode input,body.dark-mode select,body.dark-mode textarea{color:var(--ink);}
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.btn{background:var(--bg);border:1px solid var(--border);color:var(--ink-mid);font-family:'DM Sans',sans-serif;font-size:0.72rem;padding:8px 16px;border-radius:5px;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;}
+.btn:hover{border-color:var(--ink-lt);}
+.btn-primary{background:var(--teal);border-color:var(--teal);color:white;}
+.btn-primary:hover{background:var(--teal-mid);border-color:var(--teal-mid);}
+.btn-sm{padding:4px 10px;font-size:0.62rem;}
+.btn-danger{background:var(--rose-lt);border-color:var(--rose);color:var(--rose);}
+.remove-btn{background:none;border:none;color:var(--ink-lt);cursor:pointer;font-size:1rem;padding:0 4px;line-height:1;flex-shrink:0;}
+.remove-btn:hover{color:var(--rose);}
+.empty-state{font-size:0.75rem;color:var(--ink-lt);text-align:center;padding:14px 0;font-style:italic;}
+
+/* LOG ENTRIES */
+.log-entry{padding:12px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--surface);}
+.log-entry-date{font-size:0.62rem;color:var(--ink-lt);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.log-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+.badge{font-size:0.58rem;padding:2px 8px;border-radius:10px;font-weight:500;letter-spacing:0.04em;}
+.badge-ok{background:var(--teal-lt);color:var(--teal);}
+.badge-warn{background:var(--amber-lt);color:var(--amber);}
+.badge-alert{background:var(--rose-lt);color:var(--rose);}
+.log-detail-row{display:flex;gap:16px;flex-wrap:wrap;font-size:0.72rem;color:var(--ink-lt);}
+.log-detail-row span{display:flex;gap:4px;}
+.log-detail-row strong{color:var(--ink-mid);}
+
+/* CAT PROFILE */
+.cat-profile-header{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+.cat-avatar-lg{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
+.cat-info-name{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--ink);}
+.cat-info-meta{font-size:0.65rem;color:var(--ink-lt);letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;}
+
+/* FERAL TABLE */
+.feral-item{display:flex;align-items:flex-start;justify-content:space-between;padding:12px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--surface);gap:10px;}
+.feral-left{flex:1;}
+.feral-name{font-size:0.9rem;font-weight:500;color:var(--ink);}
+.feral-meta{font-size:0.65rem;color:var(--ink-lt);margin-top:3px;}
+
+/* VET */
+.vet-item{padding:12px 14px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--surface);}
+.vet-name{font-size:0.9rem;font-weight:500;color:var(--ink);}
+.vet-clinic{font-size:0.72rem;color:var(--ink-lt);margin-top:2px;}
+.vet-phone{font-size:0.72rem;color:var(--teal);margin-top:2px;}
+
+/* RECORDS */
+.record-item{display:flex;align-items:flex-start;justify-content:space-between;padding:12px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;background:var(--surface);gap:10px;}
+.record-type{display:inline-block;font-size:0.58rem;padding:2px 8px;border-radius:10px;background:var(--slate-lt);color:var(--slate);font-weight:500;margin-bottom:4px;}
+.record-cat-tag{display:inline-block;font-size:0.58rem;padding:2px 8px;border-radius:10px;background:var(--teal-lt);color:var(--teal);font-weight:500;margin-left:4px;}
+
+/* ATTACHMENTS */
+.attach-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--border);border-radius:5px;margin-bottom:6px;background:var(--bg);}
+.attach-icon{font-size:1rem;margin-right:8px;flex-shrink:0;}
+.attach-name{font-size:0.78rem;color:var(--ink);flex:1;}
+.attach-size{font-size:0.6rem;color:var(--ink-lt);margin-left:8px;white-space:nowrap;}
+.attach-download{font-size:0.62rem;color:var(--teal);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:2px 6px;}
+.attach-download:hover{text-decoration:underline;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:white;font-size:0.75rem;padding:8px 18px;border-radius:20px;opacity:0;transition:all 0.2s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* INFO BOX */
+.info-box{background:var(--teal-lt);border:1px solid var(--teal);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;font-size:0.78rem;color:var(--teal);line-height:1.6;}
+
+/* SECTION DIVIDER */
+.section-divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-wrap">
+    <svg width="38" height="38" viewBox="0 0 44 44" fill="none">
+      <rect x="2" y="2" width="18" height="18" rx="3" fill="#4AB8A8"/>
+      <rect x="24" y="2" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.8"/>
+      <rect x="2" y="24" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.8"/>
+      <rect x="24" y="24" width="18" height="18" rx="3" fill="#4A4A44" opacity="0.55"/>
+      <circle cx="22" cy="22" r="3" fill="#7DD3C8"/>
+    </svg>
+    <div>
+      <div class="logo">Paw<span>Tracker</span></div>
+      <div class="logo-sub">Pet Health · by OneView Studio</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="hbtn" id="dark-btn" onclick="toggleDark()">🌙</button>
+    <button class="hbtn" onclick="exportData()">⬇ Backup</button>
+    <label class="hbtn" style="cursor:pointer;">⬆ Restore <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"></label>
+  </div>
+</div>
+
+<!-- MAIN NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-tab active" onclick="switchTab('overview')">Overview</div>
+  <div class="nav-tab" onclick="switchTab('checkin')">Check-In</div>
+  <div class="nav-tab" onclick="switchTab('history')">History</div>
+  <div class="nav-tab" onclick="switchTab('feral')">Colony</div>
+  <div class="nav-tab" onclick="switchTab('vet')">Vet & Records</div>
+</nav>
+
+<!-- CAT SWITCHER (hidden on feral/vet tabs) -->
+<div class="cat-switcher" id="catSwitcher"></div>
+
+<div class="main">
+
+<!-- ══ OVERVIEW ══ -->
+<div id="tab-overview" class="tab-panel active">
+  <div class="page-title">The Crew</div>
+  <div class="page-sub">Your cats at a glance</div>
+  <div class="accent-line"></div>
+  <div id="overviewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;"></div>
+</div>
+
+<!-- ══ CHECK-IN ══ -->
+<div id="tab-checkin" class="tab-panel">
+  <div id="checkinContent"></div>
+</div>
+
+<!-- ══ HISTORY ══ -->
+<div id="tab-history" class="tab-panel">
+  <div id="historyContent"></div>
+</div>
+
+<!-- ══ FERAL COLONY ══ -->
+<div id="tab-feral" class="tab-panel">
+  <div class="page-title">Feral Colony</div>
+  <div class="page-sub">TNR tracking & colony management</div>
+  <div class="accent-line"></div>
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot amber"></span>Add Colony Member</span></div>
+    <div class="field-row c3">
+      <div class="field"><label>Name / Nickname</label><input type="text" id="fName" placeholder="e.g. Notch Ear"></div>
+      <div class="field"><label>ID / Marking</label><input type="text" id="fMark" placeholder="e.g. left-ear-tip"></div>
+      <div class="field"><label>Color / Description</label><input type="text" id="fColor" placeholder="e.g. orange tabby"></div>
+    </div>
+    <div class="field-row c3">
+      <div class="field"><label>Sex</label>
+        <select id="fSex"><option value="">Unknown</option><option>Male</option><option>Female</option></select>
+      </div>
+      <div class="field"><label>TNR Status</label>
+        <select id="fTnr"><option value="pending">Pending</option><option value="done">Completed</option></select>
+      </div>
+      <div class="field"><label>Last Seen</label><input type="date" id="fLastSeen"></div>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="fNotes" placeholder="Health observations, feeding notes, behavior..."></textarea></div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="addFeral()">Add to Colony</button></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot"></span>Colony Members</span> <span id="feralCount" style="font-size:0.65rem;color:var(--ink-lt);">0 cats</span></div>
+    <div id="feralList"><div class="empty-state">No colony members added yet.</div></div>
+  </div>
+</div>
+
+<!-- ══ VET & RECORDS ══ -->
+<div id="tab-vet" class="tab-panel">
+  <div class="page-title">Vet & Records</div>
+  <div class="page-sub">Contacts, medical history & attachments</div>
+  <div class="accent-line"></div>
+
+  <!-- VET CONTACTS -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot slate"></span>Add Vet Contact</span></div>
+    <div class="field-row c2">
+      <div class="field"><label>Vet Name</label><input type="text" id="vName" placeholder="Dr. Smith"></div>
+      <div class="field"><label>Clinic / Practice</label><input type="text" id="vClinic" placeholder="Animal Care Clinic"></div>
+    </div>
+    <div class="field-row c2">
+      <div class="field"><label>Phone</label><input type="text" id="vPhone" placeholder="(555) 555-5555"></div>
+      <div class="field"><label>Address</label><input type="text" id="vAddress" placeholder="Street, City, State"></div>
+    </div>
+    <div class="field"><label>Notes / Hours</label><input type="text" id="vNotes" placeholder="e.g. Emergency line, specialty"></div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="addVet()">Save Vet</button></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot slate"></span>Vet Contacts</span></div>
+    <div id="vetList"><div class="empty-state">No vet contacts added yet.</div></div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- MEDICAL RECORDS -->
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot rose"></span>Add Medical Record</span></div>
+    <div class="field-row c3">
+      <div class="field"><label>Cat</label><select id="rCat" id="rCat"></select></div>
+      <div class="field"><label>Date</label><input type="date" id="rDate"></div>
+      <div class="field"><label>Record Type</label>
+        <select id="rType">
+          <option>Wellness Exam</option><option>Vaccination</option><option>Illness Visit</option>
+          <option>Surgery</option><option>Dental</option><option>Lab Results</option>
+          <option>Medication</option><option>TNR</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row c2">
+      <div class="field"><label>Vet Seen</label><input type="text" id="rVet" placeholder="Dr. name"></div>
+      <div class="field"><label>Attach File (image or PDF)</label>
+        <input type="file" id="rFile" accept="image/*,.pdf" style="padding:6px;">
+      </div>
+    </div>
+    <div class="field"><label>Notes / Diagnosis / Medications</label><textarea id="rNotes" placeholder="Diagnosis, prescribed medications, follow-up instructions..."></textarea></div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="addRecord()">Save Record</button></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span><span class="card-dot rose"></span>Medical History</span></div>
+    <div id="recordList"><div class="empty-state">No records added yet.</div></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const CATS = [
+  {id:'kisha',    name:'Kisha',      dob:'', color:'#2A7B6F', bg:'#E8F4F2', emoji:'🐱', food:'', notes:''},
+  {id:'snowbaby', name:'Snow Baby',  dob:'2025-01-01', color:'#3A4A5C', bg:'#EAF0F8', emoji:'🐈', food:'', notes:'Rescued during January snowstorm. Rare orange female tabby.'},
+  {id:'orangeboy',name:'Orange Boy', dob:'', color:'#C4872A', bg:'#FDF3E3', emoji:'🐈', food:'', notes:'Snow Baby\'s older orange male sibling.'},
+  {id:'penelope', name:'Penelope',   dob:'', color:'#C4546A', bg:'#FDE8EC', emoji:'🐱', food:'', notes:''},
+  {id:'debo',     name:'Debo',       dob:'', color:'#5A4A8C', bg:'#F0EEF8', emoji:'🐱', food:'', notes:''},
+];
+
+let state = {
+  logs: {},       // catId -> [{date,appetite,litter,coat,activity,behavior,food,weight,notes}]
+  catInfo: {},    // catId -> {dob, food, notes}
+  feral: [],
+  vets: [],
+  records: [],    // [{id,cat,date,type,vet,notes,attachments:[{name,size,data}]}]
+};
+
+let selectedCat = CATS[0].id;
+let currentTab = 'overview';
+
+// ── PERSIST ─────────────────────────────────────────────────────────────────
+function save() {
+  try { localStorage.setItem('pawtracker-v1', JSON.stringify(state)); } catch(e) {}
+}
+function load() {
+  try {
+    const d = localStorage.getItem('pawtracker-v1');
+    if(d) {
+      const parsed = JSON.parse(d);
+      state = {...state, ...parsed};
+    }
+  } catch(e) {}
+  // sync cat info into CATS
+  CATS.forEach(c => {
+    const inf = state.catInfo[c.id] || {};
+    if(inf.dob) c.dob = inf.dob;
+    if(inf.food) c.food = inf.food;
+    if(inf.notes !== undefined) c.notes = inf.notes;
+  });
+}
+
+// ── EXPORT / IMPORT ─────────────────────────────────────────────────────────
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pawtracker-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  toast('Backup downloaded!');
+}
+function importData(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      state = JSON.parse(ev.target.result);
+      save();
+      CATS.forEach(c => {
+        const inf = state.catInfo[c.id] || {};
+        if(inf.dob) c.dob = inf.dob;
+        if(inf.food) c.food = inf.food;
+        if(inf.notes !== undefined) c.notes = inf.notes;
+      });
+      renderAll();
+      toast('Data restored!');
+    } catch(err) { toast('Invalid backup file.'); }
+  };
+  r.readAsText(file);
+  e.target.value = '';
+}
+
+// ── HELPERS ─────────────────────────────────────────────────────────────────
+function fmt(d) {
+  if(!d) return '—';
+  const [y,m,day] = d.split('-');
+  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return mo[+m-1]+' '+parseInt(day)+', '+y;
+}
+function age(dob) {
+  if(!dob) return '';
+  const b = new Date(dob), now = new Date();
+  let yrs = now.getFullYear() - b.getFullYear();
+  let mos = now.getMonth() - b.getMonth();
+  if(mos < 0){yrs--;mos+=12;}
+  if(yrs === 0) return mos + ' mo old';
+  return yrs + ' yr' + (mos>0?' '+mos+' mo':'') + ' old';
+}
+function badgeClass(val) {
+  const alerts = ['Not eating','Blood present','Not using','Confusion / disorientation'];
+  const warns  = ['Eating less than usual','Using more frequently','Using less frequently','Straining','Slightly dull','Matted / tangled','Hair loss noted','Dandruff / flaking','Less active / lethargic','Sleeping more than usual','More withdrawn','Vocalizing more','Aggression noted','Hiding','Restless'];
+  if(alerts.includes(val)) return 'badge-alert';
+  if(warns.includes(val)) return 'badge-warn';
+  return 'badge-ok';
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+// ── CAT SWITCHER ─────────────────────────────────────────────────────────────
+function renderCatSwitcher() {
+  const sw = document.getElementById('catSwitcher');
+  sw.style.display = (currentTab==='feral'||currentTab==='vet') ? 'none' : 'flex';
+  sw.innerHTML = CATS.map(c => `
+    <div class="cat-pill${c.id===selectedCat?' active':''}" onclick="selectCat('${c.id}')">
+      <span class="paw">${c.emoji}</span> ${c.name}
+    </div>
+  `).join('');
+}
+function selectCat(id) {
+  selectedCat = id;
+  renderCatSwitcher();
+  if(currentTab==='checkin') renderCheckin();
+  if(currentTab==='history') renderHistory();
+  if(currentTab==='overview') renderOverview();
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const idx = ['overview','checkin','history','feral','vet'].indexOf(tab);
+  if(tabs[idx]) tabs[idx].classList.add('active');
+  renderCatSwitcher();
+  if(tab==='overview') renderOverview();
+  if(tab==='checkin') renderCheckin();
+  if(tab==='history') renderHistory();
+  if(tab==='feral') renderFeral();
+  if(tab==='vet') renderVet();
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+function renderOverview() {
+  const grid = document.getElementById('overviewGrid');
+  grid.innerHTML = CATS.map(cat => {
+    const logs = state.logs[cat.id] || [];
+    const last = logs[logs.length-1];
+    const alerts = last ? [last.appetite,last.litter,last.coat,last.behavior].filter(v=>v&&badgeClass(v)==='badge-alert').length : 0;
+    const warns  = last ? [last.appetite,last.litter,last.coat,last.behavior].filter(v=>v&&badgeClass(v)==='badge-warn').length : 0;
+    const statusDot = alerts>0 ? '#C4546A' : warns>0 ? '#C4872A' : logs.length>0 ? '#2A7B6F' : '#8A8880';
+    return `
+    <div class="card" style="border-top:3px solid ${cat.color};cursor:pointer;" onclick="selectCat('${cat.id}');switchTab('checkin');">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:${cat.bg};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">${cat.emoji}</div>
+        <div style="flex:1;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--ink);">${cat.name}</div>
+          <div style="font-size:0.62rem;color:var(--ink-lt);margin-top:2px;">${cat.dob ? age(cat.dob)+' · '+fmt(cat.dob) : 'DOB not set'}</div>
+        </div>
+        <div style="width:9px;height:9px;border-radius:50%;background:${statusDot};flex-shrink:0;"></div>
+      </div>
+      ${cat.food ? `<div style="font-size:0.65rem;color:var(--ink-lt);margin-bottom:6px;">🍽 ${cat.food}</div>` : ''}
+      ${last ? `
+        <div style="font-size:0.62rem;color:var(--ink-lt);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Last check-in: ${fmt(last.date)}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px;">
+          ${[last.appetite,last.litter,last.coat,last.behavior].filter(Boolean).map(v=>`<span class="badge ${badgeClass(v)}">${v}</span>`).join('')}
+        </div>
+      ` : `<div class="empty-state" style="padding:6px 0;">No check-ins yet</div>`}
+      <div style="margin-top:10px;font-size:0.62rem;color:var(--teal);text-align:right;">${logs.length} log entries →</div>
+    </div>`;
+  }).join('');
+}
+
+// ── CHECK-IN ─────────────────────────────────────────────────────────────────
+function renderCheckin() {
+  const cat = CATS.find(c=>c.id===selectedCat);
+  const logs = state.logs[cat.id] || [];
+  const last = logs[logs.length-1] || {};
+  document.getElementById('checkinContent').innerHTML = `
+    <div class="cat-profile-header">
+      <div class="cat-avatar-lg" style="background:${cat.bg};">${cat.emoji}</div>
+      <div>
+        <div class="cat-info-name">${cat.name}</div>
+        <div class="cat-info-meta">${cat.dob ? fmt(cat.dob)+' · '+age(cat.dob) : 'DOB not set'} · ${logs.length} entries</div>
+      </div>
+      <button class="btn btn-sm" style="margin-left:auto;" onclick="openEditCat('${cat.id}')">Edit Profile</button>
+    </div>
+    ${cat.notes ? `<div class="info-box">${cat.notes}</div>` : ''}
+    <div class="card">
+      <div class="card-title"><span><span class="card-dot"></span>New Health Check-In</span></div>
+      <div class="field-row c3">
+        <div class="field"><label>Date</label><input type="date" id="logDate" value="${todayStr()}"></div>
+        <div class="field"><label>Weight (lbs)</label><input type="text" id="logWeight" placeholder="e.g. 9.5" value="${last.weight||''}"></div>
+        <div class="field"><label>Food Being Eaten</label><input type="text" id="logFood" placeholder="Brand / type" value="${cat.food||last.food||''}"></div>
+      </div>
+      <div class="field-row c2">
+        <div class="field"><label>Appetite</label>
+          <select id="logAppetite">
+            <option value="">— Select —</option>
+            <option>Eating well</option><option>Eating less than usual</option>
+            <option>Not eating</option><option>Eating more than usual</option>
+          </select>
+        </div>
+        <div class="field"><label>Litter Box Usage</label>
+          <select id="logLitter">
+            <option value="">— Select —</option>
+            <option>Normal</option><option>Using more frequently</option>
+            <option>Using less frequently</option><option>Straining</option>
+            <option>Blood present</option><option>Not using</option>
+          </select>
+        </div>
+        <div class="field"><label>Coat Condition</label>
+          <select id="logCoat">
+            <option value="">— Select —</option>
+            <option>Shiny and smooth</option><option>Slightly dull</option>
+            <option>Matted / tangled</option><option>Hair loss noted</option>
+            <option>Dandruff / flaking</option>
+          </select>
+        </div>
+        <div class="field"><label>Activity / Resting</label>
+          <select id="logActivity">
+            <option value="">— Select —</option>
+            <option>Normal activity</option><option>More active than usual</option>
+            <option>Less active / lethargic</option><option>Sleeping more than usual</option>
+            <option>Restless</option>
+          </select>
+        </div>
+        <div class="field"><label>Behavior Changes</label>
+          <select id="logBehavior">
+            <option value="">— Select —</option>
+            <option>No changes</option><option>More affectionate</option>
+            <option>More withdrawn</option><option>Vocalizing more</option>
+            <option>Aggression noted</option><option>Hiding</option>
+            <option>Confusion / disorientation</option>
+          </select>
+        </div>
+        <div class="field"><label>Overall Status</label>
+          <select id="logStatus">
+            <option value="">— Select —</option>
+            <option>Doing great</option><option>Doing well</option>
+            <option>Some concerns</option><option>Needs vet attention</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Additional Notes</label>
+        <textarea id="logNotes" placeholder="Any other observations, changes, or things to remember..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveLog('${cat.id}')">Save Check-In</button>
+      </div>
+    </div>
+    <div id="editCatPanel"></div>
+  `;
+}
+
+function saveLog(catId) {
+  const cat = CATS.find(c=>c.id===catId);
+  const entry = {
+    date: document.getElementById('logDate').value,
+    appetite: document.getElementById('logAppetite').value,
+    litter: document.getElementById('logLitter').value,
+    coat: document.getElementById('logCoat').value,
+    activity: document.getElementById('logActivity').value,
+    behavior: document.getElementById('logBehavior').value,
+    status: document.getElementById('logStatus').value,
+    food: document.getElementById('logFood').value,
+    weight: document.getElementById('logWeight').value,
+    notes: document.getElementById('logNotes').value,
+  };
+  if(!entry.date) { toast('Please add a date.'); return; }
+  if(!state.logs[catId]) state.logs[catId] = [];
+  state.logs[catId].push(entry);
+  if(entry.food) {
+    cat.food = entry.food;
+    if(!state.catInfo[catId]) state.catInfo[catId] = {};
+    state.catInfo[catId].food = entry.food;
+  }
+  save();
+  toast('Check-in saved for ' + cat.name + '!');
+  renderCheckin();
+  renderOverview();
+}
+
+function openEditCat(catId) {
+  const cat = CATS.find(c=>c.id===catId);
+  document.getElementById('editCatPanel').innerHTML = `
+    <div class="card" style="border-top:3px solid ${cat.color};">
+      <div class="card-title"><span><span class="card-dot"></span>Edit ${cat.name}'s Profile</span></div>
+      <div class="field-row c2">
+        <div class="field"><label>Date of Birth</label><input type="date" id="editDob" value="${cat.dob||''}"></div>
+        <div class="field"><label>Primary Food</label><input type="text" id="editFood" placeholder="Brand and type" value="${cat.food||''}"></div>
+      </div>
+      <div class="field"><label>Notes / Background</label><textarea id="editNotes">${cat.notes||''}</textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditCat('${catId}')">Save Profile</button>
+        <button class="btn" onclick="document.getElementById('editCatPanel').innerHTML=''">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('editCatPanel').scrollIntoView({behavior:'smooth'});
+}
+
+function saveEditCat(catId) {
+  const cat = CATS.find(c=>c.id===catId);
+  cat.dob = document.getElementById('editDob').value;
+  cat.food = document.getElementById('editFood').value;
+  cat.notes = document.getElementById('editNotes').value;
+  if(!state.catInfo[catId]) state.catInfo[catId] = {};
+  state.catInfo[catId] = {dob:cat.dob, food:cat.food, notes:cat.notes};
+  save();
+  toast('Profile updated!');
+  renderCheckin();
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const cat = CATS.find(c=>c.id===selectedCat);
+  const logs = (state.logs[cat.id] || []).slice().reverse();
+  document.getElementById('historyContent').innerHTML = `
+    <div class="cat-profile-header">
+      <div class="cat-avatar-lg" style="background:${cat.bg};">${cat.emoji}</div>
+      <div>
+        <div class="cat-info-name">${cat.name} — History</div>
+        <div class="cat-info-meta">${logs.length} check-in entries</div>
+      </div>
+    </div>
+    ${logs.length===0 ? '<div class="card"><div class="empty-state">No check-ins recorded yet. Add one in the Check-In tab.</div></div>' :
+      logs.map((e,i)=>`
+      <div class="log-entry">
+        <div class="log-entry-date">
+          <span>${fmt(e.date)}</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${e.status ? `<span class="badge ${e.status.includes('great')||e.status.includes('well')?'badge-ok':e.status.includes('concern')?'badge-warn':'badge-alert'}">${e.status}</span>` : ''}
+            <button class="remove-btn" onclick="deleteLog('${cat.id}',${logs.length-1-i})" title="Delete entry">×</button>
+          </div>
+        </div>
+        <div class="log-badges">
+          ${[e.appetite,e.litter,e.coat,e.activity,e.behavior].filter(Boolean).map(v=>`<span class="badge ${badgeClass(v)}">${v}</span>`).join('')}
+        </div>
+        <div class="log-detail-row">
+          ${e.weight ? `<span><strong>Weight:</strong> ${e.weight} lbs</span>` : ''}
+          ${e.food ? `<span><strong>Food:</strong> ${e.food}</span>` : ''}
+        </div>
+        ${e.notes ? `<div style="font-size:0.75rem;color:var(--ink-lt);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">${e.notes}</div>` : ''}
+      </div>`
+    ).join('')}
+  `;
+}
+
+function deleteLog(catId, idx) {
+  if(!confirm('Delete this entry?')) return;
+  state.logs[catId].splice(idx, 1);
+  save();
+  renderHistory();
+  renderOverview();
+  toast('Entry deleted.');
+}
+
+// ── FERAL COLONY ─────────────────────────────────────────────────────────────
+function addFeral() {
+  const entry = {
+    id: Date.now(),
+    name: document.getElementById('fName').value || 'Unnamed',
+    mark: document.getElementById('fMark').value,
+    color: document.getElementById('fColor').value,
+    sex: document.getElementById('fSex').value,
+    tnr: document.getElementById('fTnr').value,
+    lastSeen: document.getElementById('fLastSeen').value,
+    notes: document.getElementById('fNotes').value,
+  };
+  state.feral.push(entry);
+  save();
+  ['fName','fMark','fColor','fNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fSex').value='';
+  document.getElementById('fTnr').value='pending';
+  renderFeral();
+  toast('Colony member added!');
+}
+
+function renderFeral() {
+  const list = document.getElementById('feralList');
+  document.getElementById('feralCount').textContent = state.feral.length + ' cat' + (state.feral.length!==1?'s':'');
+  if(!state.feral.length) { list.innerHTML = '<div class="empty-state">No colony members added yet.</div>'; return; }
+  list.innerHTML = state.feral.map((f,i)=>`
+    <div class="feral-item">
+      <div class="feral-left">
+        <div class="feral-name">${f.name} ${f.mark?`<span style="font-size:0.62rem;color:var(--ink-lt);">(${f.mark})</span>`:''}</div>
+        <div class="feral-meta">${[f.color,f.sex].filter(Boolean).join(' · ')}</div>
+        <div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px;">
+          <span class="badge ${f.tnr==='done'?'badge-ok':'badge-warn'}">${f.tnr==='done'?'TNR Done':'TNR Pending'}</span>
+          ${f.lastSeen?`<span class="badge badge-ok" style="background:var(--slate-lt);color:var(--slate);">Last seen ${fmt(f.lastSeen)}</span>`:''}
+        </div>
+        ${f.notes?`<div style="font-size:0.72rem;color:var(--ink-lt);margin-top:5px;">${f.notes}</div>`:''}
+      </div>
+      <button class="remove-btn" onclick="removeFeral(${i})" title="Remove">×</button>
+    </div>
+  `).join('');
+}
+
+function removeFeral(i) {
+  if(!confirm('Remove this colony member?')) return;
+  state.feral.splice(i,1); save(); renderFeral(); toast('Removed.');
+}
+
+// ── VET & RECORDS ─────────────────────────────────────────────────────────────
+function addVet() {
+  const name = document.getElementById('vName').value;
+  if(!name) { toast('Please enter a vet name.'); return; }
+  state.vets.push({
+    id: Date.now(),
+    name, clinic: document.getElementById('vClinic').value,
+    phone: document.getElementById('vPhone').value,
+    address: document.getElementById('vAddress').value,
+    notes: document.getElementById('vNotes').value,
+  });
+  save();
+  ['vName','vClinic','vPhone','vAddress','vNotes'].forEach(id=>document.getElementById(id).value='');
+  renderVet();
+  toast('Vet saved!');
+}
+
+function addRecord() {
+  const cat = document.getElementById('rCat').value;
+  const date = document.getElementById('rDate').value;
+  if(!cat||!date) { toast('Please select a cat and date.'); return; }
+  const fileInput = document.getElementById('rFile');
+  const file = fileInput.files[0];
+  const rec = {
+    id: Date.now(),
+    cat, date,
+    type: document.getElementById('rType').value,
+    vet: document.getElementById('rVet').value,
+    notes: document.getElementById('rNotes').value,
+    attachments: [],
+  };
+
+  const finishSave = () => {
+    state.records.push(rec);
+    save();
+    ['rVet','rNotes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('rDate').value='';
+    document.getElementById('rFile').value='';
+    renderVet();
+    toast('Record saved!');
+  };
+
+  if(file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      rec.attachments.push({name:file.name, size:file.size, type:file.type, data:ev.target.result});
+      finishSave();
+    };
+    reader.readAsDataURL(file);
+  } else {
+    finishSave();
+  }
+}
+
+function renderVet() {
+  // populate cat dropdown
+  const sel = document.getElementById('rCat');
+  if(sel) {
+    const allCats = [...CATS.map(c=>c.name), ...state.feral.map(f=>f.name)];
+    sel.innerHTML = allCats.map(n=>`<option value="${n}">${n}</option>`).join('');
+  }
+
+  // vet list
+  const vl = document.getElementById('vetList');
+  if(!state.vets.length) { vl.innerHTML = '<div class="empty-state">No vet contacts added yet.</div>'; }
+  else { vl.innerHTML = state.vets.map((v,i)=>`
+    <div class="vet-item">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="vet-name">${v.name}</div>
+          ${v.clinic?`<div class="vet-clinic">${v.clinic}</div>`:''}
+          ${v.phone?`<div class="vet-phone">${v.phone}</div>`:''}
+          ${v.address?`<div style="font-size:0.65rem;color:var(--ink-lt);margin-top:2px;">${v.address}</div>`:''}
+          ${v.notes?`<div style="font-size:0.65rem;color:var(--ink-lt);margin-top:2px;">${v.notes}</div>`:''}
+        </div>
+        <button class="remove-btn" onclick="removeVet(${i})">×</button>
+      </div>
+    </div>`).join(''); }
+
+  // records list
+  const rl = document.getElementById('recordList');
+  const sorted = state.records.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  if(!state.records.length) { rl.innerHTML = '<div class="empty-state">No records added yet.</div>'; }
+  else { rl.innerHTML = sorted.map((r,i)=>`
+    <div class="record-item">
+      <div style="flex:1;">
+        <div style="margin-bottom:5px;">
+          <span class="record-type">${r.type}</span>
+          <span class="record-cat-tag">${r.cat}</span>
+        </div>
+        <div style="font-size:0.72rem;color:var(--ink-lt);margin-bottom:4px;">${fmt(r.date)}${r.vet?' · Dr. '+r.vet:''}</div>
+        ${r.notes?`<div style="font-size:0.78rem;color:var(--ink-mid);">${r.notes}</div>`:''}
+        ${r.attachments&&r.attachments.length ? r.attachments.map(a=>`
+          <div class="attach-item" style="margin-top:6px;">
+            <span class="attach-icon">${a.type&&a.type.includes('pdf')?'📄':'🖼'}</span>
+            <span class="attach-name">${a.name}</span>
+            <span class="attach-size">${(a.size/1024).toFixed(0)}KB</span>
+            <button class="attach-download" onclick="downloadAttachment('${r.id}','${a.name}')">Download</button>
+          </div>`).join('') : ''}
+      </div>
+      <button class="remove-btn" onclick="removeRecord('${r.id}')">×</button>
+    </div>`).join(''); }
+}
+
+function downloadAttachment(recId, name) {
+  const rec = state.records.find(r=>r.id==recId);
+  if(!rec) return;
+  const att = rec.attachments.find(a=>a.name===name);
+  if(!att) return;
+  const a = document.createElement('a');
+  a.href = att.data;
+  a.download = att.name;
+  a.click();
+}
+
+function removeVet(i) {
+  if(!confirm('Remove this vet?')) return;
+  state.vets.splice(i,1); save(); renderVet(); toast('Removed.');
+}
+function removeRecord(id) {
+  if(!confirm('Delete this record?')) return;
+  state.records = state.records.filter(r=>r.id!=id); save(); renderVet(); toast('Deleted.');
+}
+
+// ── DARK MODE ────────────────────────────────────────────────────────────────
+function toggleDark(){
+  const dark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('pawtracker-dark', dark?'1':'0');
+  document.getElementById('dark-btn').textContent = dark?'☀️':'🌙';
+}
+(function(){
+  if(localStorage.getItem('pawtracker-dark')==='1'){
+    document.body.classList.add('dark-mode');
+    document.getElementById('dark-btn').textContent='☀️';
+  }
+})();
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderCatSwitcher();
+  renderOverview();
+  renderFeral();
+  renderVet();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+document.getElementById('rDate').value = todayStr();
+document.getElementById('fLastSeen').value = todayStr();
+renderAll();
+</script>
+</body>
+</html>
