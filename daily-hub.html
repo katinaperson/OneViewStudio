@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0063)file:///C:/Users/Katina%20Person/Downloads/daily-hub%20(4).html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Daily Hub">
 <title>Daily Hub</title>
-<link href="./Daily Hub_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #F8F7F4; --surface: #FFFFFF; --border: #E8E4DC;
@@ -23,6 +22,7 @@
   --accent-text: #7DD3C8;
   --radius: 8px;
   --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --purple: #7B5EA7; --purple-lt: #F0EBF8;
 }
 
 body.dark-mode {
@@ -32,6 +32,7 @@ body.dark-mode {
   --amber: #D4982A; --amber-lt: #2A1E08;
   --rose: #E06880; --rose-lt: #2A1018;
   --slate: #6A8AAC; --slate-lt: #0E1A28;
+  --purple: #9B7EC8; --purple-lt: #1A1228;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,7 +65,6 @@ body {
 
 .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-/* Date display in header */
 .header-date-info { display: flex; flex-direction: column; align-items: flex-end; margin-right: 8px; }
 .header-day-name { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
 .header-date-str { font-family: 'DM Serif Display', serif; font-size: 1rem; color: white; }
@@ -110,7 +110,6 @@ body {
 }
 .cal-btn:hover { background: rgba(255,255,255,0.12); color: white; }
 
-/* Weather widget */
 .weather-widget {
   display: flex;
   align-items: center;
@@ -157,7 +156,7 @@ body {
 .tab-panel.active { display: block; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-/* ── STAT CARDS (dashboard row) ── */
+/* ── STAT CARDS ── */
 .stat-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -176,6 +175,7 @@ body {
 .stat-card.amber { border-top-color: var(--amber); }
 .stat-card.rose { border-top-color: var(--rose); }
 .stat-card.slate { border-top-color: var(--slate); }
+.stat-card.purple { border-top-color: var(--purple); }
 
 .stat-num {
   font-family: 'DM Serif Display', serif;
@@ -339,7 +339,6 @@ body {
 }
 .meal-dash-input:focus { outline: none; border-color: var(--teal); }
 
-/* Water tracker */
 .water-track { display: flex; gap: 5px; flex-wrap: wrap; }
 .water-glass {
   width: 22px; height: 22px;
@@ -449,6 +448,13 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 
 .btn-amber { background: var(--amber); border-color: var(--amber); color: white; }
 
+.btn-purple {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: white;
+}
+.btn-purple:hover { opacity: 0.9; color: white; }
+
 .quick-add-btn {
   background: var(--teal);
   border: none;
@@ -485,7 +491,6 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 .habit-check.done { background: var(--teal); border-color: var(--teal); }
 .habit-name { flex: 1; font-size: 0.82rem; color: var(--ink); }
 .habit-cat { font-size: 0.6rem; color: var(--ink-lt); letter-spacing: 0.08em; }
-.habit-streak { font-size: 0.65rem; color: var(--amber); }
 
 /* Groceries */
 .grocery-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 5px; border: 1px solid var(--border); margin-bottom: 4px; background: var(--bg); }
@@ -501,6 +506,219 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
   border-radius: 20px; opacity: 0; transition: all 0.2s; pointer-events: none; z-index: 999; letter-spacing: 0.06em;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── GOALS & PROJECTS STYLES ── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.goal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+.goal-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+.goal-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 10px;
+}
+
+.goal-title-area { flex: 1; }
+.goal-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.goal-category-badge {
+  display: inline-block;
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.goal-category-badge.business { background: var(--teal-lt); color: var(--teal); }
+.goal-category-badge.personal { background: var(--amber-lt); color: var(--amber); }
+.goal-category-badge.credentials { background: var(--purple-lt); color: var(--purple); }
+.goal-category-badge.health { background: #EBF5E8; color: #4A8A40; }
+.goal-category-badge.financial { background: var(--slate-lt); color: var(--slate); }
+.goal-category-badge.other { background: var(--bg); color: var(--ink-lt); }
+
+/* Progress Ring */
+.progress-ring-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.progress-ring-svg { transform: rotate(-90deg); }
+.progress-ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+.progress-ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+.progress-pct-label {
+  font-family: 'DM Serif Display', serif;
+  font-size: 0.75rem;
+  color: var(--ink);
+  text-align: center;
+  margin-top: 3px;
+  line-height: 1;
+}
+.progress-pct-sub {
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-lt);
+  text-align: center;
+}
+
+/* Goal Steps */
+.goal-steps { margin-top: 12px; }
+.goal-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.goal-step:hover { background: var(--purple-lt); }
+.goal-step.completed { opacity: 0.55; }
+.goal-step-check {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.goal-step-check.done {
+  background: var(--purple);
+  border-color: var(--purple);
+}
+.goal-step-check.done::after {
+  content: '✓';
+  font-size: 0.55rem;
+  color: white;
+  font-weight: 700;
+}
+.goal-step-text {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.goal-step.completed .goal-step-text { text-decoration: line-through; }
+
+.goal-next-step {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: var(--purple-lt);
+  border: 1px solid rgba(123,94,167,0.2);
+  border-radius: 5px;
+  font-size: 0.72rem;
+  color: var(--purple);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.goal-next-label {
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--purple);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.add-step-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.add-step-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  color: var(--ink);
+}
+.add-step-input:focus { outline: none; border-color: var(--purple); }
+.add-step-btn {
+  background: var(--purple);
+  border: none;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.add-step-btn:hover { opacity: 0.85; }
+
+.goal-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.goal-step-count {
+  font-size: 0.62rem;
+  color: var(--ink-lt);
+  letter-spacing: 0.06em;
+}
+.goal-delete-btn {
+  background: none;
+  border: none;
+  color: var(--ink-lt);
+  cursor: pointer;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+.goal-delete-btn:hover { color: var(--rose); background: var(--rose-lt); }
+
+/* Dashboard Goals Preview */
+.dash-goal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.dash-goal-item:hover { background: var(--purple-lt); }
+.dash-goal-mini-ring { flex-shrink: 0; }
+.dash-goal-info { flex: 1; }
+.dash-goal-name { font-size: 0.8rem; color: var(--ink); font-weight: 500; }
+.dash-goal-next { font-size: 0.65rem; color: var(--ink-lt); margin-top: 1px; }
 
 /* AI Panel */
 .ai-panel {
@@ -533,16 +751,15 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 .ai-input-row input:focus { outline: none; border-color: var(--teal); }
 .ai-send-btn { background: var(--teal); border: none; color: white; font-size: 0.78rem; padding: 7px 14px; border-radius: 20px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
-/* Dark mode overrides for inputs */
 body.dark-mode input, body.dark-mode select, body.dark-mode textarea,
 body.dark-mode .meal-dash-input { color: var(--ink) !important; }
 body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color: var(--ink-lt); }
 
-/* Responsive */
 @media (max-width: 900px) {
   .dashboard-grid { grid-template-columns: 1fr 1fr; }
   .dash-card.wide, .dash-card.full { grid-column: span 2; }
   .stat-row { grid-template-columns: repeat(2,1fr); }
+  .goals-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
   .dashboard-grid { grid-template-columns: 1fr; }
@@ -552,6 +769,7 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
   .header { flex-wrap: wrap; gap: 10px; }
   .header-right { width: 100%; }
   .main { padding: 16px; }
+  .goals-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -573,20 +791,20 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
     </div>
   </div>
   <div class="header-right">
-    <div id="weather-widget" class="weather-widget"><div class="weather-icon">☀️</div><div><div class="weather-temp">65°F</div><div class="weather-desc">Clear Sky</div><div class="weather-loc">Washington</div></div></div>
+    <div id="weather-widget" class="weather-widget"><div class="weather-loading">Loading weather...</div></div>
     <div class="header-date-info">
-      <div class="header-day-name" id="header-day">Wednesday</div>
-      <div class="header-date-str" id="header-date">March 11, 2026</div>
+      <div class="header-day-name" id="header-day">Monday</div>
+      <div class="header-date-str" id="header-date">April 13, 2026</div>
     </div>
     <div class="day-nav-group">
       <button class="day-nav-btn" onclick="changeDay(-1)">← Prev</button>
-      <button class="day-nav-btn today-btn" onclick="goToday()" style="opacity: 0.4;">Today</button>
+      <button class="day-nav-btn today-btn" onclick="goToday()">Today</button>
       <button class="day-nav-btn" onclick="changeDay(1)">Next →</button>
     </div>
     <div class="cal-group">
-      <button class="cal-btn" onclick="window.open(&#39;https://calendar.google.com&#39;,&#39;_blank&#39;)">📅 Google</button>
-      <button class="cal-btn" onclick="window.open(&#39;https://outlook.live.com/calendar&#39;,&#39;_blank&#39;)">📅 Outlook</button>
-      <button class="cal-btn" onclick="window.open(&#39;https://www.icloud.com/calendar&#39;,&#39;_blank&#39;)">📅 iCal</button>
+      <button class="cal-btn" onclick="window.open('https://calendar.google.com','_blank')">📅 Google</button>
+      <button class="cal-btn" onclick="window.open('https://outlook.live.com/calendar','_blank')">📅 Outlook</button>
+      <button class="cal-btn" onclick="window.open('https://www.icloud.com/calendar','_blank')">📅 iCal</button>
     </div>
     <button class="header-btn" onclick="exportData()">⬇ Backup</button>
     <label class="header-btn" style="cursor:pointer;">⬆ Restore <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"></label>
@@ -596,14 +814,15 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
 
 <!-- ── NAV ── -->
 <nav class="nav">
-  <div class="nav-tab active" onclick="switchTab(&#39;dashboard&#39;)">Dashboard</div>
-  <div class="nav-tab" onclick="switchTab(&#39;appointments&#39;)">Appointments</div>
-  <div class="nav-tab" onclick="switchTab(&#39;tasks&#39;)">Tasks</div>
-  <div class="nav-tab" onclick="switchTab(&#39;reminders&#39;)">Reminders</div>
-  <div class="nav-tab" onclick="switchTab(&#39;budget&#39;)">Budget</div>
-  <div class="nav-tab" onclick="switchTab(&#39;habits&#39;)">Habits</div>
-  <div class="nav-tab" onclick="switchTab(&#39;meals&#39;)">Meals</div>
-  <div class="nav-tab" onclick="switchTab(&#39;notes&#39;)">Notes</div>
+  <div class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</div>
+  <div class="nav-tab" onclick="switchTab('appointments')">Appointments</div>
+  <div class="nav-tab" onclick="switchTab('tasks')">Tasks</div>
+  <div class="nav-tab" onclick="switchTab('reminders')">Reminders</div>
+  <div class="nav-tab" onclick="switchTab('budget')">Budget</div>
+  <div class="nav-tab" onclick="switchTab('habits')">Habits</div>
+  <div class="nav-tab" onclick="switchTab('meals')">Meals</div>
+  <div class="nav-tab" onclick="switchTab('goals')">Goals & Projects</div>
+  <div class="nav-tab" onclick="switchTab('notes')">Notes</div>
 </nav>
 
 <div class="main">
@@ -611,21 +830,20 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
   <!-- ══ DASHBOARD ══ -->
   <div id="tab-dashboard" class="tab-panel active">
 
-    <!-- STAT ROW -->
     <div class="stat-row">
-      <div class="stat-card teal stat-card-link" onclick="switchTab(&#39;appointments&#39;)">
-        <div class="stat-num" id="dash-stat-appts">1</div>
+      <div class="stat-card teal stat-card-link" onclick="switchTab('appointments')">
+        <div class="stat-num" id="dash-stat-appts">0</div>
         <div class="stat-label">Appointments Today</div>
       </div>
-      <div class="stat-card amber stat-card-link" onclick="switchTab(&#39;tasks&#39;)">
+      <div class="stat-card amber stat-card-link" onclick="switchTab('tasks')">
         <div class="stat-num" id="dash-stat-tasks">0</div>
         <div class="stat-label">Tasks Remaining</div>
       </div>
-      <div class="stat-card rose stat-card-link" onclick="switchTab(&#39;budget&#39;)">
+      <div class="stat-card rose stat-card-link" onclick="switchTab('budget')">
         <div class="stat-num" id="dash-stat-spent">$0.00</div>
         <div class="stat-label">Spent Today</div>
       </div>
-      <div class="stat-card slate stat-card-link" onclick="switchTab(&#39;habits&#39;)">
+      <div class="stat-card slate stat-card-link" onclick="switchTab('habits')">
         <div class="stat-num" id="dash-stat-habits">0/0</div>
         <div class="stat-label">Habits Done</div>
       </div>
@@ -636,33 +854,25 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       <!-- APPOINTMENTS -->
       <div class="dash-card">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;appointments&#39;)" style="cursor:pointer;"><span class="icon"></span> Appointments ›</div>
-          <span class="dash-count" id="appt-count">1 today</span>
+          <div class="dash-card-title" onclick="switchTab('appointments')" style="cursor:pointer;"><span class="icon"></span> Appointments ›</div>
+          <span class="dash-count" id="appt-count">0 today</span>
         </div>
         <div class="quick-add">
-          <input type="text" id="appt-quick" placeholder="Add appointment..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddAppt()" style="flex:1;min-width:100px;">
+          <input type="text" id="appt-quick" placeholder="Add appointment..." onkeydown="if(event.key==='Enter') quickAddAppt()" style="flex:1;min-width:100px;">
           <input type="text" id="appt-time-quick" placeholder="Time" style="max-width:80px;">
           <button class="quick-add-btn" onclick="quickAddAppt()">+ Add</button>
         </div>
-        <div class="item-list" id="appt-dash-list">
-      <div class="list-item">
-        <div class="item-dot"></div>
-        <div style="flex:1;">
-          <div class="item-text">Annual Review</div>
-          <div class="item-meta">11:00 AM · Zoom</div>
-        </div>
-        <button class="item-remove" onclick="deleteAppt(1773161143149)">×</button>
-      </div></div>
+        <div class="item-list" id="appt-dash-list"><div class="empty-state">No appointments today</div></div>
       </div>
 
       <!-- REMINDERS -->
       <div class="dash-card">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;reminders&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--amber)"></span> Reminders ›</div>
+          <div class="dash-card-title" onclick="switchTab('reminders')" style="cursor:pointer;"><span class="icon" style="background:var(--amber)"></span> Reminders ›</div>
           <span class="dash-count" id="reminder-count">0 today</span>
         </div>
         <div class="quick-add">
-          <input type="text" id="reminder-quick" placeholder="Add reminder..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddReminder()" style="flex:1;">
+          <input type="text" id="reminder-quick" placeholder="Add reminder..." onkeydown="if(event.key==='Enter') quickAddReminder()" style="flex:1;">
           <button class="quick-add-btn" onclick="quickAddReminder()">+ Add</button>
         </div>
         <div class="item-list" id="reminder-dash-list"><div class="empty-state">No reminders today</div></div>
@@ -671,11 +881,11 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       <!-- TASKS -->
       <div class="dash-card">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;tasks&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--slate)"></span> Tasks ›</div>
+          <div class="dash-card-title" onclick="switchTab('tasks')" style="cursor:pointer;"><span class="icon" style="background:var(--slate)"></span> Tasks ›</div>
           <span class="dash-count" id="task-count">0 remaining</span>
         </div>
         <div class="quick-add">
-          <input type="text" id="task-quick" placeholder="Add task..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddTask()" style="flex:1;min-width:80px;">
+          <input type="text" id="task-quick" placeholder="Add task..." onkeydown="if(event.key==='Enter') quickAddTask()" style="flex:1;min-width:80px;">
           <select id="task-priority-quick" style="max-width:90px;">
             <option value="normal">Normal</option>
             <option value="high">High</option>
@@ -705,33 +915,21 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       <!-- BUDGET SNAPSHOT -->
       <div class="dash-card wide">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;budget&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--amber)"></span> Budget — <span id="budget-month-label" style="font-size:0.82rem;font-weight:300;text-transform:none;letter-spacing:0;">Mar 2026</span> ›</div>
+          <div class="dash-card-title" onclick="switchTab('budget')" style="cursor:pointer;"><span class="icon" style="background:var(--amber)"></span> Budget — <span id="budget-month-label" style="font-size:0.82rem;font-weight:300;text-transform:none;letter-spacing:0;"></span> ›</div>
           <span class="dash-count" id="budget-dash-count">$0.00 spent today</span>
         </div>
         <div class="budget-summary">
-          <div class="budget-stat">
-            <div class="budget-stat-num" id="dash-total-budget">$0.00</div>
-            <div class="budget-stat-label">Monthly Budget</div>
-          </div>
-          <div class="budget-stat">
-            <div class="budget-stat-num" id="dash-total-spent">$0.00</div>
-            <div class="budget-stat-label">Spent This Month</div>
-          </div>
-          <div class="budget-stat">
-            <div class="budget-stat-num" id="dash-remaining">$0.00</div>
-            <div class="budget-stat-label">Remaining</div>
-          </div>
+          <div class="budget-stat"><div class="budget-stat-num" id="dash-total-budget">$0.00</div><div class="budget-stat-label">Monthly Budget</div></div>
+          <div class="budget-stat"><div class="budget-stat-num" id="dash-total-spent">$0.00</div><div class="budget-stat-label">Spent This Month</div></div>
+          <div class="budget-stat"><div class="budget-stat-num" id="dash-remaining">$0.00</div><div class="budget-stat-label">Remaining</div></div>
         </div>
         <div class="budget-bar-wrap">
-          <div class="budget-bar-label">
-            <span>Monthly Progress</span>
-            <span id="budget-pct">0%</span>
-          </div>
+          <div class="budget-bar-label"><span>Monthly Progress</span><span id="budget-pct">0%</span></div>
           <div class="budget-bar"><div class="budget-fill safe" id="budget-bar-fill" style="width:0%"></div></div>
         </div>
         <div class="quick-add">
           <input type="number" id="spend-amount-quick" placeholder="Amount $" style="max-width:110px;" step="0.01">
-          <input type="text" id="spend-desc-quick" placeholder="Description..." onkeydown="if(event.key===&#39;Enter&#39;) quickAddSpend()" style="flex:1;">
+          <input type="text" id="spend-desc-quick" placeholder="Description..." onkeydown="if(event.key==='Enter') quickAddSpend()" style="flex:1;">
           <select id="spend-cat-quick"><option value="General">General</option></select>
           <button class="quick-add-btn" onclick="quickAddSpend()">+ Log Spend</button>
         </div>
@@ -741,49 +939,53 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       <!-- HABITS -->
       <div class="dash-card">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;habits&#39;)" style="cursor:pointer;"><span class="icon" style="background:#8CAA60"></span> Habits ›</div>
+          <div class="dash-card-title" onclick="switchTab('habits')" style="cursor:pointer;"><span class="icon" style="background:#8CAA60"></span> Habits ›</div>
           <span class="dash-count" id="habit-count">0 / 0 done</span>
         </div>
         <div id="habit-dash-list"><div class="empty-state">No habits yet. Add some in the Habits tab.</div></div>
         <div style="margin-top:10px;text-align:center;">
-          <button class="quick-add-btn secondary" onclick="switchTab(&#39;habits&#39;)">Manage Habits →</button>
+          <button class="quick-add-btn secondary" onclick="switchTab('habits')">Manage Habits →</button>
         </div>
       </div>
 
       <!-- MEALS -->
       <div class="dash-card wide">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;meals&#39;)" style="cursor:pointer;"><span class="icon" style="background:#7A9A6A"></span> Today's Meals ›</div>
+          <div class="dash-card-title" onclick="switchTab('meals')" style="cursor:pointer;"><span class="icon" style="background:#7A9A6A"></span> Today's Meals ›</div>
           <button class="quick-add-btn secondary" style="padding:4px 10px;" onclick="saveMealsDash()">Save</button>
         </div>
         <div class="meal-dash-grid">
-          <div class="meal-dash-item"><div class="meal-dash-label">🌅 Breakfast</div><input type="text" class="meal-dash-input" id="meal-breakfast-dash" placeholder="What&#39;s for breakfast?"></div>
-          <div class="meal-dash-item"><div class="meal-dash-label">☀️ Lunch</div><input type="text" class="meal-dash-input" id="meal-lunch-dash" placeholder="What&#39;s for lunch?"></div>
-          <div class="meal-dash-item"><div class="meal-dash-label">🌙 Dinner</div><input type="text" class="meal-dash-input" id="meal-dinner-dash" placeholder="What&#39;s for dinner?"></div>
+          <div class="meal-dash-item"><div class="meal-dash-label">🌅 Breakfast</div><input type="text" class="meal-dash-input" id="meal-breakfast-dash" placeholder="What's for breakfast?"></div>
+          <div class="meal-dash-item"><div class="meal-dash-label">☀️ Lunch</div><input type="text" class="meal-dash-input" id="meal-lunch-dash" placeholder="What's for lunch?"></div>
+          <div class="meal-dash-item"><div class="meal-dash-label">🌙 Dinner</div><input type="text" class="meal-dash-input" id="meal-dinner-dash" placeholder="What's for dinner?"></div>
           <div class="meal-dash-item"><div class="meal-dash-label">🍎 Snack</div><input type="text" class="meal-dash-input" id="meal-snack-dash" placeholder="Snack or dessert?"></div>
         </div>
         <div style="display:flex;align-items:center;gap:14px;margin-top:8px;">
           <div class="meal-dash-label" style="margin:0;">💧 Water</div>
-          <div class="water-track" id="water-dash-track">
-    <div class="water-glass " onclick="toggleWater(0,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(1,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(2,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(3,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(4,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(5,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(6,&#39;water-dash-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(7,&#39;water-dash-track&#39;)"></div></div>
+          <div class="water-track" id="water-dash-track"></div>
           <span style="font-size:0.68rem;color:var(--ink-lt);" id="water-dash-count">0 / 8 glasses</span>
+        </div>
+      </div>
+
+      <!-- GOALS DASHBOARD PREVIEW -->
+      <div class="dash-card full">
+        <div class="dash-card-header">
+          <div class="dash-card-title" onclick="switchTab('goals')" style="cursor:pointer;"><span class="icon" style="background:var(--purple)"></span> Goals & Projects ›</div>
+          <span class="dash-count" id="goals-dash-count">0 active</span>
+        </div>
+        <div id="goals-dash-list"><div class="empty-state">No goals yet. Add some in Goals & Projects.</div></div>
+        <div style="margin-top:10px;text-align:center;">
+          <button class="quick-add-btn secondary" onclick="switchTab('goals')">Manage Goals →</button>
         </div>
       </div>
 
       <!-- NOTES DASH -->
       <div class="dash-card full">
         <div class="dash-card-header">
-          <div class="dash-card-title" onclick="switchTab(&#39;notes&#39;)" style="cursor:pointer;"><span class="icon" style="background:var(--ink-lt)"></span> Brain Dump ›</div>
+          <div class="dash-card-title" onclick="switchTab('notes')" style="cursor:pointer;"><span class="icon" style="background:var(--ink-lt)"></span> Brain Dump ›</div>
           <button class="quick-add-btn secondary" style="padding:4px 10px;" onclick="saveNotes()">Save Note</button>
         </div>
-        <textarea class="notes-area" id="notes-dash" placeholder="Whatever&#39;s on your mind today — thoughts, ideas, reminders, overflow..."></textarea>
+        <textarea class="notes-area" id="notes-dash" placeholder="Whatever's on your mind today — thoughts, ideas, reminders, overflow..."></textarea>
       </div>
 
       <!-- CALENDARS -->
@@ -793,15 +995,15 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
           <span style="font-size:0.6rem;color:var(--ink-lt);letter-spacing:0.08em;">Opens in a new tab</span>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="cal-launch-btn" onclick="window.open(&#39;https://calendar.google.com&#39;,&#39;_blank&#39;)">
+          <button class="cal-launch-btn" onclick="window.open('https://calendar.google.com','_blank')">
             <span class="cal-icon">📅</span>
             <div><div class="cal-btn-title">Google Calendar</div><div class="cal-btn-sub">calendar.google.com</div></div>
           </button>
-          <button class="cal-launch-btn" onclick="window.open(&#39;https://outlook.live.com/calendar&#39;,&#39;_blank&#39;)">
+          <button class="cal-launch-btn" onclick="window.open('https://outlook.live.com/calendar','_blank')">
             <span class="cal-icon">📅</span>
             <div><div class="cal-btn-title">Outlook Calendar</div><div class="cal-btn-sub">outlook.live.com</div></div>
           </button>
-          <button class="cal-launch-btn" onclick="window.open(&#39;https://www.icloud.com/calendar&#39;,&#39;_blank&#39;)">
+          <button class="cal-launch-btn" onclick="window.open('https://www.icloud.com/calendar','_blank')">
             <span class="cal-icon">📅</span>
             <div><div class="cal-btn-title">Apple iCal</div><div class="cal-btn-sub">icloud.com/calendar</div></div>
           </button>
@@ -814,7 +1016,7 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
   <!-- ══ APPOINTMENTS ══ -->
   <div id="tab-appointments" class="tab-panel">
     <div class="section-title">Appointments</div>
-    <div class="section-sub">Meetings, calls &amp; commitments</div>
+    <div class="section-sub">Meetings, calls & commitments</div>
     <div class="divider"></div>
     <div class="form-card">
       <div class="form-card-title">Add Appointment</div>
@@ -831,16 +1033,7 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       </div>
     </div>
     <div class="form-card-title" style="margin-bottom:12px;">All Appointments</div>
-    <div id="appt-full-list">
-        <div class="list-item" style="margin-bottom:6px;">
-          <div class="item-dot" style="margin-top:4px;"></div>
-          <div style="flex:1;">
-            <div class="item-text">Annual Review</div>
-            <div class="item-meta">Mar 11, 2026 · 11:00 AM · Zoom</div>
-            <div style="font-size:0.75rem;color:var(--ink-lt);margin-top:2px;">Annual Review with Stacey</div>
-          </div>
-          <button class="item-remove" onclick="deleteAppt(1773161143149)">×</button>
-        </div></div>
+    <div id="appt-full-list"><div class="empty-state">No appointments yet.</div></div>
   </div>
 
   <!-- ══ TASKS ══ -->
@@ -882,7 +1075,7 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
 
   <!-- ══ REMINDERS ══ -->
   <div id="tab-reminders" class="tab-panel">
-    <div class="section-title">Reminders &amp; Follow-Ups</div>
+    <div class="section-title">Reminders & Follow-Ups</div>
     <div class="section-sub">Don't let anything slip through</div>
     <div class="divider"></div>
     <div class="form-card">
@@ -913,7 +1106,7 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
     <div class="section-sub">Monthly budget · category tracking · daily spending</div>
     <div class="divider"></div>
     <div class="form-card">
-      <div class="form-card-title">Monthly Budget Setup — <span id="budget-setup-month">Mar 2026</span></div>
+      <div class="form-card-title">Monthly Budget Setup — <span id="budget-setup-month"></span></div>
       <div class="field-row cols-2">
         <div class="field"><label>Month</label><input type="month" id="budget-month"></div>
         <div class="field"><label>Total Monthly Budget ($)</label><input type="number" id="budget-total" placeholder="e.g. 3000" step="0.01"></div>
@@ -955,17 +1148,10 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
         <span style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-lt);text-align:right;">Left</span>
         <span></span>
       </div>
-      <div id="category-breakdown">
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center;">
-          <span style="font-size:0.82rem;color:var(--ink);">General</span>
-          <span style="font-size:0.78rem;color:var(--ink-lt);text-align:right;">—</span>
-          <span style="font-size:0.82rem;font-weight:500;color:var(--ink);text-align:right;">$0.00</span>
-          <span style="font-size:0.78rem;text-align:right;color:var(--teal);">—</span>
-          <span></span>
-        </div></div>
+      <div id="category-breakdown"></div>
     </div>
     <div class="form-card">
-      <div class="form-card-title">Daily Spending — <span id="daily-spend-date-label">Mar 11, 2026</span></div>
+      <div class="form-card-title">Daily Spending — <span id="daily-spend-date-label"></span></div>
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
         <input type="date" id="daily-spend-filter" style="max-width:180px;">
         <button class="btn" onclick="filterDailySpend()">View Day</button>
@@ -996,18 +1182,18 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       </div>
     </div>
     <div class="form-card">
-      <div class="form-card-title">Today's Habits — <span id="habit-date-label">Mar 11, 2026</span></div>
-      <div id="habit-full-list"><div class="empty-state">No habits yet. Add some in the Habits tab.</div></div>
+      <div class="form-card-title">Today's Habits — <span id="habit-date-label"></span></div>
+      <div id="habit-full-list"><div class="empty-state">No habits yet. Add some above.</div></div>
     </div>
   </div>
 
   <!-- ══ MEALS ══ -->
   <div id="tab-meals" class="tab-panel">
-    <div class="section-title">Meals &amp; Nutrition</div>
+    <div class="section-title">Meals & Nutrition</div>
     <div class="section-sub">What you eat today shapes tomorrow</div>
     <div class="divider"></div>
     <div class="form-card">
-      <div class="form-card-title">Today's Meal Plan — <span id="meals-date-label">Mar 11, 2026</span></div>
+      <div class="form-card-title">Today's Meal Plan — <span id="meals-date-label"></span></div>
       <div class="field-row cols-2">
         <div class="field"><label>🌅 Breakfast</label><input type="text" id="meal-breakfast" placeholder="e.g. Oatmeal with berries"></div>
         <div class="field"><label>☀️ Lunch</label><input type="text" id="meal-lunch" placeholder="e.g. Grilled chicken salad"></div>
@@ -1018,19 +1204,10 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
       <div style="margin-bottom:16px;">
         <label style="font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-lt);display:block;margin-bottom:8px;">💧 Water Intake</label>
         <div style="display:flex;align-items:center;gap:14px;">
-          <div class="water-track" id="water-full-track">
-    <div class="water-glass " onclick="toggleWater(0,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(1,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(2,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(3,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(4,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(5,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(6,&#39;water-full-track&#39;)"></div>
-    <div class="water-glass " onclick="toggleWater(7,&#39;water-full-track&#39;)"></div></div>
+          <div class="water-track" id="water-full-track"></div>
           <span style="font-size:0.72rem;color:var(--ink-lt);" id="water-full-count">0 / 8 glasses</span>
           <button class="btn" style="padding:5px 12px;font-size:0.62rem;" onclick="resetWater()">Reset</button>
         </div>
-        <div style="font-size:0.62rem;color:var(--ink-lt);margin-top:6px;">Click each glass to track. Goal: 8 per day.</div>
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveMeals()">Save Meals</button>
@@ -1040,7 +1217,7 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
     <div class="form-card">
       <div class="form-card-title">Grocery List</div>
       <div class="quick-add">
-        <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key===&#39;Enter&#39;) addGrocery()" style="flex:1;">
+        <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key==='Enter') addGrocery()" style="flex:1;">
         <select id="grocery-cat" style="max-width:130px;">
           <option value="Produce">Produce</option><option value="Protein">Protein</option>
           <option value="Dairy">Dairy</option><option value="Grains">Grains</option>
@@ -1052,17 +1229,40 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
     </div>
     <div class="form-card">
       <div class="form-card-title">Past Meals</div>
-      <div id="meals-history">
-        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
-          <div style="font-size:0.62rem;letter-spacing:0.14em;color:var(--teal);font-weight:500;margin-bottom:8px;text-transform:uppercase;">Mar 10, 2026</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
-            
-            
-            
-            <div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Snack · </span>Apples and Almond Butter</div>
-          </div>
-          
-        </div></div>
+      <div id="meals-history"><div class="empty-state">No past meal history yet.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ GOALS & PROJECTS ══ -->
+  <div id="tab-goals" class="tab-panel">
+    <div class="section-title">Goals & Projects</div>
+    <div class="section-sub">Track what you're building — step by step, with progress you can see</div>
+    <div class="divider"></div>
+
+    <div class="form-card" style="border-top: 3px solid var(--purple);">
+      <div class="form-card-title">Add a New Goal or Project</div>
+      <div class="field-row cols-3">
+        <div class="field" style="grid-column: span 2;"><label>Goal / Project Name</label><input type="text" id="goal-name" placeholder="e.g. Launch Katina Clark Consulting website"></div>
+        <div class="field"><label>Category</label>
+          <select id="goal-category">
+            <option value="business">Business</option>
+            <option value="credentials">Credentials</option>
+            <option value="personal">Personal</option>
+            <option value="health">Health</option>
+            <option value="financial">Financial</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Description (optional)</label><textarea id="goal-desc" placeholder="What does success look like? Why does this matter?" style="min-height:60px;"></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-purple" onclick="addGoal()">+ Add Goal</button>
+        <button class="btn" onclick="clearGoal()">Clear</button>
+      </div>
+    </div>
+
+    <div id="goals-full-list">
+      <div class="empty-state" style="padding: 40px 0;">No goals yet. Add your first one above! 🎯</div>
     </div>
   </div>
 
@@ -1072,9 +1272,9 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
     <div class="section-sub">One place for everything on your mind</div>
     <div class="divider"></div>
     <div class="form-card">
-      <div class="form-card-title">Today's Notes — <span id="notes-date-label">Mar 11, 2026</span></div>
+      <div class="form-card-title">Today's Notes — <span id="notes-date-label"></span></div>
       <div class="field">
-        <textarea class="notes-area" id="notes-full" style="min-height:280px;" placeholder="Let it all out — thoughts, ideas, reminders, things you don&#39;t want to forget..."></textarea>
+        <textarea class="notes-area" id="notes-full" style="min-height:280px;" placeholder="Let it all out — thoughts, ideas, reminders, things you don't want to forget..."></textarea>
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="saveNotesFull()">Save Notes</button>
@@ -1100,13 +1300,13 @@ body.dark-mode input::placeholder, body.dark-mode textarea::placeholder { color:
     <div class="ai-msg assistant"><div class="ai-bubble">Hey! I'm your Daily Assistant. I can help you plan your day, prioritize tasks, think through meals, or just chat through what's on your mind. What do you need?</div></div>
   </div>
   <div class="ai-quick-prompts" id="ai-quick-prompts">
-    <button class="ai-quick-btn" onclick="sendQuick(&#39;Help me plan my day&#39;)">Plan my day</button>
-    <button class="ai-quick-btn" onclick="sendQuick(&#39;What should I focus on first?&#39;)">What to focus on</button>
-    <button class="ai-quick-btn" onclick="sendQuick(&#39;Give me a quick meal idea for tonight&#39;)">Meal idea</button>
-    <button class="ai-quick-btn" onclick="sendQuick(&#39;Help me stay motivated today&#39;)">Motivation</button>
+    <button class="ai-quick-btn" onclick="sendQuick('Help me plan my day')">Plan my day</button>
+    <button class="ai-quick-btn" onclick="sendQuick('What should I focus on first?')">What to focus on</button>
+    <button class="ai-quick-btn" onclick="sendQuick('Give me a quick meal idea for tonight')">Meal idea</button>
+    <button class="ai-quick-btn" onclick="sendQuick('Help me stay motivated today')">Motivation</button>
   </div>
   <div class="ai-input-row">
-    <input type="text" id="ai-input" placeholder="Ask your assistant..." onkeydown="if(event.key===&#39;Enter&#39;) sendAI()">
+    <input type="text" id="ai-input" placeholder="Ask your assistant..." onkeydown="if(event.key==='Enter') sendAI()">
     <button class="ai-send-btn" id="ai-send-btn" onclick="sendAI()">Send</button>
   </div>
 </div>
@@ -1123,7 +1323,8 @@ let state = {
   notes: {},
   budget: {},
   meals: {},
-  groceries: []
+  groceries: [],
+  goals: []
 };
 
 let currentDate = new Date().toISOString().split('T')[0];
@@ -1141,6 +1342,7 @@ function load() {
     state.budget       = saved.budget       || {};
     state.meals        = saved.meals        || {};
     state.groceries    = saved.groceries    || [];
+    state.goals        = saved.goals        || [];
   } catch(e) {}
 }
 
@@ -1191,7 +1393,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
-  const tabs = ['dashboard','appointments','tasks','reminders','budget','habits','meals','notes'];
+  const tabs = ['dashboard','appointments','tasks','reminders','budget','habits','meals','goals','notes'];
   const idx = tabs.indexOf(id);
   if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   renderAll();
@@ -1200,16 +1402,16 @@ function switchTab(id) {
 // ── RENDER ALL ────────────────────────────────────────────────────────────────
 function renderAll() {
   renderAppts(); renderTasks(); renderReminders(); renderHabits();
-  renderBudget();
-  setTimeout(() => { if (document.getElementById('daily-spend-filter')) { document.getElementById('daily-spend-filter').value = currentDate; renderDailySpend(currentDate); } }, 100);
-  renderNotes(); renderFocus3(); renderMeals(); renderGroceries();
+  renderBudget(); renderNotes(); renderFocus3(); renderMeals(); renderGroceries();
+  renderGoals(); renderGoalsDash();
+  setTimeout(() => { const el = document.getElementById('daily-spend-filter'); if (el) { el.value = currentDate; renderDailySpend(currentDate); } }, 100);
   updateDashStats();
 }
 
 function updateDashStats() {
   const todayAppts = state.appointments.filter(a => a.date === currentDate).length;
   const todayTasks = state.tasks.filter(t => t.date === currentDate && !t.done).length;
-  const todaySpend = (state.spending || []).filter(s => s.date === currentDate).reduce((a,s) => a + parseFloat(s.amount||0), 0);
+  const todaySpend = (state.spending||[]).filter(s => s.date === currentDate).reduce((a,s) => a + parseFloat(s.amount||0), 0);
   const todayHabitLog = state.habitLog[currentDate] || {};
   const habitDone = state.habits.filter(h => todayHabitLog[h.id]).length;
   const habitTotal = state.habits.length;
@@ -1335,9 +1537,7 @@ function deleteTask(id) {
 
 function carryOverTasks() {
   const today = new Date().toISOString().split('T')[0];
-  state.tasks.forEach(t => {
-    if (!t.done && t.date < today) t.date = today;
-  });
+  state.tasks.forEach(t => { if (!t.done && t.date < today) t.date = today; });
   save();
 }
 
@@ -1527,7 +1727,7 @@ function viewToday() {
 }
 
 function renderDailySpend(date) {
-  const entries = (state.spending || []).filter(s => s.date === date);
+  const entries = (state.spending||[]).filter(s => s.date === date);
   const total = entries.reduce((a,s) => a + parseFloat(s.amount||0), 0);
   const el = document.getElementById('daily-spend-list');
   const totEl = document.getElementById('daily-spend-total');
@@ -1567,21 +1767,16 @@ function renderBudget() {
   const bdEl = document.getElementById('budget-dash-count');
   if (bdEl) bdEl.textContent = fmtMoney(todaySpend) + ' spent today';
 
-  const tbEl = document.getElementById('dash-total-budget');
-  if (tbEl) tbEl.textContent = fmtMoney(monthlyTotal);
-  const tsEl = document.getElementById('dash-total-spent');
-  if (tsEl) tsEl.textContent = fmtMoney(spent);
-  const remEl = document.getElementById('dash-remaining');
-  if (remEl) remEl.textContent = fmtMoney(remaining);
-  const pctEl = document.getElementById('budget-pct');
-  if (pctEl) pctEl.textContent = pct + '%';
+  const tbEl = document.getElementById('dash-total-budget'); if (tbEl) tbEl.textContent = fmtMoney(monthlyTotal);
+  const tsEl = document.getElementById('dash-total-spent'); if (tsEl) tsEl.textContent = fmtMoney(spent);
+  const remEl = document.getElementById('dash-remaining'); if (remEl) remEl.textContent = fmtMoney(remaining);
+  const pctEl = document.getElementById('budget-pct'); if (pctEl) pctEl.textContent = pct + '%';
   const fillEl = document.getElementById('budget-bar-fill');
   if (fillEl) {
     fillEl.style.width = pct + '%';
     fillEl.className = 'budget-fill ' + (pct > 90 ? 'over' : pct > 70 ? 'warn' : 'safe');
   }
 
-  // Update category dropdown
   const catSelectors = ['spend-category','spend-cat-quick'];
   catSelectors.forEach(selId => {
     const sel = document.getElementById(selId);
@@ -1596,7 +1791,6 @@ function renderBudget() {
     if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
   });
 
-  // Category list
   const catListEl = document.getElementById('category-list');
   if (catListEl) {
     catListEl.innerHTML = !budgetData.categories.length ? '<div class="empty-state">No categories yet.</div>' :
@@ -1608,7 +1802,6 @@ function renderBudget() {
         </div>`).join('');
   }
 
-  // Category breakdown
   const breakdownEl = document.getElementById('category-breakdown');
   if (breakdownEl) {
     const allCats = [{ name: 'General', limit: 0 }, ...budgetData.categories];
@@ -1626,7 +1819,6 @@ function renderBudget() {
     }).join('');
   }
 
-  // Spend history
   const fullEl = document.getElementById('spend-full-list');
   if (fullEl) {
     const all = (state.spending||[]).slice().sort((a,b) => b.date.localeCompare(a.date));
@@ -1640,7 +1832,6 @@ function renderBudget() {
         </div>`).join('');
   }
 
-  // Initialize spend-date
   const sdEl = document.getElementById('spend-date');
   if (sdEl && !sdEl.value) sdEl.value = currentDate;
 }
@@ -1658,7 +1849,7 @@ function addHabit() {
 function toggleHabit(id) {
   if (!state.habitLog[currentDate]) state.habitLog[currentDate] = {};
   state.habitLog[currentDate][id] = !state.habitLog[currentDate][id];
-  save(); renderHabits(); renderFocus3(); updateDashStats();
+  save(); renderHabits(); updateDashStats();
 }
 
 function deleteHabit(id) {
@@ -1743,7 +1934,6 @@ function renderMeals() {
   const meal = state.meals[currentDate] || {};
   const water = meal.water || 0;
 
-  // Populate inputs
   ['breakfast','lunch','dinner','snack','notes'].forEach(f => {
     const el = document.getElementById('meal-' + f);
     if (el) el.value = meal[f] || '';
@@ -1754,13 +1944,10 @@ function renderMeals() {
   renderWaterTrack('water-dash-track', water);
   renderWaterTrack('water-full-track', water);
 
-  const wdc = document.getElementById('water-dash-count');
-  if (wdc) wdc.textContent = `${water} / 8 glasses`;
-  const wfc = document.getElementById('water-full-count');
-  if (wfc) wfc.textContent = `${water} / 8 glasses`;
+  const wdc = document.getElementById('water-dash-count'); if (wdc) wdc.textContent = `${water} / 8 glasses`;
+  const wfc = document.getElementById('water-full-count'); if (wfc) wfc.textContent = `${water} / 8 glasses`;
 
-  const mlEl = document.getElementById('meals-date-label');
-  if (mlEl) mlEl.textContent = fmt(currentDate);
+  const mlEl = document.getElementById('meals-date-label'); if (mlEl) mlEl.textContent = fmt(currentDate);
 
   const histEl = document.getElementById('meals-history');
   if (histEl) {
@@ -1777,12 +1964,11 @@ function renderMeals() {
             ${m.dinner    ? `<div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Dinner · </span>${m.dinner}</div>` : ''}
             ${m.snack     ? `<div style="font-size:0.78rem;color:var(--ink-mid);"><span style="color:var(--ink-lt);font-size:0.62rem;">Snack · </span>${m.snack}</div>` : ''}
           </div>
-          ${m.water ? `<div style="font-size:0.68rem;color:var(--slate);margin-top:4px;">💧 ${m.water} glasses</div>` : ''}
         </div>`).join('');
   }
 }
 
-// ── GROCERIES ──────────────────────────────────────────────────────────────────
+// ── GROCERIES ─────────────────────────────────────────────────────────────────
 function addGrocery() {
   const name = document.getElementById('grocery-input').value.trim();
   if (!name) return;
@@ -1866,10 +2052,8 @@ function renderFocus3() {
   if (!el) return;
   const todayTasks = state.tasks.filter(t => t.date === currentDate);
   const high   = todayTasks.filter(t => !t.done && t.priority === 'high');
-  const medium = todayTasks.filter(t => !t.done && t.priority === 'medium');
   const allHigh = state.tasks.filter(t => !t.done && t.priority === 'high' && t.date !== currentDate);
   let focusTasks = [...high];
-  if (focusTasks.length < 3) focusTasks = [...focusTasks, ...medium].slice(0,3);
   if (focusTasks.length < 3) focusTasks = [...focusTasks, ...allHigh].slice(0,3);
   const doneHigh = todayTasks.filter(t => t.done && t.priority === 'high');
   const display = [...focusTasks, ...doneHigh].slice(0,3);
@@ -1881,6 +2065,189 @@ function renderFocus3() {
       <div class="focus-item-text">${t.title}</div>
       <div class="focus-item-cat">${t.category || ''}</div>
     </div>`).join('');
+}
+
+// ── GOALS & PROJECTS ──────────────────────────────────────────────────────────
+const GOAL_COLORS = {
+  business:    '#4AB8A8',
+  credentials: '#9B7EC8',
+  personal:    '#D4982A',
+  health:      '#6AAA5A',
+  financial:   '#6A8AAC',
+  other:       '#8A8880'
+};
+
+function addGoal() {
+  const name = document.getElementById('goal-name').value.trim();
+  if (!name) { toast('Please enter a goal name.'); return; }
+  state.goals.push({
+    id: Date.now(),
+    name,
+    category: document.getElementById('goal-category').value,
+    description: document.getElementById('goal-desc').value.trim(),
+    steps: [],
+    createdAt: currentDate
+  });
+  save(); renderGoals(); renderGoalsDash(); clearGoal();
+  toast('Goal added!');
+}
+
+function clearGoal() {
+  document.getElementById('goal-name').value = '';
+  document.getElementById('goal-desc').value = '';
+  document.getElementById('goal-category').value = 'business';
+}
+
+function deleteGoal(id) {
+  if (!confirm('Delete this goal and all its steps?')) return;
+  state.goals = state.goals.filter(g => g.id !== id);
+  save(); renderGoals(); renderGoalsDash(); toast('Goal removed');
+}
+
+function addGoalStep(goalId, inputEl) {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  const goal = state.goals.find(g => g.id === goalId);
+  if (!goal) return;
+  goal.steps.push({ id: Date.now(), text, done: false });
+  inputEl.value = '';
+  save(); renderGoals(); renderGoalsDash();
+}
+
+function toggleGoalStep(goalId, stepId) {
+  const goal = state.goals.find(g => g.id === goalId);
+  if (!goal) return;
+  const step = goal.steps.find(s => s.id === stepId);
+  if (step) { step.done = !step.done; save(); renderGoals(); renderGoalsDash(); }
+}
+
+function deleteGoalStep(goalId, stepId) {
+  const goal = state.goals.find(g => g.id === goalId);
+  if (!goal) return;
+  goal.steps = goal.steps.filter(s => s.id !== stepId);
+  save(); renderGoals(); renderGoalsDash();
+}
+
+function getGoalProgress(goal) {
+  if (!goal.steps.length) return 0;
+  return Math.round(goal.steps.filter(s => s.done).length / goal.steps.length * 100);
+}
+
+function buildProgressRing(pct, color, size = 52) {
+  const r = (size / 2) - 6;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (pct / 100) * circ;
+  return `
+    <svg class="progress-ring-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <circle class="progress-ring-bg" cx="${size/2}" cy="${size/2}" r="${r}"/>
+      <circle class="progress-ring-fill" cx="${size/2}" cy="${size/2}" r="${r}"
+        stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+    </svg>`;
+}
+
+function buildMiniRing(pct, color) {
+  const size = 32, r = 12;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (pct / 100) * circ;
+  return `
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform:rotate(-90deg)">
+      <circle fill="none" stroke="var(--border)" stroke-width="3" cx="16" cy="16" r="${r}"/>
+      <circle fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"
+        cx="16" cy="16" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+    </svg>`;
+}
+
+function renderGoals() {
+  const el = document.getElementById('goals-full-list');
+  if (!el) return;
+  if (!state.goals.length) {
+    el.innerHTML = '<div class="empty-state" style="padding:40px 0;">No goals yet. Add your first one above! 🎯</div>';
+    return;
+  }
+
+  el.innerHTML = `<div class="goals-grid">${state.goals.map(goal => {
+    const pct = getGoalProgress(goal);
+    const color = GOAL_COLORS[goal.category] || '#8A8880';
+    const completedSteps = goal.steps.filter(s => s.done).length;
+    const nextStep = goal.steps.find(s => !s.done);
+
+    return `
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <div class="goal-title-area">
+          <div class="goal-name">${goal.name}</div>
+          <span class="goal-category-badge ${goal.category}">${goal.category}</span>
+          ${goal.description ? `<div style="font-size:0.72rem;color:var(--ink-lt);margin-top:6px;line-height:1.5;">${goal.description}</div>` : ''}
+        </div>
+        <div class="progress-ring-wrap">
+          ${buildProgressRing(pct, color)}
+          <div class="progress-pct-label" style="color:${color}">${pct}%</div>
+          <div class="progress-pct-sub">done</div>
+        </div>
+      </div>
+
+      <div class="goal-steps">
+        ${goal.steps.map(step => `
+          <div class="goal-step ${step.done ? 'completed' : ''}" onclick="toggleGoalStep(${goal.id}, ${step.id})">
+            <div class="goal-step-check ${step.done ? 'done' : ''}"></div>
+            <div class="goal-step-text">${step.text}</div>
+            <button class="item-remove" onclick="event.stopPropagation();deleteGoalStep(${goal.id},${step.id})">×</button>
+          </div>`).join('')}
+
+        ${nextStep ? `
+          <div class="goal-next-step">
+            <span class="goal-next-label">Next →</span>
+            <span>${nextStep.text}</span>
+          </div>` : pct === 100 ? `
+          <div class="goal-next-step" style="background:var(--teal-lt);border-color:rgba(74,184,168,0.2);color:var(--teal);">
+            🎉 Goal complete!
+          </div>` : ''}
+      </div>
+
+      <div class="add-step-row">
+        <input class="add-step-input" type="text" placeholder="Add a step..."
+          onkeydown="if(event.key==='Enter'){addGoalStep(${goal.id},this)}"
+          id="step-input-${goal.id}">
+        <button class="add-step-btn" onclick="addGoalStep(${goal.id},document.getElementById('step-input-${goal.id}'))">+ Step</button>
+      </div>
+
+      <div class="goal-card-footer">
+        <span class="goal-step-count">${completedSteps} of ${goal.steps.length} steps complete</span>
+        <button class="goal-delete-btn" onclick="deleteGoal(${goal.id})">🗑 Delete goal</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderGoalsDash() {
+  const el = document.getElementById('goals-dash-list');
+  const countEl = document.getElementById('goals-dash-count');
+  if (!el) return;
+
+  const goals = state.goals || [];
+  if (countEl) countEl.textContent = goals.length + ' active';
+
+  if (!goals.length) {
+    el.innerHTML = '<div class="empty-state">No goals yet. Add some in Goals & Projects.</div>';
+    return;
+  }
+
+  el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+    ${goals.map(goal => {
+      const pct = getGoalProgress(goal);
+      const color = GOAL_COLORS[goal.category] || '#8A8880';
+      const nextStep = goal.steps.find(s => !s.done);
+      return `
+        <div class="dash-goal-item" onclick="switchTab('goals')">
+          <div class="dash-goal-mini-ring">${buildMiniRing(pct, color)}</div>
+          <div class="dash-goal-info">
+            <div class="dash-goal-name">${goal.name}</div>
+            <div class="dash-goal-next">${nextStep ? '→ ' + nextStep.text : pct === 100 ? '🎉 Complete!' : 'Add steps to track progress'}</div>
+          </div>
+          <div style="font-size:0.72rem;font-weight:600;color:${color};flex-shrink:0;">${pct}%</div>
+        </div>`;
+    }).join('')}
+  </div>`;
 }
 
 // ── BACKUP / RESTORE ──────────────────────────────────────────────────────────
@@ -1904,6 +2271,7 @@ function importData(e) {
     try {
       const imported = JSON.parse(ev.target.result);
       Object.assign(state, imported);
+      if (!state.goals) state.goals = [];
       save(); renderAll(); toast('Data restored successfully');
     } catch(err) { toast('Error importing file. Please check the format.'); }
   };
@@ -1945,10 +2313,16 @@ function toggleDarkMode() {
 }
 
 (function initDark() {
-  if (localStorage.getItem('dh-dark') === '1') {
+  const saved = localStorage.getItem('dh-dark');
+  // default to dark mode if not set
+  if (saved === null || saved === '1') {
     document.body.classList.add('dark-mode');
     const btn = document.getElementById('dark-toggle-btn');
     if (btn) btn.textContent = '☀️';
+  } else {
+    document.body.classList.remove('dark-mode');
+    const btn = document.getElementById('dark-toggle-btn');
+    if (btn) btn.textContent = '🌙';
   }
 })();
 
@@ -1984,7 +2358,7 @@ async function sendAI() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
-        system: `You are a warm, practical Daily Assistant embedded in "Daily Hub" — a personal life operating system. Help with: planning days, prioritizing tasks, meal planning, habit building, budgeting, motivation, and productivity. Keep responses concise and encouraging. Reference the tool's features (Tasks, Habits, Budget, Meals, Appointments, Reminders, Notes) when relevant. Prefer conversational prose over bullet points.`,
+        system: `You are a warm, practical Daily Assistant embedded in "Daily Hub" — a personal life operating system. Help with: planning days, prioritizing tasks, meal planning, habit building, budgeting, motivation, productivity, and goal achievement. Keep responses concise and encouraging. Reference the tool's features (Tasks, Habits, Budget, Meals, Appointments, Reminders, Notes, Goals & Projects) when relevant. Prefer conversational prose over bullet points.`,
         messages: aiHistory
       })
     });
@@ -2023,28 +2397,6 @@ function showTyping() {
   return el;
 }
 
-// ── PWA ───────────────────────────────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  const swCode = "const CACHE='dh-v1';self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/'  ])));});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});";
-  const swBlob = new Blob([swCode], { type: 'application/javascript' });
-  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
-}
-
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault(); deferredPrompt = e;
-  setTimeout(() => {
-    if (!deferredPrompt) return;
-    const hint = document.createElement('button');
-    hint.className = 'header-btn';
-    hint.style.marginLeft = '4px';
-    hint.textContent = '⊕ Install';
-    hint.title = 'Install Daily Hub as an app';
-    hint.onclick = () => { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { hint.remove(); deferredPrompt = null; }); };
-    document.querySelector('.header-right').appendChild(hint);
-  }, 3000);
-});
-
 // ── INIT ──────────────────────────────────────────────────────────────────────
 load();
 updateDateDisplay();
@@ -2052,7 +2404,6 @@ carryOverTasks();
 renderAll();
 fetchWeather();
 
-// Initialize date inputs
 const today = new Date().toISOString().split('T')[0];
 ['appt-date','task-date','reminder-date','spend-date'].forEach(id => {
   const el = document.getElementById(id);
@@ -2061,7 +2412,5 @@ const today = new Date().toISOString().split('T')[0];
 const bmEl = document.getElementById('budget-month');
 if (bmEl) bmEl.value = currentMonth();
 </script>
-
-
 
 </body></html>
