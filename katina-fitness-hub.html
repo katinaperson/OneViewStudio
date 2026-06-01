@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katina's Fitness Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fdf6f0;
+  --card: #ffffff;
+  --accent1: #e8553e;
+  --accent2: #f0a500;
+  --accent3: #3a8c6e;
+  --accent4: #c44b8a;
+  --text: #1e1a18;
+  --muted: #9a8f89;
+  --border: #ede5df;
+  --warm: #fdf0e8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.hero {
+  background: linear-gradient(135deg, #1e1a18 0%, #3d2c24 60%, #5a3828 100%);
+  padding: 36px 20px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(232,85,62,0.3) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: -30px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(240,165,0,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: #fff;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 span { color: var(--accent2); }
+
+.hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.88rem;
+  margin-top: 6px;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+
+.goal-pills {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.goal-pill {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 600;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  flex: 1;
+  min-width: 80px;
+  padding: 14px 8px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab.active { color: var(--accent1); border-bottom-color: var(--accent1); }
+.tab:hover:not(.active) { color: var(--text); background: var(--warm); }
+
+/* CONTENT */
+.content { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* EQUIPMENT LIST */
+.equip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.equip-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.equip-icon { font-size: 1.4rem; flex-shrink: 0; }
+.equip-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+.equip-use { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+/* SECTION TITLES */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--text);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+.section-title span { color: var(--accent1); }
+
+/* DAY CARDS */
+.day-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.day-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+.day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.day-left { display: flex; align-items: center; gap: 12px; }
+
+.day-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.day-name { font-weight: 800; font-size: 0.95rem; }
+.day-focus { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+.day-time { font-size: 0.72rem; font-weight: 700; color: var(--accent3); background: #edf7f2; padding: 3px 8px; border-radius: 8px; white-space: nowrap; }
+
+.day-arrow {
+  font-size: 0.8rem;
+  color: var(--muted);
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+
+.day-body {
+  display: none;
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.day-card.open .day-body { display: block; }
+.day-card.open .day-arrow { transform: rotate(180deg); }
+
+/* WORKOUT BLOCKS */
+.block {
+  margin-top: 14px;
+}
+
+.block-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.exercise-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.exercise-row:last-child { border-bottom: none; }
+
+.ex-check {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.ex-check.done {
+  background: var(--accent3);
+  border-color: var(--accent3);
+  color: white;
+}
+
+.ex-info { flex: 1; }
+.ex-name { font-size: 0.88rem; font-weight: 700; }
+.ex-detail { font-size: 0.78rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.ex-equip { font-size: 0.7rem; font-weight: 700; color: var(--accent4); background: #fceef7; padding: 2px 7px; border-radius: 6px; display: inline-block; margin-top: 3px; }
+
+/* TIPS */
+.tip-box {
+  background: linear-gradient(135deg, #fff8f0, #fff3e8);
+  border: 1px solid #fde0c4;
+  border-left: 4px solid var(--accent2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: #6b4c2a;
+  line-height: 1.5;
+}
+
+/* PHASE BANNER */
+.phase-banner {
+  background: linear-gradient(135deg, var(--accent1), #c43520);
+  color: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.phase-icon { font-size: 2rem; flex-shrink: 0; }
+.phase-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+.phase-sub { font-size: 0.78rem; opacity: 0.85; margin-top: 3px; }
+
+/* NUTRITION */
+.meal-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.meal-icon { font-size: 1.3rem; }
+.meal-name { font-weight: 800; font-size: 0.95rem; }
+.meal-cal { font-size: 0.75rem; color: var(--muted); }
+
+.food-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 0.85rem;
+}
+
+.food-item:last-child { border-bottom: none; }
+.food-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); flex-shrink: 0; }
+
+/* PROGRESS */
+.progress-section { margin-bottom: 24px; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-value { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--accent1); }
+.stat-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+.log-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+
+.log-input:focus { border-color: var(--accent1); }
+
+.log-btn {
+  background: var(--accent1);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s;
+}
+
+.log-btn:hover { opacity: 0.88; }
+
+.log-entries { margin-top: 14px; }
+
+.log-entry {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.log-date { color: var(--muted); font-size: 0.72rem; }
+.log-delete { color: var(--muted); cursor: pointer; font-size: 0.8rem; }
+.log-delete:hover { color: var(--accent1); }
+
+/* REST DAY */
+.rest-card {
+  background: linear-gradient(135deg, #f0f7f4, #e8f4f0);
+  border: 1px solid #c8e6da;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.rest-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.rest-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--accent3); margin-bottom: 6px; }
+.rest-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+/* INFO CARDS */
+.info-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.info-card strong { color: var(--accent1); }
+
+@media (max-width: 400px) {
+  .equip-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Katina's <span>Fitness Hub</span></h1>
+  <p>Burn fat · Build muscle · Tone up · 5–6 days/week · 30–45 min</p>
+  <div class="goal-pills">
+    <span class="goal-pill">🔥 -50 lbs</span>
+    <span class="goal-pill">💪 Tone & Build</span>
+    <span class="goal-pill">🏠 100% Home</span>
+    <span class="goal-pill">⏱ 30–45 min</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('schedule')">Schedule</div>
+  <div class="tab" onclick="showPage('nutrition')">Nutrition</div>
+  <div class="tab" onclick="showPage('equipment')">Equipment</div>
+  <div class="tab" onclick="showPage('progress')">Progress</div>
+  <div class="tab" onclick="showPage('tips')">Tips</div>
+</div>
+
+<div class="content">
+
+  <!-- SCHEDULE PAGE -->
+  <div id="schedule" class="page active">
+
+    <div class="phase-banner">
+      <div class="phase-icon">🏁</div>
+      <div>
+        <div class="phase-title">Phase 1 — Foundation (Months 1–2)</div>
+        <div class="phase-sub">Build the habit. Learn the movements. Start burning.</div>
+      </div>
+    </div>
+
+    <!-- MONDAY -->
+    <div class="day-card" id="day-mon">
+      <div class="day-header" onclick="toggleDay('day-mon')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#fff0ed;">🚶</div>
+          <div>
+            <div class="day-name">Monday</div>
+            <div class="day-focus">Walking Pad + Lower Body Burn</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">40 min</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-title">🔥 Warm-Up · 5 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Walking Pad</div><div class="ex-detail">2.5–3 mph · easy pace to wake up legs and get blood moving</div><span class="ex-equip">Walking Pad</span></div></div>
+        </div>
+        <div class="block">
+          <div class="block-title">🚶 Cardio · 20 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Power Walk</div><div class="ex-detail">Increase to 3–3.5 mph · steady pace · aim for light sweat · this is your fat-burn zone</div><span class="ex-equip">Walking Pad</span></div></div>
+        </div>
+        <div class="block">
+          <div class="block-title">🏋️ Lower Body Circuit · 15 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Maxi Squat — Wide Stance</div><div class="ex-detail">3 sets × 15 reps · slow and controlled · squeeze glutes at top</div><span class="ex-equip">Maxi Squat Machine</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Resistance Band Squats</div><div class="ex-detail">3 sets × 12 reps · band just above knees · push knees out against band</div><span class="ex-equip">Arena Strength Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Glute Bridges with Band</div><div class="ex-detail">3 sets × 20 reps · band above knees · squeeze hard at top · hold 2 sec</div><span class="ex-equip">Invisible Waist Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Reverse Lunges</div><div class="ex-detail">3 sets × 10 each leg · bodyweight · step back, knee almost touches floor</div></div></div>
+        </div>
+        <div class="tip-box">💡 Monday sets the tone for the week. Don't skip it — even 20 minutes on the pad counts if you're tired.</div>
+      </div>
+    </div>
+
+    <!-- TUESDAY -->
+    <div class="day-card" id="day-tue">
+      <div class="day-header" onclick="toggleDay('day-tue')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#fff8e8;">🚣</div>
+          <div>
+            <div class="day-name">Tuesday</div>
+            <div class="day-focus">Rowing + Upper Body Strength</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">40 min</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-title">🚣 Rowing Cardio · 20 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Resistance Band Rower Warm-Up</div><div class="ex-detail">5 min easy pace · seated on floor · feet in foot straps · pull smoothly</div><span class="ex-equip">Series 8 Band Rower</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Row Intervals</div><div class="ex-detail">1 min fast / 1 min slow · repeat 7 rounds · engages back, core, and arms simultaneously</div><span class="ex-equip">Series 8 Band Rower</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Cool-Down Row</div><div class="ex-detail">3 min easy pace to finish</div><span class="ex-equip">Series 8 Band Rower</span></div></div>
+        </div>
+        <div class="block">
+          <div class="block-title">💪 Upper Body · 15 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Bicep Curls</div><div class="ex-detail">3 sets × 12 reps · slow up, slow down · feel the squeeze at top</div><span class="ex-equip">Hyperbell Weights</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Overhead Press</div><div class="ex-detail">3 sets × 10 reps · press straight up · core tight · don't arch back</div><span class="ex-equip">Hyperbell Weights</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Pilates Bar Chest Pull</div><div class="ex-detail">3 sets × 15 reps · hold bar shoulder width · pull apart and release · works chest and shoulders</div><span class="ex-equip">Pilates Bar Kit</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Tricep Overhead Extension</div><div class="ex-detail">3 sets × 12 reps · arms firm behind your head · extend up · fights arm jiggle</div><span class="ex-equip">Hyperbell Weights</span></div></div>
+        </div>
+        <div class="tip-box">💡 The rower works your entire body — back, core, arms, legs all at once. It's one of the best fat-burning tools you own.</div>
+      </div>
+    </div>
+
+    <!-- WEDNESDAY -->
+    <div class="day-card" id="day-wed">
+      <div class="day-header" onclick="toggleDay('day-wed')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#f0f7ff;">🧘</div>
+          <div>
+            <div class="day-name">Wednesday</div>
+            <div class="day-focus">Core · Abs · Pilates</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">35 min</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-title">🚶 Light Cardio Warm-Up · 10 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Walking Pad Easy Walk</div><div class="ex-detail">2.5–3 mph · just warming up the body before floor work</div><span class="ex-equip">Walking Pad</span></div></div>
+        </div>
+        <div class="block">
+          <div class="block-title">🎯 Pilates Core Circuit · 25 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Pilates V-Sit Hold</div><div class="ex-detail">3 sets × 20 sec hold · sit on mat, lean back slightly, legs lifted · core on fire</div><span class="ex-equip">Pilates Bar Kit</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Lying Leg Lifts with Bar</div><div class="ex-detail">3 sets × 12 reps · lie on back, feet in bar straps, lift legs to 90° and lower slowly · targets lower abs</div><span class="ex-equip">Pilates Bar Kit</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Bicycle Crunches</div><div class="ex-detail">3 sets × 20 reps · slow and controlled · elbow to opposite knee · feel the twist in your waist</div></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Pilates Hundred</div><div class="ex-detail">1 set · lie back, legs lifted 45°, arms pumping · breathe in 5 counts, out 5 · 10 full rounds</div><span class="ex-equip">Pilates Bar Kit</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Dead Bug</div><div class="ex-detail">3 sets × 10 each side · lie on back, opposite arm and leg extend · lower back stays flat on floor</div></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Plank Hold</div><div class="ex-detail">3 sets × 20–30 sec · forearms or full plank · core tight, hips level · build to 60 sec over time</div></div></div>
+        </div>
+        <div class="tip-box">💡 Ab work alone won't flatten your stomach — fat loss from your whole-body cardio and diet will reveal the muscle you're building here. Both matter!</div>
+      </div>
+    </div>
+
+    <!-- THURSDAY -->
+    <div class="day-card" id="day-thu">
+      <div class="day-header" onclick="toggleDay('day-thu')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#f8f0ff;">⚡</div>
+          <div>
+            <div class="day-name">Thursday</div>
+            <div class="day-focus">Full Body Power Circuit</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">40 min</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-title">🔥 Circuit Warm-Up · 5 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">March in Place + Arm Circles</div><div class="ex-detail">2 min marching, 1 min arm circles forward, 1 min back, 1 min hip circles</div></div></div>
+        </div>
+        <div class="block">
+          <div class="block-title">⚡ Full Body Circuit · 35 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Squat + Overhead Press Combo</div><div class="ex-detail">3 sets × 12 reps · squat down, press weights overhead as you stand · full body in one move</div><span class="ex-equip">Hyperbell + Maxi Squat</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Resistance Band Row</div><div class="ex-detail">3 sets × 15 reps · band under feet, hinge forward slightly, pull elbows back · back and biceps</div><span class="ex-equip">Series 8 Band Rower</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Glute Kickbacks with Band</div><div class="ex-detail">3 sets × 15 each leg · band around ankles, kick straight back · feel it in your glute</div><span class="ex-equip">Arena Strength Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Pilates Bar Chest Fly</div><div class="ex-detail">3 sets × 12 reps · arms wide, bring bar to chest · opens chest, works upper body</div><span class="ex-equip">Pilates Bar Kit</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Side Lying Leg Raises with Band</div><div class="ex-detail">3 sets × 15 each side · band above knees · lift top leg, lower slow · outer thighs and hips</div><span class="ex-equip">Invisible Waist Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Standing Oblique Crunches</div><div class="ex-detail">3 sets × 15 each side · weight in one hand, crunch sideways · carves the waist</div><span class="ex-equip">Hyperbell Weights</span></div></div>
+        </div>
+        <div class="tip-box">💡 Thursday is your hardest day — right in the middle of the week when your body is warmed up from Mon/Tue but not yet tired from Fri/Sat. Push here!</div>
+      </div>
+    </div>
+
+    <!-- FRIDAY -->
+    <div class="day-card" id="day-fri">
+      <div class="day-header" onclick="toggleDay('day-fri')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#fff0f5;">🍑</div>
+          <div>
+            <div class="day-name">Friday</div>
+            <div class="day-focus">Glutes · Legs · Lower Body Tone</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">40 min</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-title">🚶 Cardio Warm-Up · 15 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Incline Walk</div><div class="ex-detail">If your pad has incline, use it · 3–3.5 mph · targets glutes and calves more than flat walking</div><span class="ex-equip">Walking Pad</span></div></div>
+        </div>
+        <div class="block">
+          <div class="block-title">🍑 Glute & Leg Sculpt · 25 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Sumo Squat Pulses</div><div class="ex-detail">3 sets × 20 small pulses at bottom · band above knees · burn should be intense</div><span class="ex-equip">Invisible Waist Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Single Leg Glute Bridge</div><div class="ex-detail">3 sets × 12 each leg · one foot on floor, other leg extended · harder than it looks</div><span class="ex-equip">Arena Strength Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Maxi Squat Narrow Stance</div><div class="ex-detail">3 sets × 15 reps · feet closer together · targets quads more · keep chest up</div><span class="ex-equip">Maxi Squat Machine</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Fire Hydrants</div><div class="ex-detail">3 sets × 15 each side · on all fours, band above knees · lift knee out to side · outer glute burn</div><span class="ex-equip">Arena Strength Bands</span></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Donkey Kicks</div><div class="ex-detail">3 sets × 15 each leg · band at ankles · kick straight back and up · squeeze glute at top</div><span class="ex-equip">Invisible Waist Bands</span></div></div>
+        </div>
+        <div class="tip-box">💡 Friday is your glute and leg focus day — the Invisible Waist bands were literally made for this. Use the lighter resistance until your form is perfect, then move up.</div>
+      </div>
+    </div>
+
+    <!-- SATURDAY -->
+    <div class="day-card" id="day-sat">
+      <div class="day-header" onclick="toggleDay('day-sat')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#f0f7f4;">🌿</div>
+          <div>
+            <div class="day-name">Saturday</div>
+            <div class="day-focus">Active Recovery / Light Movement</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">30–45 min</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="rest-card" style="margin-top:14px;">
+          <div class="rest-emoji">🚶‍♀️</div>
+          <div class="rest-title">Active Recovery Day</div>
+          <div class="rest-text">Choose one: a 30–45 min outdoor walk · gentle stretching · light Pilates · or your Sunday walk if you prefer to move it here. Your muscles repair and grow on rest days — this is not a wasted day, it's part of the plan.</div>
+        </div>
+        <div class="block" style="margin-top:14px;">
+          <div class="block-title">🧘 Optional Stretch Routine · 15 min</div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Hip Flexor Stretch</div><div class="ex-detail">Hold 30 sec each side · kneeling lunge position · essential after all the squat work this week</div></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Seated Hamstring Stretch</div><div class="ex-detail">Hold 30 sec each leg · reach for toes · breathe into the stretch</div></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Cat-Cow Stretch</div><div class="ex-detail">10 slow rounds · on all fours · arch and round the back · great for the spine after a full week</div></div></div>
+          <div class="exercise-row"><div class="ex-check" onclick="toggleCheck(this)"></div><div class="ex-info"><div class="ex-name">Child's Pose Hold</div><div class="ex-detail">Hold 60 sec · knees wide · arms extended · full body release</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUNDAY -->
+    <div class="day-card" id="day-sun">
+      <div class="day-header" onclick="toggleDay('day-sun')">
+        <div class="day-left">
+          <div class="day-dot" style="background:#fffbf0;">☀️</div>
+          <div>
+            <div class="day-name">Sunday</div>
+            <div class="day-focus">Rest or Walk Day</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="day-time">Optional</span>
+          <span class="day-arrow">▼</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="rest-card" style="margin-top:14px;">
+          <div class="rest-emoji">🙏</div>
+          <div class="rest-title">Full Rest or Sunday Walk</div>
+          <div class="rest-text">You mentioned you like to walk on Sundays — keep that. A 45-min Sunday walk is perfect active recovery and great for mental health. Or take a full rest day. Either is the right choice.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NUTRITION PAGE -->
+  <div id="nutrition" class="page">
+    <div class="section-title">Daily <span>Nutrition</span> Plan</div>
+
+    <div class="info-card" style="margin-bottom:16px;">
+      <strong>Your daily target:</strong> ~1,400–1,500 calories · High protein (aim for 100–120g/day) · Complex carbs · Healthy fats. Protein preserves and builds muscle while you lose fat — it's the most important number to hit.
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-icon">🌅</span>
+        <div><div class="meal-name">Breakfast</div><div class="meal-cal">~350–400 cal</div></div>
+      </div>
+      <div class="food-item"><div class="food-dot"></div>3 scrambled eggs or egg whites + 1 turkey sausage link</div>
+      <div class="food-item"><div class="food-dot"></div>½ cup oatmeal with cinnamon and a few blueberries</div>
+      <div class="food-item"><div class="food-dot"></div>Black coffee or green tea · 16 oz water</div>
+      <div class="food-item"><div class="food-dot"></div><em>OR: Greek yogurt + fruit + 2 hard boiled eggs</em></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-icon">☀️</span>
+        <div><div class="meal-name">Lunch</div><div class="meal-cal">~400–450 cal</div></div>
+      </div>
+      <div class="food-item"><div class="food-dot"></div>Grilled chicken breast (5–6 oz) — the one you already prep</div>
+      <div class="food-item"><div class="food-dot"></div>Large salad with spinach, cucumber, tomato, olive oil + lemon</div>
+      <div class="food-item"><div class="food-dot"></div>½ cup brown rice or small sweet potato</div>
+      <div class="food-item"><div class="food-dot"></div>16 oz water</div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-icon">🍎</span>
+        <div><div class="meal-name">Afternoon Snack</div><div class="meal-cal">~150–200 cal</div></div>
+      </div>
+      <div class="food-item"><div class="food-dot"></div>Apple + string cheese</div>
+      <div class="food-item"><div class="food-dot"></div>OR: Hummus + veggies</div>
+      <div class="food-item"><div class="food-dot"></div>OR: Greek yogurt (plain)</div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-icon">🌙</span>
+        <div><div class="meal-name">Dinner</div><div class="meal-cal">~400–450 cal</div></div>
+      </div>
+      <div class="food-item"><div class="food-dot"></div>Salmon, mahi-mahi, or flounder (6 oz) baked or pan-seared</div>
+      <div class="food-item"><div class="food-dot"></div>Roasted broccoli or spinach sautéed in olive oil + garlic</div>
+      <div class="food-item"><div class="food-dot"></div>Small portion pasta OR zucchini noodles if you want lower carb</div>
+      <div class="food-item"><div class="food-dot"></div><em>On chicken parmesan nights — that absolutely counts! Just watch the portion.</em></div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-icon">💧</span>
+        <div><div class="meal-name">Water Goal</div><div class="meal-cal">Non-negotiable</div></div>
+      </div>
+      <div class="food-item"><div class="food-dot"></div>Minimum 64 oz (8 cups) daily — more on workout days</div>
+      <div class="food-item"><div class="food-dot"></div>Start with 16 oz first thing in the morning before anything else</div>
+      <div class="food-item"><div class="food-dot"></div>Sweet tea — make it at home with stevia and cut the drive-through version</div>
+      <div class="food-item"><div class="food-dot"></div>Flavor your water with lemon, cucumber, or mint if plain is boring</div>
+    </div>
+
+  </div>
+
+  <!-- EQUIPMENT PAGE -->
+  <div id="equipment" class="page">
+    <div class="section-title">Your <span>Equipment</span></div>
+
+    <div class="info-card" style="margin-bottom:16px;">
+      You have a <strong>complete home gym</strong>. Everything below is what you already own — no purchases needed. Each piece has a specific role in your plan.
+    </div>
+
+    <div class="equip-grid">
+      <div class="equip-card">
+        <div class="equip-icon">🚶</div>
+        <div><div class="equip-name">Walking Pad</div><div class="equip-use">Cardio · fat burn · warm-ups · daily movement</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">🚣</div>
+        <div><div class="equip-name">Sunny Rower</div><div class="equip-use">Full body cardio · back · arms · core</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">🏋️</div>
+        <div><div class="equip-name">Maxi Squat Machine</div><div class="equip-use">Lower body · glutes · quads · hamstrings</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">💪</div>
+        <div><div class="equip-name">Hyperbell Weights</div><div class="equip-use">Upper body · arms · shoulders · toning</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">🎀</div>
+        <div><div class="equip-name">Portable Pilates Studio</div><div class="equip-use">Core · abs · leg lifts · flexibility</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">🩹</div>
+        <div><div class="equip-name">Series 8 Band Rower</div><div class="equip-use">Seated rowing · back · arms · core</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">💗</div>
+        <div><div class="equip-name">Arena Strength Bands</div><div class="equip-use">Glutes · legs · squats · resistance work</div></div>
+      </div>
+      <div class="equip-card">
+        <div class="equip-icon">🩵</div>
+        <div><div class="equip-name">Invisible Waist Bands</div><div class="equip-use">Glutes · hip abduction · donkey kicks · bridges</div></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <strong>Band resistance guide:</strong> Start with lighter resistance (pink/lighter colors) until your form is perfect. Move to heavier bands (gray/darker) when exercises feel too easy. Using too-heavy bands too soon = poor form = no results.
+    </div>
+  </div>
+
+  <!-- PROGRESS PAGE -->
+  <div id="progress" class="page">
+    <div class="section-title">Track Your <span>Progress</span></div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="workoutCount">0</div>
+        <div class="stat-label">Workouts Logged</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="weekStreak">0</div>
+        <div class="stat-label">This Week</div>
+      </div>
+    </div>
+
+    <div class="section-title" style="font-size:1rem; margin-top:8px;">Log a <span>Workout</span></div>
+    <input type="date" class="log-input" id="logDate">
+    <input type="text" class="log-input" id="logWorkout" placeholder="What did you do? (e.g. Monday — Walking Pad + Lower Body)">
+    <input type="text" class="log-input" id="logNote" placeholder="How did it feel? (optional)">
+    <button class="log-btn" onclick="logWorkout()">Log Workout ✓</button>
+
+    <div class="log-entries" id="logEntries"></div>
+
+    <div class="section-title" style="font-size:1rem; margin-top:20px;">Weekly <span>Weigh-In</span></div>
+    <input type="date" class="log-input" id="weightDate">
+    <input type="number" class="log-input" id="weightVal" placeholder="Weight (lbs)">
+    <button class="log-btn" onclick="logWeight()" style="background:var(--accent3);">Log Weight</button>
+    <div class="log-entries" id="weightEntries"></div>
+  </div>
+
+  <!-- TIPS PAGE -->
+  <div id="tips" class="page">
+    <div class="section-title">Success <span>Tips</span></div>
+
+    <div class="info-card">
+      <strong>🔥 Fat loss is 80% nutrition.</strong> You can't out-exercise a bad diet. The workouts build muscle and boost metabolism — but the kitchen is where fat actually comes off. Both matter, but food matters more.
+    </div>
+
+    <div class="info-card">
+      <strong>💪 Muscle burns fat while you rest.</strong> Every pound of muscle you build burns extra calories 24 hours a day, even when you're sitting at your desk. This is why toning and weight loss are the same goal, not competing ones.
+    </div>
+
+    <div class="info-card">
+      <strong>📅 Weigh in once a week, same day, same time.</strong> Morning, after bathroom, before eating. Weight fluctuates daily based on water, salt, hormones — weekly trends are what matter, not daily numbers.
+    </div>
+
+    <div class="info-card">
+      <strong>📸 Take monthly photos.</strong> The scale sometimes doesn't move while your body is completely reshaping. Photos and how your clothes fit tell the real story.
+    </div>
+
+    <div class="info-card">
+      <strong>💧 Drink your water.</strong> Dehydration makes you feel hungry when you're actually thirsty. It also makes workouts feel harder than they are. Start every morning with 16 oz before coffee.
+    </div>
+
+    <div class="info-card">
+      <strong>🍽 Don't skip meals to lose faster.</strong> Skipping meals slows your metabolism and leads to overeating later. Eating consistently — especially protein — keeps your body burning.
+    </div>
+
+    <div class="info-card">
+      <strong>😴 Sleep is part of the plan.</strong> Poor sleep raises cortisol (the stress hormone that stores belly fat) and kills workout recovery. 7–8 hours protects everything you're working for.
+    </div>
+
+    <div class="info-card">
+      <strong>📈 Phase progression:</strong> Months 1–2 build the base. Months 3–4 increase intensity and add heavier bands. Months 5–6 push for the finish. Don't rush to Phase 2 — master the movements first.
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleDay(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('done');
+  el.textContent = el.classList.contains('done') ? '✓' : '';
+}
+
+// Set today's date as default
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('logDate').value = today;
+document.getElementById('weightDate').value = today;
+
+// WORKOUT LOG
+let workouts = JSON.parse(localStorage.getItem('kfh_workouts') || '[]');
+let weights = JSON.parse(localStorage.getItem('kfh_weights') || '[]');
+
+function logWorkout() {
+  const date = document.getElementById('logDate').value;
+  const workout = document.getElementById('logWorkout').value.trim();
+  const note = document.getElementById('logNote').value.trim();
+  if (!workout) return;
+  workouts.unshift({ date, workout, note, id: Date.now() });
+  localStorage.setItem('kfh_workouts', JSON.stringify(workouts));
+  document.getElementById('logWorkout').value = '';
+  document.getElementById('logNote').value = '';
+  renderLog();
+}
+
+function logWeight() {
+  const date = document.getElementById('weightDate').value;
+  const val = document.getElementById('weightVal').value;
+  if (!val) return;
+  weights.unshift({ date, val, id: Date.now() });
+  localStorage.setItem('kfh_weights', JSON.stringify(weights));
+  document.getElementById('weightVal').value = '';
+  renderWeights();
+}
+
+function deleteWorkout(id) {
+  workouts = workouts.filter(w => w.id !== id);
+  localStorage.setItem('kfh_workouts', JSON.stringify(workouts));
+  renderLog();
+}
+
+function deleteWeight(id) {
+  weights = weights.filter(w => w.id !== id);
+  localStorage.setItem('kfh_weights', JSON.stringify(weights));
+  renderWeights();
+}
+
+function renderLog() {
+  const el = document.getElementById('logEntries');
+  document.getElementById('workoutCount').textContent = workouts.length;
+  // count this week
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const thisWeek = workouts.filter(w => new Date(w.date) >= weekAgo).length;
+  document.getElementById('weekStreak').textContent = thisWeek;
+
+  if (!workouts.length) { el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.82rem;padding:20px;">No workouts logged yet. Get moving! 🔥</div>'; return; }
+  el.innerHTML = workouts.map(w => `
+    <div class="log-entry">
+      <div>
+        <div style="font-weight:700;">${w.workout}</div>
+        ${w.note ? `<div style="color:var(--muted);font-size:0.75rem;margin-top:2px;">${w.note}</div>` : ''}
+        <div class="log-date">${w.date}</div>
+      </div>
+      <span class="log-delete" onclick="deleteWorkout(${w.id})">✕</span>
+    </div>`).join('');
+}
+
+function renderWeights() {
+  const el = document.getElementById('weightEntries');
+  if (!weights.length) { el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.82rem;padding:20px;">No weigh-ins logged yet.</div>'; return; }
+  el.innerHTML = weights.map(w => `
+    <div class="log-entry">
+      <div>
+        <div style="font-weight:800;font-size:1rem;">${w.val} lbs</div>
+        <div class="log-date">${w.date}</div>
+      </div>
+      <span class="log-delete" onclick="deleteWeight(${w.id})">✕</span>
+    </div>`).join('');
+}
+
+renderLog();
+renderWeights();
+</script>
+</body>
+</html>
