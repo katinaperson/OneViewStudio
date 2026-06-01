@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tina's Transformation Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-pale: #F5E9C8;
+    --cream: #FAF7F0;
+    --deep: #1A1208;
+    --bark: #3D2B0E;
+    --forest: #2D4A22;
+    --forest-light: #4A7A38;
+    --sage: #8DB87A;
+    --sage-pale: #E8F3E2;
+    --coral: #D4654A;
+    --coral-light: #F0A090;
+    --slate: #2C3E50;
+    --text: #2A1F0A;
+    --text-muted: #7A6840;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: var(--deep);
+    position: relative;
+    padding: 60px 24px 50px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(45,74,34,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 80% 70%, rgba(212,101,74,0.15) 0%, transparent 60%);
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 8vw, 56px);
+    color: #fff;
+    line-height: 1.1;
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .hero h1 span { color: var(--gold-light); font-style: italic; }
+  .hero-sub {
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .hstat {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 12px;
+    padding: 14px 20px;
+    text-align: center;
+    min-width: 100px;
+  }
+  .hstat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .hstat-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ---- NAV TABS ---- */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    background: var(--bark);
+    padding: 0 8px;
+    gap: 0;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 14px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab.active { color: var(--gold-light); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: rgba(255,255,255,0.8); }
+
+  /* ---- SECTIONS ---- */
+  .section { display: none; padding: 24px 16px 48px; max-width: 680px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(201,168,76,0.12);
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--bark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon { font-size: 20px; }
+
+  /* ---- SECTION HEADER ---- */
+  .sec-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--gold-pale);
+  }
+  .sec-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--bark);
+    margin-bottom: 4px;
+  }
+  .sec-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ---- WEEK PLAN ---- */
+  .week-grid { display: flex; flex-direction: column; gap: 10px; }
+  .day-row {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.07);
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-header.rest-day { background: var(--sage-pale); }
+  .day-header.workout-day { background: var(--deep); }
+  .day-name {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .rest-day .day-name { color: var(--forest); }
+  .workout-day .day-name { color: var(--gold-light); }
+  .day-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .rest-day .day-badge { background: var(--sage); color: #fff; }
+  .workout-day .day-badge { background: var(--gold); color: var(--deep); }
+  .day-body { padding: 14px 16px; background: #fff; display: none; }
+  .day-row.open .day-body { display: block; }
+
+  /* ---- WORKOUT BLOCKS ---- */
+  .workout-block { margin-bottom: 14px; }
+  .wb-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 8px;
+  }
+  .exercise-list { display: flex; flex-direction: column; gap: 6px; }
+  .exercise-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .exercise-item::before {
+    content: '▸';
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ex-name { font-weight: 600; color: var(--bark); }
+  .ex-detail { color: var(--text-muted); }
+
+  /* ---- PHASE LABEL ---- */
+  .phase-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    color: var(--bark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* ---- MEAL PLAN ---- */
+  .meal-section { margin-bottom: 20px; }
+  .meal-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--forest-light);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meal-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--sage-pale);
+  }
+  .meal-option {
+    background: var(--sage-pale);
+    border-left: 3px solid var(--sage);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .meal-option strong { color: var(--forest); display: block; margin-bottom: 2px; }
+
+  /* ---- CALORIE BAR ---- */
+  .cal-bar-wrap { margin-bottom: 20px; }
+  .cal-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .cal-bar-track {
+    height: 10px;
+    background: var(--gold-pale);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .cal-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--forest-light), var(--gold));
+    border-radius: 10px;
+    transition: width 0.8s ease;
+  }
+
+  /* ---- TIPS / RULES ---- */
+  .tip-list { display: flex; flex-direction: column; gap: 10px; }
+  .tip-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+    background: var(--cream);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .tip-icon { font-size: 18px; flex-shrink: 0; }
+  .tip-text strong { display: block; color: var(--bark); margin-bottom: 2px; font-size: 13px; }
+  .tip-text span { color: var(--text-muted); font-size: 12px; }
+
+  /* ---- PROGRESS TRACKER ---- */
+  .tracker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .tracker-card {
+    background: var(--deep);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .tracker-card::before {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 60px; height: 60px;
+    background: var(--gold);
+    opacity: 0.08;
+    border-radius: 50%;
+  }
+  .tracker-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .tracker-unit { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ---- MILESTONE ---- */
+  .milestone-track { position: relative; padding-left: 28px; }
+  .milestone-track::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), var(--sage));
+  }
+  .milestone {
+    position: relative;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.06);
+    font-size: 13px;
+  }
+  .milestone::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: var(--cream);
+  }
+  .milestone.done::before { background: var(--gold); }
+  .milestone-month {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .milestone-goal { font-weight: 600; color: var(--bark); }
+  .milestone-detail { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+  /* ---- SMOOTHIE CARDS ---- */
+  .smoothie-card {
+    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+  .smoothie-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .smoothie-ing { font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.7; }
+
+  /* ---- SODA SWAP ---- */
+  .swap-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--cream);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .swap-from { color: var(--coral); text-decoration: line-through; flex: 1; }
+  .swap-arrow { color: var(--gold); font-weight: 700; }
+  .swap-to { color: var(--forest); font-weight: 600; flex: 1; }
+
+  /* ---- WEEKLY CHECKLIST ---- */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.07);
+    background: #fff;
+    transition: all 0.15s;
+  }
+  .check-item:hover { border-color: var(--gold); }
+  .check-item input[type="checkbox"] { accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer; }
+  .check-item.checked { background: var(--sage-pale); border-color: var(--sage); }
+  .check-item.checked label { color: var(--forest); text-decoration: line-through; text-decoration-color: var(--sage); }
+  .check-item label { cursor: pointer; flex: 1; line-height: 1.4; }
+
+  /* ---- FOOTER NOTE ---- */
+  .footer-note {
+    background: var(--deep);
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    text-align: center;
+    padding: 20px;
+    line-height: 1.7;
+    margin-top: 40px;
+  }
+  .footer-note strong { color: var(--gold); }
+
+  /* ---- ANIMATIONS ---- */
+  .section.active .card,
+  .section.active .phase-pill,
+  .section.active .sec-header {
+    animation: fadeUp 0.35s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section.active .card:nth-child(2) { animation-delay: 0.05s; }
+  .section.active .card:nth-child(3) { animation-delay: 0.10s; }
+  .section.active .card:nth-child(4) { animation-delay: 0.15s; }
+  .section.active .card:nth-child(5) { animation-delay: 0.20s; }
+
+  @media (max-width: 400px) {
+    .tracker-grid { grid-template-columns: 1fr 1fr; }
+    .tracker-val { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">✦ Tina's Transformation Hub ✦</div>
+  <h1>Your <span>50-lb</span><br>Journey Starts Now</h1>
+  <p class="hero-sub">6 Months · Real Food · Real Results</p>
+  <div class="hero-stats">
+    <div class="hstat">
+      <div class="hstat-num">50</div>
+      <div class="hstat-label">lbs goal</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num">26</div>
+      <div class="hstat-label">weeks</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num">~2</div>
+      <div class="hstat-label">lbs/week</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num">1,400</div>
+      <div class="hstat-label">cal target</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showSection('workout')">💪 Workouts</button>
+  <button class="tab" onclick="showSection('meals')">🥗 Meals</button>
+  <button class="tab" onclick="showSection('smoothies')">🥤 Smoothies</button>
+  <button class="tab" onclick="showSection('habits')">✅ Habits</button>
+  <button class="tab" onclick="showSection('milestones')">🏆 Milestones</button>
+</div>
+
+<!-- ===== WORKOUT SECTION ===== -->
+<div id="workout" class="section active">
+  <div class="sec-header">
+    <h2>Weekly Workout Plan</h2>
+    <p>Built around YOUR equipment. 5 days active, 2 days rest. Progressive — harder each month.</p>
+  </div>
+
+  <!-- EQUIPMENT ROSTER -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🏠</span> Your Home Gym Arsenal</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div style="background:var(--gold-pale);border-radius:10px;padding:10px;font-size:12px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">🚶</div>
+        <div style="font-weight:700;color:var(--bark);">Walking Pad</div>
+        <div style="color:var(--text-muted);font-size:11px;">Low-impact cardio base</div>
+      </div>
+      <div style="background:var(--gold-pale);border-radius:10px;padding:10px;font-size:12px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">🧗</div>
+        <div style="font-weight:700;color:var(--bark);">MaxiClimber XL</div>
+        <div style="color:var(--text-muted);font-size:11px;">Full-body vertical cardio</div>
+      </div>
+      <div style="background:var(--gold-pale);border-radius:10px;padding:10px;font-size:12px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">🚣</div>
+        <div style="font-weight:700;color:var(--bark);">Sunny Rower</div>
+        <div style="color:var(--text-muted);font-size:11px;">Total body + core</div>
+      </div>
+      <div style="background:var(--gold-pale);border-radius:10px;padding:10px;font-size:12px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">🏋️</div>
+        <div style="font-weight:700;color:var(--bark);">Maxi Squat</div>
+        <div style="color:var(--text-muted);font-size:11px;">Glutes, quads, inner thigh</div>
+      </div>
+      <div style="background:var(--gold-pale);border-radius:10px;padding:10px;font-size:12px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">💪</div>
+        <div style="font-weight:700;color:var(--bark);">Hyperbell</div>
+        <div style="color:var(--text-muted);font-size:11px;">Start solo · add 3 lb bells</div>
+      </div>
+      <div style="background:var(--gold-pale);border-radius:10px;padding:10px;font-size:12px;text-align:center;">
+        <div style="font-size:20px;margin-bottom:4px;">🪨</div>
+        <div style="font-weight:700;color:var(--bark);">5 lb Weights</div>
+        <div style="color:var(--text-muted);font-size:11px;">Upper body toning</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--forest);margin-top:12px;font-weight:600;line-height:1.5;">💡 Hyperbell Plan: Use solo (barbell feel, no added weight) for Months 1–2. Add the 3 lb bells in Month 3. That progression is exactly right.</p>
+  </div>
+
+  <div class="phase-pill">📅 Months 1–2 · Foundation Phase</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📋</span> How This Works</div>
+    <div class="tip-list">
+      <div class="tip-item">
+        <div class="tip-icon">🔥</div>
+        <div class="tip-text">
+          <strong>Calorie Deficit = Weight Loss</strong>
+          <span>You'll burn ~2,000 cal/day and eat ~1,400, creating a 600 cal daily deficit — about 1.5–2 lbs/week lost.</span>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-icon">📈</div>
+        <div class="tip-text">
+          <strong>Phases Get Harder</strong>
+          <span>Months 1–2 build the base. Months 3–4 add intensity. Months 5–6 push for the finish line.</span>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-icon">🏠</div>
+        <div class="tip-text">
+          <strong>100% Home — No Gym Needed</strong>
+          <span>Every workout uses the equipment you already own. Zero excuses, zero commute.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-grid">
+
+    <!-- MONDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header workout-day">
+        <span class="day-name">Monday</span>
+        <span class="day-badge">Walking Pad + Lower Body</span>
+      </div>
+      <div class="day-body">
+        <div class="workout-block">
+          <div class="wb-title">🔥 Warm-Up (5 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Walking Pad</span><span class="ex-detail"> · slow pace, 2.5–3 mph · 5 min to wake up the legs</span></div>
+          </div>
+        </div>
+        <div class="workout-block">
+          <div class="wb-title">🚶 Cardio (20 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Walking Pad</span><span class="ex-detail"> · increase to 3–3.5 mph · steady, consistent pace · aim for light sweat</span></div>
+          </div>
+        </div>
+        <div class="workout-block">
+          <div class="wb-title">🏋️ Maxi Squat Circuit (15 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Maxi Squat — wide stance</span><span class="ex-detail"> · 3 sets × 15 reps · slow and controlled</span></div>
+            <div class="exercise-item"><span class="ex-name">Maxi Squat — narrow stance</span><span class="ex-detail"> · 3 sets × 12 reps · targets quads more</span></div>
+            <div class="exercise-item"><span class="ex-name">Bodyweight glute bridges</span><span class="ex-detail"> · 3 sets × 20 reps · on floor, squeeze at top</span></div>
+            <div class="exercise-item"><span class="ex-name">Reverse lunges</span><span class="ex-detail"> · 3 sets × 10 each leg · no equipment needed</span></div>
+          </div>
+        </div>
+        <div class="workout-block">
+          <div class="wb-title">🧘 Cool-Down (5 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Standing quad + calf stretch</span></div>
+            <div class="exercise-item"><span class="ex-name">Hip flexor stretch · hold 30 sec each side</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TUESDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header workout-day">
+        <span class="day-name">Tuesday</span>
+        <span class="day-badge">Rower + Upper Body</span>
+      </div>
+      <div class="day-body">
+        <div class="workout-block">
+          <div class="wb-title">🚣 Sunny Rower Cardio (20 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Row at moderate resistance</span><span class="ex-detail"> · 5 min easy warm-up pace</span></div>
+            <div class="exercise-item"><span class="ex-name">Row intervals</span><span class="ex-detail"> · 1 min fast / 1 min easy · repeat 7 rounds</span></div>
+            <div class="exercise-item"><span class="ex-name">Row cool-down</span><span class="ex-detail"> · 3 min easy to finish</span></div>
+          </div>
+        </div>
+        <div class="workout-block">
+          <div class="wb-title">💪 Upper Body (15 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Hyperbell bicep curls</span><span class="ex-detail"> · 3 sets × 12 · solo bar for now, add 3 lb bells in Month 3</span></div>
+            <div class="exercise-item"><span class="ex-name">5 lb overhead shoulder press</span><span class="ex-detail"> · 3 sets × 12 · press up, lower slowly</span></div>
+            <div class="exercise-item"><span class="ex-name">Hyperbell tricep overhead extension</span><span class="ex-detail"> · 3 sets × 12 · hold bar overhead, lower behind head</span></div>
+            <div class="exercise-item"><span class="ex-name">5 lb lateral raises</span><span class="ex-detail"> · 3 sets × 12 · arms out to sides, slow and controlled</span></div>
+            <div class="exercise-item"><span class="ex-name">Push-ups (modified on knees ok)</span><span class="ex-detail"> · 3 sets × 10</span></div>
+          </div>
+        </div>
+        <div class="workout-block">
+          <div class="wb-title">🧘 Core Finisher (5 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Plank hold</span><span class="ex-detail"> · 3 × 30 sec (build to 60 sec by Month 2)</span></div>
+            <div class="exercise-item"><span class="ex-name">Bicycle crunches</span><span class="ex-detail"> · 2 sets × 20</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEDNESDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header rest-day">
+        <span class="day-name">Wednesday</span>
+        <span class="day-badge">Active Rest</span>
+      </div>
+      <div class="day-body">
+        <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:10px;">Light movement only — let your muscles rebuild. Choose one:</p>
+        <div class="exercise-list">
+          <div class="exercise-item"><span class="ex-name">Walking Pad</span><span class="ex-detail"> · 20–25 min at very easy pace (2–2.5 mph) — conversational pace</span></div>
+          <div class="exercise-item"><span class="ex-name">Gentle stretching</span><span class="ex-detail"> · 15–20 min full body · YouTube: Yoga with Adriene</span></div>
+          <div class="exercise-item"><span class="ex-name">Light housework or errands</span><span class="ex-detail"> · counts! Keep moving, don't sit all day</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THURSDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header workout-day">
+        <span class="day-name">Thursday</span>
+        <span class="day-badge">MaxiClimber HIIT</span>
+      </div>
+      <div class="day-body">
+        <div class="workout-block">
+          <div class="wb-title">🧗 MaxiClimber XL — HIIT Session</div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">The climber hits legs, glutes, arms, and core all at once — it's a calorie furnace. Start where you are. The progression below is your roadmap.</p>
+
+          <div style="background:var(--sage-pale);border-radius:10px;padding:12px;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--forest);margin-bottom:8px;">📅 Month 1 — Start Here</div>
+            <div class="exercise-list">
+              <div class="exercise-item"><span class="ex-name">Warm-up</span><span class="ex-detail"> · step on, easy pace · 2 min</span></div>
+              <div class="exercise-item"><span class="ex-name">Climb hard</span><span class="ex-detail"> · 30 sec on · then step off</span></div>
+              <div class="exercise-item"><span class="ex-name">Rest</span><span class="ex-detail"> · 60 sec standing rest</span></div>
+              <div class="exercise-item"><span class="ex-name">Repeat</span><span class="ex-detail"> · 6 rounds total · that's it · honor it</span></div>
+              <div class="exercise-item"><span class="ex-name">Cool-down</span><span class="ex-detail"> · easy pace · 2 min</span></div>
+            </div>
+          </div>
+
+          <div style="background:var(--gold-pale);border-radius:10px;padding:12px;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--bark);margin-bottom:8px;">📅 Month 2 — Getting Stronger</div>
+            <div class="exercise-list">
+              <div class="exercise-item"><span class="ex-name">Climb hard</span><span class="ex-detail"> · 30 sec on</span></div>
+              <div class="exercise-item"><span class="ex-name">Rest</span><span class="ex-detail"> · 45 sec · (shorter rest = harder)</span></div>
+              <div class="exercise-item"><span class="ex-name">Repeat</span><span class="ex-detail"> · 8 rounds total</span></div>
+            </div>
+          </div>
+
+          <div style="background:#E8F0FE;border-radius:10px;padding:12px;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#3D52A0;margin-bottom:8px;">📅 Month 3 — Now We're Talking</div>
+            <div class="exercise-list">
+              <div class="exercise-item"><span class="ex-name">Climb hard</span><span class="ex-detail"> · 45 sec on · (you'll laugh at when 30 sec wrecked you)</span></div>
+              <div class="exercise-item"><span class="ex-name">Rest</span><span class="ex-detail"> · 45 sec</span></div>
+              <div class="exercise-item"><span class="ex-name">Repeat</span><span class="ex-detail"> · 8 rounds total</span></div>
+            </div>
+          </div>
+
+          <div style="background:#FDE8E8;border-radius:10px;padding:12px;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--coral);margin-bottom:8px;">📅 Month 4 — Building Endurance</div>
+            <div class="exercise-list">
+              <div class="exercise-item"><span class="ex-name">Climb hard</span><span class="ex-detail"> · 45 sec on</span></div>
+              <div class="exercise-item"><span class="ex-name">Rest</span><span class="ex-detail"> · 30 sec · (short rest = serious calorie burn)</span></div>
+              <div class="exercise-item"><span class="ex-name">Repeat</span><span class="ex-detail"> · 10 rounds total</span></div>
+            </div>
+          </div>
+
+          <div style="background:var(--deep);border-radius:10px;padding:12px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px;">📅 Months 5–6 — Final Form 🔥</div>
+            <div class="exercise-list">
+              <div class="exercise-item"><span class="ex-name" style="color:#fff;">Climb hard</span><span class="ex-detail" style="color:rgba(255,255,255,0.6);"> · 60 sec on · full minute beast mode</span></div>
+              <div class="exercise-item"><span class="ex-name" style="color:#fff;">Rest</span><span class="ex-detail" style="color:rgba(255,255,255,0.6);"> · 30 sec only</span></div>
+              <div class="exercise-item"><span class="ex-name" style="color:#fff;">Repeat</span><span class="ex-detail" style="color:rgba(255,255,255,0.6);"> · 10 rounds · this is where the last pounds come off</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="workout-block">
+          <div class="wb-title">🏋️ Maxi Squat Add-On (10 min)</div>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Maxi Squat — pulse squats</span><span class="ex-detail"> · 3 sets × 20 pulses at the bottom · burns!</span></div>
+            <div class="exercise-item"><span class="ex-name">Maxi Squat — slow tempo</span><span class="ex-detail"> · 3 sets × 10 · 3 sec down, 1 sec up</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FRIDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header workout-day">
+        <span class="day-name">Friday</span>
+        <span class="day-badge">Full Body Strength</span>
+      </div>
+      <div class="day-body">
+        <div class="workout-block">
+          <div class="wb-title">💪 Hyperbell + Weights Circuit (35 min)</div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Rest 60 sec between sets. This is your strongest day of the week.</p>
+          <div class="exercise-list">
+            <div class="exercise-item"><span class="ex-name">Hyperbell squat to press</span><span class="ex-detail"> · 3 × 12 · squat down, press bar overhead as you stand</span></div>
+            <div class="exercise-item"><span class="ex-name">Hyperbell Romanian deadlift</span><span class="ex-detail"> · 3 × 12 · hinge at hips, bar runs down legs</span></div>
+            <div class="exercise-item"><span class="ex-name">5 lb bent-over rows</span><span class="ex-detail"> · 3 × 12 each arm · back flat, elbow drives to ceiling</span></div>
+            <div class="exercise-item"><span class="ex-name">Maxi Squat — weighted feel</span><span class="ex-detail"> · 3 × 15 · use machine for extra resistance</span></div>
+            <div class="exercise-item"><span class="ex-name">Hyperbell Russian twists</span><span class="ex-detail"> · 3 × 20 · seated, hold bar, rotate side to side</span></div>
+            <div class="exercise-item"><span class="ex-name">Superman hold</span><span class="ex-detail"> · 3 × 15 · on floor, arms and legs lift · hold 2 sec</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SATURDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header workout-day">
+        <span class="day-name">Saturday</span>
+        <span class="day-badge">Long Cardio — Your Choice</span>
+      </div>
+      <div class="day-body">
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Pick your machine — 40–45 min total. This is your longest session of the week. Put on a podcast or playlist and go.</p>
+        <div class="exercise-list">
+          <div class="exercise-item"><span class="ex-name">Option A: Walking Pad</span><span class="ex-detail"> · 40 min at 3–3.5 mph · steady state fat burn zone</span></div>
+          <div class="exercise-item"><span class="ex-name">Option B: Sunny Rower</span><span class="ex-detail"> · 40 min moderate row · great for upper body endurance</span></div>
+          <div class="exercise-item"><span class="ex-name">Option C: MaxiClimber</span><span class="ex-detail"> · 30 min steady climb + 10 min walking pad cool-down</span></div>
+          <div class="exercise-item"><span class="ex-name">Finish: 10 min full-body stretch</span><span class="ex-detail"> · hips, hamstrings, chest, shoulders</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUNDAY -->
+    <div class="day-row" onclick="toggleDay(this)">
+      <div class="day-header rest-day">
+        <span class="day-name">Sunday</span>
+        <span class="day-badge">Full Rest</span>
+      </div>
+      <div class="day-body">
+        <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">True rest day. Let your muscles recover and rebuild. Use this day for meal prep, hydration, and rest. Honor your Sabbath. The body rebuilds on rest days — they're not wasted days, they're growth days.</p>
+      </div>
+    </div>
+
+  </div><!-- /week-grid -->
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title"><span class="icon">📈</span> Equipment Progression by Phase</div>
+    <div class="tip-list">
+      <div class="tip-item">
+        <div class="tip-icon">1️⃣</div>
+        <div class="tip-text"><strong>Months 1–2: Build the Base</strong><span>Walking Pad, Rower, MaxiClimber at moderate intensity. Hyperbell solo (no added weight). 5 lb weights for upper body. Maxi Squat bodyweight only.</span></div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-icon">2️⃣</div>
+        <div class="tip-text"><strong>Months 3–4: Add Resistance</strong><span>Attach 3 lb bells to Hyperbell. Increase walking pad speed to 3.5–4 mph. MaxiClimber HIIT gets longer (35 min). Row intervals go harder.</span></div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-icon">3️⃣</div>
+        <div class="tip-text"><strong>Months 5–6: Final Push</strong><span>Hyperbell with 3 lb bells + controlled tempo. 2 HIIT days (Thu + one more). Long Saturday cardio extends to 50–55 min. You're almost there.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /workout -->
+
+
+<!-- ===== MEALS SECTION ===== -->
+<div id="meals" class="section">
+  <div class="sec-header">
+    <h2>Your Meal Plan</h2>
+    <p>Built around YOUR foods. ~1,400 calories/day · high protein · anti-inflammatory.</p>
+  </div>
+
+  <div class="card">
+    <div class="cal-bar-wrap">
+      <div class="cal-bar-label">
+        <span>Daily Calorie Target</span>
+        <span>1,400 cal</span>
+      </div>
+      <div class="cal-bar-track">
+        <div class="cal-bar-fill" style="width: 70%"></div>
+      </div>
+      <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">Protein 40% · Veggies 35% · Complex Carbs 25%</div>
+    </div>
+  </div>
+
+  <!-- BREAKFAST -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🌅</span> Breakfast Options</div>
+    <div class="meal-option">
+      <strong>Option A: Classic Protein Start</strong>
+      2 scrambled eggs + 2 turkey sausage links + ½ cup spinach sautéed in olive oil spray · whole wheat toast (1 slice) · water or green tea
+    </div>
+    <div class="meal-option">
+      <strong>Option B: Power Oatmeal</strong>
+      ½ cup rolled oats cooked in water · 1 turkey sausage link crumbled in · ½ banana sliced on top · pinch of cinnamon · no sugar added
+    </div>
+    <div class="meal-option">
+      <strong>Option C: Quick Egg Muffins</strong>
+      Prep Sunday: 2 eggs whisked with spinach + diced turkey sausage baked in muffin tins · grab 2 each morning · side of banana
+    </div>
+  </div>
+
+  <!-- LUNCH -->
+  <div class="card">
+    <div class="card-title"><span class="icon">☀️</span> Lunch Options</div>
+    <div class="meal-option">
+      <strong>Option A: Tuna Power Bowl</strong>
+      1 can tuna (in water, drained) · ½ cup cooked brown rice or 1 whole wheat pita · steamed broccoli · drizzle of olive oil + lemon · carrots on the side
+    </div>
+    <div class="meal-option">
+      <strong>Option B: Salmon Plate</strong>
+      4–5 oz baked salmon (season with garlic, lemon, herbs) · 1 cup steamed mixed vegetables · ½ cup zucchini sautéed with olive oil spray
+    </div>
+    <div class="meal-option">
+      <strong>Option C: Chicken Breast Wrap</strong>
+      4 oz grilled chicken breast sliced · whole wheat wrap or 2 slices whole wheat bread · spinach, shredded carrots, mustard (not mayo) · small bunch grapes on the side
+    </div>
+  </div>
+
+  <!-- DINNER -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🌙</span> Dinner Options</div>
+    <div class="meal-option">
+      <strong>Option A: Mahi-Mahi Sheet Pan</strong>
+      5 oz mahi-mahi seasoned + roasted broccoli + zucchini sliced · all on one pan at 400° for 20 min · squeeze of lemon · done.
+    </div>
+    <div class="meal-option">
+      <strong>Option B: Flounder + Spinach</strong>
+      5 oz baked flounder · sautéed spinach with garlic in olive oil · side of steamed carrots · light seasoning (no heavy sauces)
+    </div>
+    <div class="meal-option">
+      <strong>Option C: Chicken Stir-Fry</strong>
+      4 oz chicken breast strips · mixed vegetables (your frozen bag is perfect!) · low-sodium soy sauce + garlic · stir-fry 10 min · serve over ½ cup brown rice
+    </div>
+  </div>
+
+  <!-- SNACKS -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🍇</span> Smart Snacks</div>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">1–2 snacks/day. Keep under 150 cal each.</p>
+    <div class="meal-option">
+      <strong>Fruit + Protein</strong>
+      Small bunch grapes (about 15–20) + 1 hard-boiled egg · or ½ banana + 1 tbsp natural peanut butter
+    </div>
+    <div class="meal-option">
+      <strong>Veggies + Dip</strong>
+      Carrot sticks + 2 tbsp hummus · or celery + tuna on whole wheat crackers (5–6 crackers)
+    </div>
+    <div class="meal-option">
+      <strong>Smoothie as Snack</strong>
+      Your frozen strawberry/blueberry blend (see Smoothies tab) · counts as snack, not a meal add-on
+    </div>
+  </div>
+
+  <!-- SODA SWAPS -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🥤</span> The Soda Swap Strategy</div>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Don't go cold turkey — swap progressively. Every soda you skip saves 150 cal.</p>
+    <div class="swap-row">
+      <span class="swap-from">Regular soda</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Sparkling water + lemon</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Afternoon soda habit</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Iced green tea (unsweetened)</span>
+    </div>
+    <div class="swap-row">
+      <span class="swap-from">Sugary drinks</span>
+      <span class="swap-arrow">→</span>
+      <span class="swap-to">Infused water (cucumber + mint)</span>
+    </div>
+    <p style="font-size:12px; color:var(--forest); margin-top:10px; font-weight:600;">Goal: Cut to 1 soda max per week by Month 2. Zero by Month 3.</p>
+  </div>
+
+</div><!-- /meals -->
+
+
+<!-- ===== SMOOTHIES SECTION ===== -->
+<div id="smoothies" class="section">
+  <div class="sec-header">
+    <h2>Smoothie Recipes</h2>
+    <p>Using your frozen fruit + fresh picks. All under 250 calories. Great as breakfast or snack.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">⚡</span> Base Formula</div>
+    <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">Frozen fruit (1 cup) + leafy green (1 handful spinach — you won't taste it) + liquid (unsweetened almond milk or water, 1 cup) + optional protein (Greek yogurt, ½ cup) = balanced, filling smoothie.</p>
+  </div>
+
+  <div class="smoothie-card">
+    <div class="smoothie-name">🍓 The Berry Bliss</div>
+    <div class="smoothie-ing">
+      ½ cup frozen strawberries · ½ cup frozen blueberries · 1 handful fresh spinach · 1 cup unsweetened almond milk · ½ banana · blend until smooth<br>
+      <strong style="color:var(--gold-light);">~210 cal · 6g protein</strong>
+    </div>
+  </div>
+
+  <div class="smoothie-card">
+    <div class="smoothie-name">🌴 Tropical Power</div>
+    <div class="smoothie-ing">
+      1 cup frozen tropical fruit mix · 1 handful spinach · ¾ cup water · ½ cup plain Greek yogurt (adds protein!) · squeeze of lime<br>
+      <strong style="color:var(--gold-light);">~220 cal · 12g protein</strong>
+    </div>
+  </div>
+
+  <div class="smoothie-card">
+    <div class="smoothie-name">🍌 Banana Greens</div>
+    <div class="smoothie-ing">
+      1 ripe banana (fresh or frozen) · 1 cup fresh spinach · 1 tbsp natural peanut butter · 1 cup unsweetened almond milk · pinch of cinnamon<br>
+      <strong style="color:var(--gold-light);">~230 cal · 7g protein</strong>
+    </div>
+  </div>
+
+  <div class="smoothie-card">
+    <div class="smoothie-name">💙 Blueberry Protein Blast</div>
+    <div class="smoothie-ing">
+      1 cup frozen blueberries · ½ cup plain Greek yogurt · ½ cup spinach · ½ cup water + ½ cup almond milk · ½ banana<br>
+      <strong style="color:var(--gold-light);">~240 cal · 13g protein</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🛒</span> Grocery List for Smoothies</div>
+    <div class="tip-list">
+      <div class="tip-item"><div class="tip-icon">🛍️</div><div class="tip-text"><strong>Frozen aisle</strong><span>Tropical mix, strawberries, blueberries (already buying these!)</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🥛</div><div class="tip-text"><strong>Unsweetened almond milk</strong><span>Shelf-stable boxes are cost-effective. Or just use water.</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🫙</div><div class="tip-text"><strong>Plain Greek yogurt</strong><span>Fage 0% or Chobani plain — adds major protein for low calories</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🍃</div><div class="tip-text"><strong>Spinach (fresh or frozen)</strong><span>Frozen spinach cubes are perfect for smoothies — no waste</span></div></div>
+    </div>
+  </div>
+</div><!-- /smoothies -->
+
+
+<!-- ===== HABITS SECTION ===== -->
+<div id="habits" class="section">
+  <div class="sec-header">
+    <h2>Daily Habits</h2>
+    <p>The small stuff that makes the big goal possible. Tap to check off your daily wins.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">✅</span> Daily Non-Negotiables</div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>💧 Drink 64 oz of water (8 glasses) — start with a big glass first thing in the morning</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🍃 Have at least 1 green tea (unsweetened) instead of soda</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🥗 Eat a vegetable at lunch AND dinner (even a small side counts)</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🏃 Complete today's workout OR get at least 7,000 steps</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🚫 No eating after 8 PM (close the kitchen)</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🙏 Morning intention — say your goal out loud before you eat anything</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>😴 7–8 hours of sleep — recovery happens here</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📏</span> Weekly Check-In</div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>⚖️ Weigh in once (same day, same time, morning, after bathroom)</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🛒 Grocery shop with your food list — don't wing it</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>🥘 Sunday meal prep — boil eggs, grill chicken, wash veggies</label>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <input type="checkbox">
+      <label>📝 Note one win and one challenge from this week</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🧠</span> Mindset Rules</div>
+    <div class="tip-list">
+      <div class="tip-item"><div class="tip-icon">💡</div><div class="tip-text"><strong>Progress, not perfection</strong><span>One bad meal doesn't ruin the week. Get back on track at the very next meal.</span></div></div>
+      <div class="tip-item"><div class="tip-icon">📸</div><div class="tip-text"><strong>Take monthly photos</strong><span>The scale lies sometimes. Photos tell the truth. You'll be amazed at Month 3.</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🙅</div><div class="tip-text"><strong>Stop rewarding with food</strong><span>Reward a great workout week with a new workout outfit, a show you love, or a rest day spa moment.</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🗣️</div><div class="tip-text"><strong>Tell someone</strong><span>Accountability partner or just saying it out loud in your Celebrate Recovery community — it works.</span></div></div>
+    </div>
+  </div>
+
+</div><!-- /habits -->
+
+
+<!-- ===== MILESTONES SECTION ===== -->
+<div id="milestones" class="section">
+  <div class="sec-header">
+    <h2>Your 6-Month Roadmap</h2>
+    <p>Know what to expect. Celebrate every checkpoint. This is your story.</p>
+  </div>
+
+  <div class="card">
+    <div class="tracker-grid">
+      <div class="tracker-card">
+        <div class="tracker-val">50</div>
+        <div class="tracker-unit">Total lbs goal</div>
+      </div>
+      <div class="tracker-card">
+        <div class="tracker-val">~2</div>
+        <div class="tracker-unit">lbs per week</div>
+      </div>
+      <div class="tracker-card">
+        <div class="tracker-val">26</div>
+        <div class="tracker-unit">Weeks total</div>
+      </div>
+      <div class="tracker-card">
+        <div class="tracker-val">600</div>
+        <div class="tracker-unit">Cal deficit/day</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🏆</span> Month-by-Month Goals</div>
+    <div class="milestone-track">
+      <div class="milestone">
+        <div class="milestone-month">Month 1</div>
+        <div class="milestone-goal">Lose 6–8 lbs · Build the routine</div>
+        <div class="milestone-detail">Focus: 5 workout days, soda reduction, meal prep Sundays. Your body is adjusting — trust the process.</div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-month">Month 2</div>
+        <div class="milestone-goal">Lose 6–8 lbs · Habits locked in</div>
+        <div class="milestone-detail">Soda is nearly gone. Green tea is normal. You're not sore anymore after workouts. Clothes are looser.</div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-month">Month 3</div>
+        <div class="milestone-goal">Lose 8–10 lbs · Visible change</div>
+        <div class="milestone-detail">Others are noticing. Your energy is up. Increase HIIT to 2 days/week. Add resistance to strength days.</div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-month">Month 4</div>
+        <div class="milestone-goal">Lose 8–10 lbs · Halfway there</div>
+        <div class="milestone-detail">You're past the halfway point. This is where most people quit — you won't. Celebrate with something non-food.</div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-month">Month 5</div>
+        <div class="milestone-goal">Lose 8–10 lbs · Final push</div>
+        <div class="milestone-detail">Push harder. Longer cardio, heavier weights. Your body is efficient now — make it work harder.</div>
+      </div>
+      <div class="milestone">
+        <div class="milestone-month">Month 6</div>
+        <div class="milestone-goal">Reach 50 lbs lost · NEW YOU</div>
+        <div class="milestone-detail">You did it. Not a diet. Not a moment. A completely new lifestyle that is now just who you are.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">⚠️</span> When the Scale Stalls</div>
+    <div class="tip-list">
+      <div class="tip-item"><div class="tip-icon">💪</div><div class="tip-text"><strong>Plateaus are normal</strong><span>They usually happen at weeks 4, 10, and 18. Don't panic — your body is recalibrating.</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🔄</div><div class="tip-text"><strong>Switch up your workout</strong><span>Try a new YouTube workout, add a walk, change your HIIT order — novelty shocks the body.</span></div></div>
+      <div class="tip-item"><div class="tip-icon">🥗</div><div class="tip-text"><strong>Audit your portions</strong><span>Measure your rice and fish for one week. It's easy to creep up on portions without realizing it.</span></div></div>
+    </div>
+  </div>
+
+</div><!-- /milestones -->
+
+<div class="footer-note">
+  <strong>Tina's Transformation Hub</strong><br>
+  This plan is built around your actual foods and your realistic starting point.<br>
+  Consult your doctor before starting any new exercise program, especially if you have any health conditions.<br>
+  <strong>You already have everything it takes. Now go get it.</strong>
+</div>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleDay(row) {
+    row.classList.toggle('open');
+  }
+
+  function toggleCheck(item) {
+    const cb = item.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    item.classList.toggle('checked', cb.checked);
+  }
+</script>
+</body>
+</html>
