@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Errand Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f4ef;
+  --card: #ffffff;
+  --border: #e8e2d9;
+  --text: #1c1915;
+  --muted: #9c9080;
+  --grocery: #3a8c5a;
+  --grocery-pale: #e8f5ee;
+  --bigbox: #c44b8a;
+  --bigbox-pale: #fce8f5;
+  --misc: #7a5fc0;
+  --misc-pale: #f0ebff;
+  --accent: #d4723a;
+  --accent-pale: #fdf0e8;
+  --radius: 14px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.hero {
+  background: linear-gradient(135deg, #1c1915 0%, #3d2e1e 70%, #5a3f28 100%);
+  padding: 32px 20px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(212,114,58,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; left: -20px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(122,95,192,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero h1 {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 span { color: #f0c878; }
+.hero p { color: rgba(255,255,255,0.55); font-size: 0.85rem; margin-top:5px; position:relative; z-index:1; }
+
+/* LEGEND */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.legend-item { display:flex; align-items:center; gap:6px; font-size:0.78rem; font-weight:700; color:var(--muted); }
+.legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.tab {
+  flex: 1;
+  padding: 13px 8px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover:not(.active) { color: var(--text); background: var(--accent-pale); }
+
+/* CONTENT */
+.content { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* SECTION TITLE */
+.sec-title {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+.sec-title span { color: var(--accent); }
+
+/* ADD ERRAND FORM */
+.add-form {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.form-input {
+  flex: 1;
+  min-width: 140px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-input::placeholder { color: var(--muted); }
+
+.form-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  padding: 10px 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.date-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  padding: 10px 12px;
+  outline: none;
+  cursor: pointer;
+}
+.date-input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
+
+.add-btn {
+  background: linear-gradient(135deg, var(--accent), #b85a28);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.add-btn:hover { opacity: 0.88; }
+.add-btn.editing { background: linear-gradient(135deg, var(--grocery), #1a6b38); }
+
+.cancel-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label { font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; }
+.filter-btn {
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.filter-btn.active-all { background: var(--text); border-color: var(--text); color: white; }
+.filter-btn.active-grocery { background: var(--grocery); border-color: var(--grocery); color: white; }
+.filter-btn.active-bigbox { background: var(--bigbox); border-color: var(--bigbox); color: white; }
+.filter-btn.active-misc { background: var(--misc); border-color: var(--misc); color: white; }
+.show-done-btn {
+  margin-left: auto;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+
+/* TOTALS BAR */
+.totals-bar {
+  background: linear-gradient(135deg, #1c1915, #3d2e1e);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.total-item { text-align: center; }
+.total-val { font-family: 'Lora', serif; font-size: 1.4rem; color: #f0c878; }
+.total-label { font-size: 0.68rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+/* ERRAND CARDS */
+.errand-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 5px solid;
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: opacity 0.3s;
+}
+.errand-card.done-errand { opacity: 0.5; }
+
+.errand-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 12px;
+}
+
+.errand-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2.5px solid var(--border);
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: all 0.2s;
+  background: transparent;
+}
+.errand-check.done { color: white; }
+
+.errand-info { flex: 1; min-width: 0; }
+.errand-name { font-family: 'Lora', serif; font-size: 1rem; font-weight: 600; }
+.errand-name.done { text-decoration: line-through; color: var(--muted); }
+.errand-meta { display: flex; gap: 8px; margin-top: 3px; flex-wrap: wrap; align-items: center; }
+.cat-badge { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 20px; }
+.date-badge { font-size: 0.72rem; color: var(--muted); }
+.date-badge.today { color: var(--accent); font-weight: 700; }
+.date-badge.overdue { color: #e85555; font-weight: 700; }
+.errand-total { font-size: 0.82rem; font-weight: 800; color: var(--grocery); white-space: nowrap; }
+
+.errand-actions { display: flex; gap: 4px; }
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.icon-btn:hover { color: var(--text); }
+.icon-btn.delete:hover { color: #e85555; }
+
+/* EXPAND TOGGLE */
+.expand-toggle {
+  width: 100%;
+  background: var(--bg);
+  border: none;
+  border-top: 1px solid var(--border);
+  padding: 7px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+.expand-toggle:hover { background: var(--border); }
+.expand-arrow { transition: transform 0.2s; }
+.errand-card.open .expand-arrow { transform: rotate(180deg); }
+
+/* ITEMS LIST */
+.items-section { display: none; padding: 0 14px 14px; border-top: 1px solid var(--border); }
+.errand-card.open .items-section { display: block; }
+
+/* ADD ITEM ROW */
+.add-item-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.item-input {
+  flex: 1;
+  min-width: 120px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.84rem;
+  padding: 8px 10px;
+  outline: none;
+}
+.item-input:focus { border-color: var(--accent); }
+.item-input::placeholder { color: var(--muted); }
+.cost-input {
+  width: 90px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.84rem;
+  padding: 8px 10px;
+  outline: none;
+}
+.cost-input:focus { border-color: var(--grocery); }
+.add-item-btn {
+  background: var(--text);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ITEM ROWS */
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.item-row:last-of-type { border-bottom: none; }
+
+.item-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+.item-check.done { background: var(--grocery); border-color: var(--grocery); color: white; }
+
+.item-text { flex: 1; font-size: 0.86rem; }
+.item-text.done { text-decoration: line-through; color: var(--muted); }
+.item-cost { font-size: 0.82rem; font-weight: 700; color: var(--grocery); white-space: nowrap; }
+.item-delete { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 2px; }
+.item-delete:hover { color: #e85555; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 0.9rem; }
+
+/* CALENDAR */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.cal-title { font-family: 'Lora', serif; font-size: 1.2rem; }
+.cal-nav {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text);
+}
+.cal-nav:hover { background: var(--accent-pale); }
+
+.cal-grid {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.cal-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #1c1915;
+}
+.cal-day-name {
+  text-align: center;
+  padding: 10px 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.6);
+}
+.cal-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.cal-cell {
+  min-height: 64px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+.cal-cell:nth-child(7n) { border-right: none; }
+.cal-cell:hover { background: var(--accent-pale); }
+.cal-cell.today { background: #fff8f0; }
+.cal-cell.today .cal-date { color: var(--accent); font-weight: 800; }
+.cal-cell.other-month { opacity: 0.35; }
+.cal-date { font-size: 0.78rem; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 3px; }
+.cal-dots { display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; }
+.cal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+.cal-selected-day {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.cal-selected-title { font-family: 'Lora', serif; font-size: 1rem; margin-bottom: 12px; color: var(--text); }
+.cal-errand-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 0.86rem;
+}
+.cal-errand-item:last-child { border-bottom: none; }
+.cal-errand-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.cal-errand-name { flex: 1; font-weight: 700; }
+.cal-errand-count { font-size: 0.75rem; color: var(--muted); }
+
+/* IO */
+.io-bar { display: flex; gap: 10px; margin-top: 24px; justify-content: center; flex-wrap: wrap; }
+.io-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.io-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* CATEGORY COLORS */
+.grocery-card { border-left-color: var(--grocery); }
+.bigbox-card { border-left-color: var(--bigbox); }
+.misc-card { border-left-color: var(--misc); }
+.badge-grocery { background: var(--grocery-pale); color: var(--grocery); }
+.badge-bigbox { background: var(--bigbox-pale); color: var(--bigbox); }
+.badge-misc { background: var(--misc-pale); color: var(--misc); }
+.check-grocery.done { background: var(--grocery); border-color: var(--grocery); }
+.check-bigbox.done { background: var(--bigbox); border-color: var(--bigbox); }
+.check-misc.done { background: var(--misc); border-color: var(--misc); }
+
+@media(max-width:420px) { .cost-input { width: 75px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Errand <span>Hub</span></h1>
+  <p>Plan it · Track it · Check it off</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--grocery)"></div>Grocery</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--bigbox)"></div>Big Box</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--misc)"></div>Misc</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPage('errands',this)">🛒 Errands</div>
+  <div class="tab" onclick="showPage('calendar',this)">📅 Calendar</div>
+</div>
+
+<div class="content">
+
+  <!-- ERRANDS PAGE -->
+  <div id="errands" class="page active">
+
+    <!-- ADD FORM -->
+    <div class="add-form" id="addForm">
+      <div class="form-row">
+        <input class="form-input" id="errandName" placeholder="Store or errand name (e.g. Target, Library)" />
+        <select class="form-select" id="errandCat">
+          <option value="grocery">🟢 Grocery</option>
+          <option value="bigbox">🩷 Big Box</option>
+          <option value="misc">💜 Misc</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="date" class="date-input" id="errandDate" />
+        <button class="add-btn" id="addErrandBtn" onclick="addErrand()">+ Add Errand</button>
+        <button class="cancel-btn" id="cancelBtn" style="display:none" onclick="cancelEditErrand()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="filter-btn active-all" onclick="setFilter('all',this)" id="f-all">All</button>
+      <button class="filter-btn" onclick="setFilter('grocery',this)" id="f-grocery">Grocery</button>
+      <button class="filter-btn" onclick="setFilter('bigbox',this)" id="f-bigbox">Big Box</button>
+      <button class="filter-btn" onclick="setFilter('misc',this)" id="f-misc">Misc</button>
+      <button class="filter-btn" onclick="setFilter('today',this)" id="f-today">📅 Today</button>
+      <button class="show-done-btn" id="doneToggle" onclick="toggleDone()">Show Completed</button>
+    </div>
+
+    <!-- TOTALS -->
+    <div class="totals-bar" id="totalsBar">
+      <div class="total-item"><div class="total-val" id="totalErrands">0</div><div class="total-label">Errands</div></div>
+      <div class="total-item"><div class="total-val" id="totalItems">0</div><div class="total-label">Items</div></div>
+      <div class="total-item"><div class="total-val" id="totalSpent">$0.00</div><div class="total-label">Total Spent</div></div>
+      <div class="total-item"><div class="total-val" id="totalDone">0</div><div class="total-label">Completed</div></div>
+    </div>
+
+    <!-- ERRAND LIST -->
+    <div id="errandList"></div>
+
+    <!-- IO -->
+    <div class="io-bar">
+      <button class="io-btn" onclick="exportData()">⬇ Download Backup</button>
+      <button class="io-btn" onclick="document.getElementById('importFile').click()">⬆ Upload Backup</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+  </div>
+
+  <!-- CALENDAR PAGE -->
+  <div id="calendar" class="page">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">‹ Prev</button>
+      <div class="cal-title" id="calTitle"></div>
+      <button class="cal-nav" onclick="changeMonth(1)">Next ›</button>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-days-header">
+        <div class="cal-day-name">Sun</div>
+        <div class="cal-day-name">Mon</div>
+        <div class="cal-day-name">Tue</div>
+        <div class="cal-day-name">Wed</div>
+        <div class="cal-day-name">Thu</div>
+        <div class="cal-day-name">Fri</div>
+        <div class="cal-day-name">Sat</div>
+      </div>
+      <div class="cal-body" id="calBody"></div>
+    </div>
+    <div class="cal-selected-day" id="calSelected" style="display:none">
+      <div class="cal-selected-title" id="calSelectedTitle"></div>
+      <div id="calSelectedList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CAT_COLORS = { grocery: '#3a8c5a', bigbox: '#c44b8a', misc: '#7a5fc0' };
+const CAT_LABELS = { grocery: 'Grocery', bigbox: 'Big Box', misc: 'Misc' };
+const TODAY = new Date().toISOString().split('T')[0];
+
+let errands = JSON.parse(localStorage.getItem('errandhub') || '[]');
+let currentFilter = 'all';
+let showDone = false;
+let editingErrandId = null;
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+function save() { localStorage.setItem('errandhub', JSON.stringify(errands)); }
+
+// ---- ERRAND CRUD ----
+function addErrand() {
+  const name = document.getElementById('errandName').value.trim();
+  if (!name) return;
+  const cat = document.getElementById('errandCat').value;
+  const date = document.getElementById('errandDate').value;
+  if (editingErrandId) {
+    const e = errands.find(e => e.id === editingErrandId);
+    if (e) { e.name = name; e.cat = cat; e.date = date; }
+    cancelEditErrand();
+  } else {
+    errands.unshift({ id: Date.now(), name, cat, date, done: false, items: [] });
+  }
+  save(); render();
+  document.getElementById('errandName').value = '';
+  document.getElementById('errandDate').value = '';
+}
+
+function deleteErrand(id) {
+  if (!confirm('Delete this errand and all its items?')) return;
+  errands = errands.filter(e => e.id !== id);
+  save(); render();
+}
+
+function toggleErrandDone(id) {
+  const e = errands.find(e => e.id === id);
+  if (e) { e.done = !e.done; save(); render(); }
+}
+
+function startEditErrand(id) {
+  const e = errands.find(e => e.id === id);
+  if (!e) return;
+  editingErrandId = id;
+  document.getElementById('errandName').value = e.name;
+  document.getElementById('errandCat').value = e.cat;
+  document.getElementById('errandDate').value = e.date || '';
+  const btn = document.getElementById('addErrandBtn');
+  btn.textContent = '✓ Update';
+  btn.classList.add('editing');
+  document.getElementById('cancelBtn').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEditErrand() {
+  editingErrandId = null;
+  document.getElementById('errandName').value = '';
+  document.getElementById('errandDate').value = '';
+  const btn = document.getElementById('addErrandBtn');
+  btn.textContent = '+ Add Errand';
+  btn.classList.remove('editing');
+  document.getElementById('cancelBtn').style.display = 'none';
+}
+
+// ---- ITEM CRUD ----
+function addItem(errandId) {
+  const textEl = document.getElementById('item-text-' + errandId);
+  const costEl = document.getElementById('item-cost-' + errandId);
+  const text = textEl.value.trim();
+  if (!text) return;
+  const cost = parseFloat(costEl.value) || 0;
+  const e = errands.find(e => e.id === errandId);
+  if (e) { e.items.push({ id: Date.now(), text, cost, done: false }); }
+  save(); render();
+}
+
+function deleteItem(errandId, itemId) {
+  const e = errands.find(e => e.id === errandId);
+  if (e) { e.items = e.items.filter(i => i.id !== itemId); }
+  save(); render();
+}
+
+function toggleItemDone(errandId, itemId) {
+  const e = errands.find(e => e.id === errandId);
+  if (e) {
+    const item = e.items.find(i => i.id === itemId);
+    if (item) { item.done = !item.done; }
+  }
+  save(); render();
+}
+
+// ---- FILTERS ----
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.className = 'filter-btn';
+  });
+  btn.classList.add('active-' + (f === 'today' ? 'all' : f === 'all' ? 'all' : f));
+  render();
+}
+
+function toggleDone() {
+  showDone = !showDone;
+  document.getElementById('doneToggle').textContent = showDone ? 'Hide Completed' : 'Show Completed';
+  render();
+}
+
+function toggleExpand(id) {
+  const card = document.getElementById('card-' + id);
+  card.classList.toggle('open');
+  const arrow = card.querySelector('.expand-arrow');
+  if (arrow) arrow.textContent = card.classList.contains('open') ? '▲' : '▼';
+}
+
+// ---- DATE UTILS ----
+function isOverdue(date) {
+  if (!date) return false;
+  return date < TODAY;
+}
+
+function isToday(date) { return date === TODAY; }
+
+function formatDate(date) {
+  if (!date) return '';
+  const d = new Date(date + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+// ---- RENDER ----
+function render() {
+  const list = document.getElementById('errandList');
+
+  let filtered = errands.filter(e => {
+    if (!showDone && e.done) return false;
+    if (currentFilter === 'today' && e.date !== TODAY) return false;
+    if (currentFilter !== 'all' && currentFilter !== 'today' && e.cat !== currentFilter) return false;
+    return true;
+  });
+
+  // Totals
+  let totalSpent = 0;
+  let totalItems = 0;
+  let totalDone = errands.filter(e => e.done).length;
+  errands.forEach(e => {
+    e.items.forEach(i => { if (i.done) totalSpent += i.cost; totalItems++; });
+  });
+  document.getElementById('totalErrands').textContent = errands.length;
+  document.getElementById('totalItems').textContent = totalItems;
+  document.getElementById('totalSpent').textContent = '$' + totalSpent.toFixed(2);
+  document.getElementById('totalDone').textContent = totalDone;
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state">${errands.length === 0 ? '🛒 No errands yet — add your first one above!' : 'No errands match this filter.'}</div>`;
+    renderCalendar(); return;
+  }
+
+  // Keep open state
+  const openIds = new Set();
+  document.querySelectorAll('.errand-card.open').forEach(c => openIds.add(c.id.replace('card-','')));
+
+  list.innerHTML = filtered.map(e => {
+    const errandTotal = e.items.filter(i => i.done).reduce((sum, i) => sum + i.cost, 0);
+    const doneItems = e.items.filter(i => i.done).length;
+    const dateLabel = e.date ? (isToday(e.date) ? '📅 Today' : isOverdue(e.date) ? '⚠️ ' + formatDate(e.date) : formatDate(e.date)) : '';
+    const dateCls = isToday(e.date) ? 'today' : isOverdue(e.date) && !e.done ? 'overdue' : '';
+    const isOpen = openIds.has(String(e.id));
+
+    return `
+    <div class="errand-card ${e.cat}-card ${e.done ? 'done-errand' : ''} ${isOpen ? 'open' : ''}" id="card-${e.id}">
+      <div class="errand-header">
+        <button class="errand-check check-${e.cat} ${e.done ? 'done' : ''}"
+          style="border-color:${CAT_COLORS[e.cat]};${e.done ? 'background:'+CAT_COLORS[e.cat]+';' : ''}"
+          onclick="toggleErrandDone(${e.id})">${e.done ? '✓' : ''}</button>
+        <div class="errand-info">
+          <div class="errand-name ${e.done ? 'done' : ''}">${e.name}</div>
+          <div class="errand-meta">
+            <span class="cat-badge badge-${e.cat}">${CAT_LABELS[e.cat]}</span>
+            ${e.date ? `<span class="date-badge ${dateCls}">${dateLabel}</span>` : ''}
+            ${doneItems > 0 ? `<span style="font-size:0.72rem;color:var(--muted);">${doneItems}/${e.items.length} done</span>` : e.items.length > 0 ? `<span style="font-size:0.72rem;color:var(--muted);">${e.items.length} items</span>` : ''}
+          </div>
+        </div>
+        ${errandTotal > 0 ? `<div class="errand-total">$${errandTotal.toFixed(2)}</div>` : ''}
+        <div class="errand-actions">
+          <button class="icon-btn" onclick="startEditErrand(${e.id})" title="Edit">✎</button>
+          <button class="icon-btn delete" onclick="deleteErrand(${e.id})" title="Delete">✕</button>
+        </div>
+      </div>
+      <button class="expand-toggle" onclick="toggleExpand(${e.id})">
+        <span class="expand-arrow">${isOpen ? '▲' : '▼'}</span>
+        ${isOpen ? 'Hide items' : 'Show items'} ${e.items.length > 0 ? '(' + e.items.length + ')' : ''}
+      </button>
+      <div class="items-section">
+        ${e.items.length > 0 ? e.items.map(item => `
+          <div class="item-row">
+            <button class="item-check ${item.done ? 'done' : ''}" onclick="toggleItemDone(${e.id},${item.id})">${item.done ? '✓' : ''}</button>
+            <span class="item-text ${item.done ? 'done' : ''}">${item.text}</span>
+            ${item.cost > 0 ? `<span class="item-cost">$${item.cost.toFixed(2)}</span>` : ''}
+            <button class="item-delete" onclick="deleteItem(${e.id},${item.id})">✕</button>
+          </div>`).join('') : '<div style="font-size:0.82rem;color:var(--muted);padding:8px 0;">No items yet — add one below</div>'}
+        <div class="add-item-row">
+          <input class="item-input" id="item-text-${e.id}" placeholder="Item or task" onkeydown="if(event.key==='Enter'){addItem(${e.id});}" />
+          <input class="cost-input" id="item-cost-${e.id}" type="number" placeholder="$0.00" step="0.01" min="0" onkeydown="if(event.key==='Enter'){addItem(${e.id});}" />
+          <button class="add-item-btn" onclick="addItem(${e.id})">+ Add</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderCalendar();
+}
+
+// ---- CALENDAR ----
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calTitle').textContent = months[calMonth] + ' ' + calYear;
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+  const todayObj = new Date();
+
+  let cells = '';
+  let total = firstDay + daysInMonth;
+  let rows = Math.ceil(total / 7) * 7;
+
+  for (let i = 0; i < rows; i++) {
+    let day, month, year, otherMonth = false;
+    if (i < firstDay) {
+      day = daysInPrev - firstDay + i + 1;
+      month = calMonth - 1; year = calYear;
+      if (month < 0) { month = 11; year--; }
+      otherMonth = true;
+    } else if (i >= firstDay + daysInMonth) {
+      day = i - firstDay - daysInMonth + 1;
+      month = calMonth + 1; year = calYear;
+      if (month > 11) { month = 0; year++; }
+      otherMonth = true;
+    } else {
+      day = i - firstDay + 1;
+      month = calMonth; year = calYear;
+    }
+
+    const dateStr = year + '-' + String(month + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    const isToday2 = dateStr === TODAY;
+    const dayErrands = errands.filter(e => e.date === dateStr);
+    const dots = dayErrands.map(e => `<div class="cal-dot" style="background:${CAT_COLORS[e.cat]}"></div>`).join('');
+
+    cells += `<div class="cal-cell ${isToday2 ? 'today' : ''} ${otherMonth ? 'other-month' : ''}" onclick="selectCalDay('${dateStr}')">
+      <div class="cal-date">${day}</div>
+      <div class="cal-dots">${dots}</div>
+    </div>`;
+  }
+
+  document.getElementById('calBody').innerHTML = cells;
+}
+
+function selectCalDay(dateStr) {
+  const dayErrands = errands.filter(e => e.date === dateStr);
+  const sel = document.getElementById('calSelected');
+  const selTitle = document.getElementById('calSelectedTitle');
+  const selList = document.getElementById('calSelectedList');
+
+  const d = new Date(dateStr + 'T00:00:00');
+  const label = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  selTitle.textContent = label;
+
+  if (!dayErrands.length) {
+    selList.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:8px 0;">No errands scheduled for this day.</div>';
+  } else {
+    selList.innerHTML = dayErrands.map(e => `
+      <div class="cal-errand-item">
+        <div class="cal-errand-dot" style="background:${CAT_COLORS[e.cat]}"></div>
+        <div class="cal-errand-name">${e.name}</div>
+        <div class="cal-errand-count">${e.items.length} item${e.items.length !== 1 ? 's' : ''} · ${CAT_LABELS[e.cat]}</div>
+      </div>`).join('');
+  }
+  sel.style.display = 'block';
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  document.getElementById('calSelected').style.display = 'none';
+  renderCalendar();
+}
+
+// ---- IMPORT / EXPORT ----
+function exportData() {
+  const blob = new Blob([JSON.stringify(errands, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'errandhub-backup-' + TODAY + '.json';
+  a.click();
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        errands = imported;
+        save(); render();
+        alert('Imported ' + imported.length + ' errands successfully!');
+      }
+    } catch { alert('Invalid backup file.'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function showPage(id, tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tab.classList.add('active');
+  if (id === 'calendar') renderCalendar();
+}
+
+// Set today as default date
+document.getElementById('errandDate').value = TODAY;
+
+render();
+</script>
+</body>
+</html>
