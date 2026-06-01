@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Dump — Katina</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a22;
+    --surface2: #22222e;
+    --border: #2e2e3e;
+    --text: #f0eff8;
+    --text-muted: #7a798a;
+    --financial: #4caf82;
+    --work: #4a9eda;
+    --personal: #e87fa3;
+    --business: #2abfbf;
+    --mom: #e85555;
+    --dad: #f0c842;
+    --projects: #b08fe8;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #f0eff8 40%, #b08fe8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  header p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  /* LEGEND */
+  .legend {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+
+  .legend-title {
+    width: 100%;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* INPUT AREA */
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .input-card textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px;
+    resize: none;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-card textarea:focus {
+    border-color: var(--projects);
+  }
+
+  .input-card textarea::placeholder { color: var(--text-muted); }
+
+  .input-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: center;
+  }
+
+  .cat-select {
+    flex: 1;
+    min-width: 150px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    padding: 10px 12px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .date-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    padding: 10px 12px;
+    outline: none;
+    cursor: pointer;
+    width: 150px;
+  }
+
+  .date-input::-webkit-calendar-picker-indicator {
+    filter: invert(0.6);
+    cursor: pointer;
+  }
+
+  .add-btn {
+    background: linear-gradient(135deg, #b08fe8, #7a5fc0);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .add-btn:hover { opacity: 0.9; }
+  .add-btn:active { transform: scale(0.97); }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-right: 2px;
+  }
+
+  .filter-btn {
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .filter-btn.active {
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  .show-completed-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .show-completed-btn:hover { border-color: var(--text-muted); }
+
+  /* ITEMS */
+  .items-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .item-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid;
+    border-radius: var(--radius);
+    padding: 14px 14px 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: opacity 0.3s, transform 0.2s;
+    animation: slideIn 0.25s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .item-card.completed {
+    opacity: 0.45;
+  }
+
+  .item-card.completed .item-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .check-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: background 0.2s;
+  }
+
+  .check-btn.done {
+    color: white;
+  }
+
+  .item-body { flex: 1; min-width: 0; }
+
+  .item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .cat-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    color: var(--bg);
+  }
+
+  .due-badge {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .due-badge.overdue { color: var(--mom); }
+
+  .item-text {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .delete-btn:hover { color: var(--mom); }
+
+  /* IO BUTTONS */
+  .io-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .io-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .io-btn:hover {
+    border-color: var(--projects);
+    color: var(--text);
+  }
+
+  .stats {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 16px;
+  }
+
+  /* Category colors */
+  .financial { border-color: var(--financial); }
+  .work { border-color: var(--work); }
+  .personal { border-color: var(--personal); }
+  .business { border-color: var(--business); }
+  .mom { border-color: var(--mom); }
+  .dad { border-color: var(--dad); }
+  .projects { border-color: var(--projects); }
+
+  .badge-financial { background: var(--financial); }
+  .badge-work { background: var(--work); }
+  .badge-personal { background: var(--personal); }
+  .badge-business { background: var(--business); }
+  .badge-mom { background: var(--mom); }
+  .badge-dad { background: var(--dad); }
+  .badge-projects { background: var(--projects); }
+
+  .check-financial { border-color: var(--financial); }
+  .check-financial.done { background: var(--financial); }
+  .check-work { border-color: var(--work); }
+  .check-work.done { background: var(--work); }
+  .check-personal { border-color: var(--personal); }
+  .check-personal.done { background: var(--personal); }
+  .check-business { border-color: var(--business); }
+  .check-business.done { background: var(--business); }
+  .check-mom { border-color: var(--mom); }
+  .check-mom.done { background: var(--mom); }
+  .check-dad { border-color: var(--dad); }
+  .check-dad.done { background: var(--dad); }
+  .check-projects { border-color: var(--projects); }
+  .check-projects.done { background: var(--projects); }
+
+  .filter-financial.active { background: var(--financial); border-color: var(--financial); }
+  .filter-work.active { background: var(--work); border-color: var(--work); }
+  .filter-personal.active { background: var(--personal); border-color: var(--personal); }
+  .filter-business.active { background: var(--business); border-color: var(--business); }
+  .filter-mom.active { background: var(--mom); border-color: var(--mom); }
+  .filter-dad.active { background: var(--dad); border-color: var(--dad); }
+  .filter-projects.active { background: var(--projects); border-color: var(--projects); }
+  .filter-all.active { background: var(--text); border-color: var(--text); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Brain Dump</h1>
+  <p>One place. Everything. Color-coded.</p>
+</header>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">Color Key</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--financial)"></div>Financial</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--work)"></div>Work</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--personal)"></div>Personal</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--business)"></div>Business</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--mom)"></div>Mom</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--dad)"></div>Dad</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--projects)"></div>Projects</div>
+</div>
+
+<!-- INPUT -->
+<div class="input-card">
+  <textarea id="dumpText" placeholder="What's on your mind? Just dump it here..."></textarea>
+  <div class="input-controls">
+    <select class="cat-select" id="catSelect">
+      <option value="financial">💚 Financial</option>
+      <option value="work">💙 Work</option>
+      <option value="personal">🩷 Personal</option>
+      <option value="business">🩵 Business</option>
+      <option value="mom">❤️ Mom</option>
+      <option value="dad">💛 Dad</option>
+      <option value="projects">💜 Projects</option>
+    </select>
+    <input type="date" class="date-input" id="dateInput">
+    <button class="add-btn" onclick="addItem()">+ Add</button>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn filter-all active" onclick="setFilter('all', this)">All</button>
+  <button class="filter-btn filter-financial" onclick="setFilter('financial', this)">Financial</button>
+  <button class="filter-btn filter-work" onclick="setFilter('work', this)">Work</button>
+  <button class="filter-btn filter-personal" onclick="setFilter('personal', this)">Personal</button>
+  <button class="filter-btn filter-business" onclick="setFilter('business', this)">Business</button>
+  <button class="filter-btn filter-mom" onclick="setFilter('mom', this)">Mom</button>
+  <button class="filter-btn filter-dad" onclick="setFilter('dad', this)">Dad</button>
+  <button class="filter-btn filter-projects" onclick="setFilter('projects', this)">Projects</button>
+  <button class="show-completed-btn" id="completedToggle" onclick="toggleCompleted()">Show Completed</button>
+</div>
+
+<!-- ITEMS -->
+<div class="items-list" id="itemsList"></div>
+<div class="stats" id="stats"></div>
+
+<!-- IMPORT / EXPORT -->
+<div class="io-bar">
+  <button class="io-btn" onclick="exportData()">⬇ Download Backup</button>
+  <button class="io-btn" onclick="document.getElementById('importFile').click()">⬆ Upload Backup</button>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+</div>
+
+<script>
+  const CATS = {
+    financial: { label: 'Financial', color: '#4caf82' },
+    work: { label: 'Work', color: '#4a9eda' },
+    personal: { label: 'Personal', color: '#e87fa3' },
+    business: { label: 'Business', color: '#2abfbf' },
+    mom: { label: 'Mom', color: '#e85555' },
+    dad: { label: 'Dad', color: '#f0c842' },
+    projects: { label: 'Projects', color: '#b08fe8' }
+  };
+
+  let items = JSON.parse(localStorage.getItem('braindump') || '[]');
+  let currentFilter = 'all';
+  let showCompleted = false;
+
+  function save() {
+    localStorage.setItem('braindump', JSON.stringify(items));
+  }
+
+  function addItem() {
+    const text = document.getElementById('dumpText').value.trim();
+    if (!text) return;
+    const cat = document.getElementById('catSelect').value;
+    const due = document.getElementById('dateInput').value;
+    items.unshift({ id: Date.now(), text, cat, due, done: false, created: new Date().toISOString() });
+    save();
+    render();
+    document.getElementById('dumpText').value = '';
+    document.getElementById('dateInput').value = '';
+  }
+
+  function toggleDone(id) {
+    const item = items.find(i => i.id === id);
+    if (item) { item.done = !item.done; save(); render(); }
+  }
+
+  function deleteItem(id) {
+    items = items.filter(i => i.id !== id);
+    save();
+    render();
+  }
+
+  function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  function toggleCompleted() {
+    showCompleted = !showCompleted;
+    const btn = document.getElementById('completedToggle');
+    btn.textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
+    render();
+  }
+
+  function isOverdue(due) {
+    if (!due) return false;
+    return new Date(due + 'T23:59:59') < new Date();
+  }
+
+  function formatDate(due) {
+    if (!due) return '';
+    const d = new Date(due + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function render() {
+    const list = document.getElementById('itemsList');
+    let filtered = items.filter(i => {
+      if (!showCompleted && i.done) return false;
+      if (currentFilter !== 'all' && i.cat !== currentFilter) return false;
+      return true;
+    });
+
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-state">${items.length === 0 ? 'Nothing dumped yet — your mind is clear! 🧘' : 'No items match this filter.'}</div>`;
+    } else {
+      list.innerHTML = filtered.map(item => {
+        const cat = CATS[item.cat];
+        const overdue = isOverdue(item.due);
+        return `
+        <div class="item-card ${item.cat} ${item.done ? 'completed' : ''}">
+          <button class="check-btn check-${item.cat} ${item.done ? 'done' : ''}" onclick="toggleDone(${item.id})">
+            ${item.done ? '✓' : ''}
+          </button>
+          <div class="item-body">
+            <div class="item-meta">
+              <span class="cat-badge badge-${item.cat}">${cat.label}</span>
+              ${item.due ? `<span class="due-badge ${overdue && !item.done ? 'overdue' : ''}">📅 ${formatDate(item.due)}${overdue && !item.done ? ' · overdue' : ''}</span>` : ''}
+            </div>
+            <div class="item-text">${item.text}</div>
+          </div>
+          <button class="delete-btn" onclick="deleteItem(${item.id})">✕</button>
+        </div>`;
+      }).join('');
+    }
+
+    const total = items.length;
+    const done = items.filter(i => i.done).length;
+    const active = total - done;
+    document.getElementById('stats').textContent = total ? `${active} active · ${done} completed · ${total} total` : '';
+  }
+
+  function exportData() {
+    const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `braindump-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+  }
+
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (Array.isArray(imported)) {
+          items = imported;
+          save();
+          render();
+          alert(`Imported ${imported.length} items successfully!`);
+        }
+      } catch { alert('Invalid backup file.'); }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  // Enter key to add
+  document.getElementById('dumpText').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.ctrlKey) addItem();
+  });
+
+  render();
+</script>
+</body>
+</html>
