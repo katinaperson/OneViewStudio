@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bible Reading Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:wght@300;400;500&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --dark: #1A1410;
+    --brown: #3D2B1A;
+    --parchment: #F5EDD8;
+    --parchment-dark: #EAD9B8;
+    --text: #2C1E0F;
+    --muted: #7A6248;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    font-family: 'Crimson Pro', Georgia, serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .bg-texture {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(61,43,26,0.4) 0%, transparent 60%),
+      var(--dark);
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  header {
+    text-align: center;
+    padding: 40px 0 32px;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    margin-bottom: 36px;
+  }
+
+  .cross-divider {
+    color: var(--gold);
+    font-size: 1.4rem;
+    letter-spacing: 12px;
+    opacity: 0.6;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--parchment);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  h1 em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  /* Setup Card */
+  .setup-card {
+    background: var(--parchment);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 28px;
+    border: 1px solid var(--gold-light);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--brown);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold-light);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  select, input[type="date"], input[type="number"] {
+    background: white;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--text);
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  select:focus, input:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--brown);
+    color: var(--gold-light);
+    border: none;
+    border-radius: 3px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn:hover { background: #2a1d10; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  /* Plan output */
+  #planOutput { display: none; }
+
+  .plan-header {
+    background: linear-gradient(135deg, var(--brown) 0%, #2a1d10 100%);
+    border-radius: 4px 4px 0 0;
+    padding: 24px 28px;
+    border: 1px solid var(--gold);
+    border-bottom: none;
+  }
+
+  .plan-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+  }
+
+  .plan-meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .week-block {
+    background: var(--parchment);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-top: none;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .week-block:last-child {
+    border-radius: 0 0 4px 4px;
+  }
+
+  .week-header {
+    background: rgba(201,168,76,0.12);
+    padding: 10px 20px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    font-weight: 500;
+  }
+
+  .day-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    transition: background 0.15s;
+  }
+
+  .day-row:last-child { border-bottom: none; }
+  .day-row:hover { background: rgba(201,168,76,0.06); }
+
+  .day-check {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    margin-top: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .day-check.done {
+    background: var(--gold);
+  }
+
+  .day-check.done::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .day-info { flex: 1; }
+
+  .day-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .day-reading {
+    font-size: 1.05rem;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .day-verse {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .progress-bar-wrap {
+    background: var(--parchment);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-top: none;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .save-badge {
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.4s;
+    white-space: nowrap;
+  }
+  .save-badge.visible { opacity: 1; }
+
+  .reset-btn {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: none;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 3px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: 'Crimson Pro', serif;
+    letter-spacing: 0.5px;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .reset-btn:hover { color: var(--text); border-color: var(--gold); }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(201,168,76,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+
+  .verse-card {
+    background: linear-gradient(135deg, #2a1d10 0%, var(--brown) 100%);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(201,168,76,0.3);
+    text-align: center;
+  }
+
+  .verse-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--parchment);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .verse-ref {
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .tips-section {
+    background: var(--parchment);
+    border-radius: 4px;
+    padding: 24px 28px;
+    border: 1px solid rgba(201,168,76,0.3);
+    margin-top: 24px;
+  }
+
+  .tips-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--brown);
+    font-size: 1.1rem;
+    margin-bottom: 14px;
+  }
+
+  .tip-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .tip-icon { flex-shrink: 0; color: var(--gold); }
+
+  @media(max-width: 500px) {
+    .form-row { grid-template-columns: 1fr; }
+    .setup-card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-texture"></div>
+<div class="container">
+
+  <header>
+    <div class="cross-divider">✦ ✦ ✦</div>
+    <h1>Bible Reading<br><em>Plan Builder</em></h1>
+    <p class="subtitle">Your Word. Your Pace. Every Day.</p>
+  </header>
+
+  <div class="verse-card">
+    <p class="verse-text">"Your word is a lamp to my feet and a light to my path."</p>
+    <p class="verse-ref">Psalm 119:105</p>
+  </div>
+
+  <div class="setup-card">
+    <div class="card-title">Build Your Plan</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Reading Style</label>
+        <select id="style">
+          <option value="book">Book-at-a-Time</option>
+          <option value="balanced">OT + NT Daily</option>
+          <option value="chronological">Chronological</option>
+          <option value="psalms-proverbs">Psalms + Proverbs Daily</option>
+          <option value="gospels">Gospels Focus</option>
+          <option value="epistles">Epistles (Paul's Letters)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Chapters Per Day</label>
+        <select id="chapters">
+          <option value="1">1 chapter</option>
+          <option value="2" selected>2 chapters</option>
+          <option value="3">3 chapters</option>
+          <option value="4">4 chapters (whole Bible in 1 yr)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="form-group">
+        <label>Starting Book</label>
+        <select id="startBook"></select>
+      </div>
+    </div>
+
+    <button class="btn" onclick="generatePlan()">✦ Generate My Reading Plan</button>
+  </div>
+
+  <div id="planOutput">
+    <div class="plan-header">
+      <div class="plan-title" id="planTitle">My Reading Plan</div>
+      <div class="plan-meta" id="planMeta"></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-text" id="progressText">0 / 0 days complete</div>
+      <span class="save-badge" id="saveBadge">✦ Saved</span>
+      <button class="reset-btn" onclick="resetProgress()">Reset</button>
+    </div>
+    <div id="planDays"></div>
+  </div>
+
+  <div class="tips-section">
+    <div class="tips-title">📖 Study Tips</div>
+    <div class="tip-item"><span class="tip-icon">✦</span><span><strong>Keep your Proverbs habit.</strong> Stack it on top of any plan — read the proverb for the day's date first, then your assigned reading.</span></div>
+    <div class="tip-item"><span class="tip-icon">✦</span><span><strong>Pray before you open.</strong> Even 30 seconds asking God to speak changes the experience completely.</span></div>
+    <div class="tip-item"><span class="tip-icon">✦</span><span><strong>Write one thing.</strong> Journal one verse, question, or observation per reading. Retention skyrockets.</span></div>
+    <div class="tip-item"><span class="tip-icon">✦</span><span><strong>Don't guilt-skip.</strong> If you miss a day, just pick up where you left off. The goal is a lifestyle, not a streak.</span></div>
+    <div class="tip-item"><span class="tip-icon">✦</span><span><strong>Pair translations.</strong> With multiple Bibles incoming, read a passage in two — one familiar, one fresh. The differences illuminate meaning beautifully.</span></div>
+  </div>
+
+</div>
+
+<script>
+const BOOKS = [
+  // OT
+  {name:"Genesis", chapters:50, testament:"OT"},
+  {name:"Exodus", chapters:40, testament:"OT"},
+  {name:"Leviticus", chapters:27, testament:"OT"},
+  {name:"Numbers", chapters:36, testament:"OT"},
+  {name:"Deuteronomy", chapters:34, testament:"OT"},
+  {name:"Joshua", chapters:24, testament:"OT"},
+  {name:"Judges", chapters:21, testament:"OT"},
+  {name:"Ruth", chapters:4, testament:"OT"},
+  {name:"1 Samuel", chapters:31, testament:"OT"},
+  {name:"2 Samuel", chapters:24, testament:"OT"},
+  {name:"1 Kings", chapters:22, testament:"OT"},
+  {name:"2 Kings", chapters:25, testament:"OT"},
+  {name:"1 Chronicles", chapters:29, testament:"OT"},
+  {name:"2 Chronicles", chapters:36, testament:"OT"},
+  {name:"Ezra", chapters:10, testament:"OT"},
+  {name:"Nehemiah", chapters:13, testament:"OT"},
+  {name:"Esther", chapters:10, testament:"OT"},
+  {name:"Job", chapters:42, testament:"OT"},
+  {name:"Psalms", chapters:150, testament:"OT"},
+  {name:"Proverbs", chapters:31, testament:"OT"},
+  {name:"Ecclesiastes", chapters:12, testament:"OT"},
+  {name:"Song of Solomon", chapters:8, testament:"OT"},
+  {name:"Isaiah", chapters:66, testament:"OT"},
+  {name:"Jeremiah", chapters:52, testament:"OT"},
+  {name:"Lamentations", chapters:5, testament:"OT"},
+  {name:"Ezekiel", chapters:48, testament:"OT"},
+  {name:"Daniel", chapters:12, testament:"OT"},
+  {name:"Hosea", chapters:14, testament:"OT"},
+  {name:"Joel", chapters:3, testament:"OT"},
+  {name:"Amos", chapters:9, testament:"OT"},
+  {name:"Obadiah", chapters:1, testament:"OT"},
+  {name:"Jonah", chapters:4, testament:"OT"},
+  {name:"Micah", chapters:7, testament:"OT"},
+  {name:"Nahum", chapters:3, testament:"OT"},
+  {name:"Habakkuk", chapters:3, testament:"OT"},
+  {name:"Zephaniah", chapters:3, testament:"OT"},
+  {name:"Haggai", chapters:2, testament:"OT"},
+  {name:"Zechariah", chapters:14, testament:"OT"},
+  {name:"Malachi", chapters:4, testament:"OT"},
+  // NT
+  {name:"Matthew", chapters:28, testament:"NT"},
+  {name:"Mark", chapters:16, testament:"NT"},
+  {name:"Luke", chapters:24, testament:"NT"},
+  {name:"John", chapters:21, testament:"NT"},
+  {name:"Acts", chapters:28, testament:"NT"},
+  {name:"Romans", chapters:16, testament:"NT"},
+  {name:"1 Corinthians", chapters:16, testament:"NT"},
+  {name:"2 Corinthians", chapters:13, testament:"NT"},
+  {name:"Galatians", chapters:6, testament:"NT"},
+  {name:"Ephesians", chapters:6, testament:"NT"},
+  {name:"Philippians", chapters:4, testament:"NT"},
+  {name:"Colossians", chapters:4, testament:"NT"},
+  {name:"1 Thessalonians", chapters:5, testament:"NT"},
+  {name:"2 Thessalonians", chapters:3, testament:"NT"},
+  {name:"1 Timothy", chapters:6, testament:"NT"},
+  {name:"2 Timothy", chapters:4, testament:"NT"},
+  {name:"Titus", chapters:3, testament:"NT"},
+  {name:"Philemon", chapters:1, testament:"NT"},
+  {name:"Hebrews", chapters:13, testament:"NT"},
+  {name:"James", chapters:5, testament:"NT"},
+  {name:"1 Peter", chapters:5, testament:"NT"},
+  {name:"2 Peter", chapters:3, testament:"NT"},
+  {name:"1 John", chapters:5, testament:"NT"},
+  {name:"2 John", chapters:1, testament:"NT"},
+  {name:"3 John", chapters:1, testament:"NT"},
+  {name:"Jude", chapters:1, testament:"NT"},
+  {name:"Revelation", chapters:22, testament:"NT"},
+];
+
+const STYLE_BOOKS = {
+  book: null, // uses startBook
+  balanced: null,
+  chronological: ["Genesis","Job","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth","1 Samuel","2 Samuel","Psalms","1 Kings","1 Chronicles","2 Chronicles","Proverbs","Ecclesiastes","Song of Solomon","2 Kings","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk","Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude","Revelation"],
+  "psalms-proverbs": ["Psalms","Proverbs"],
+  gospels: ["Matthew","Mark","Luke","John"],
+  epistles: ["Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude"]
+};
+
+const OT_BOOKS = BOOKS.filter(b => b.testament === "OT");
+const NT_BOOKS = BOOKS.filter(b => b.testament === "NT");
+
+// Populate book dropdown
+const startBookEl = document.getElementById('startBook');
+BOOKS.forEach(b => {
+  const opt = document.createElement('option');
+  opt.value = b.name;
+  opt.textContent = b.name;
+  startBookEl.appendChild(opt);
+});
+
+// Set today's date
+document.getElementById('startDate').valueAsDate = new Date();
+
+let checkStates = {};
+let currentTotal = 0;
+
+// --- Persistence helpers ---
+function saveState() {
+  try {
+    const planKey = localStorage.getItem('bibleplan_key') || '';
+    localStorage.setItem('bibleplan_checks_' + planKey, JSON.stringify(checkStates));
+  } catch(e) {}
+}
+
+function loadState(planKey) {
+  try {
+    const saved = localStorage.getItem('bibleplan_checks_' + planKey);
+    return saved ? JSON.parse(saved) : {};
+  } catch(e) { return {}; }
+}
+
+function savePlanSettings(style, chaptersPerDay, startDate, startBook) {
+  try {
+    const planKey = style + '_' + chaptersPerDay + '_' + startDate + '_' + startBook;
+    localStorage.setItem('bibleplan_key', planKey);
+    localStorage.setItem('bibleplan_settings', JSON.stringify({ style, chaptersPerDay, startDate, startBook }));
+    return planKey;
+  } catch(e) { return ''; }
+}
+
+// Restore settings from last session on page load
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = localStorage.getItem('bibleplan_settings');
+    if (saved) {
+      const s = JSON.parse(saved);
+      document.getElementById('style').value = s.style;
+      document.getElementById('chapters').value = s.chaptersPerDay;
+      document.getElementById('startDate').value = s.startDate;
+      document.getElementById('startBook').value = s.startBook;
+      // Auto-restore the plan
+      generatePlan(true);
+    }
+  } catch(e) {}
+});
+
+function generatePlan(restoring = false) {
+  const style = document.getElementById('style').value;
+  const chaptersPerDay = parseInt(document.getElementById('chapters').value);
+  const startDate = new Date(document.getElementById('startDate').value + 'T00:00:00');
+  const startBook = document.getElementById('startBook').value;
+
+  const planKey = savePlanSettings(style, chaptersPerDay, document.getElementById('startDate').value, startBook);
+
+  let readingList = []; // array of {label, book, ch}
+
+  if (style === 'balanced') {
+    // Alternate OT + NT: one chapter each per day
+    let otIdx = 0, otCh = 1;
+    let ntIdx = 0, ntCh = 1;
+    let days = Math.ceil((OT_BOOKS.reduce((a,b)=>a+b.chapters,0) + NT_BOOKS.reduce((a,b)=>a+b.chapters,0)) / 2);
+    days = Math.min(days, 365);
+    for (let i = 0; i < days; i++) {
+      const otBook = OT_BOOKS[otIdx];
+      const ntBook = NT_BOOKS[ntIdx];
+      if (!otBook || !ntBook) break;
+      readingList.push({ label: `${otBook.name} ${otCh} + ${ntBook.name} ${ntCh}`, books: [`${otBook.name} ${otCh}`, `${ntBook.name} ${ntCh}`] });
+      otCh++;
+      if (otCh > otBook.chapters) { otIdx++; otCh = 1; }
+      ntCh++;
+      if (ntCh > ntBook.chapters) { ntIdx++; ntCh = 1; }
+    }
+  } else {
+    // Sequential through book list
+    let bookList;
+    if (style === 'book') {
+      const idx = BOOKS.findIndex(b => b.name === startBook);
+      bookList = BOOKS.slice(idx);
+    } else if (style === 'chronological') {
+      bookList = STYLE_BOOKS.chronological.map(n => BOOKS.find(b => b.name === n)).filter(Boolean);
+    } else {
+      bookList = STYLE_BOOKS[style].map(n => BOOKS.find(b => b.name === n)).filter(Boolean);
+    }
+
+    let queue = [];
+    bookList.forEach(book => {
+      for (let ch = 1; ch <= book.chapters; ch++) {
+        queue.push(`${book.name} ${ch}`);
+      }
+    });
+
+    for (let i = 0; i < queue.length; i += chaptersPerDay) {
+      const slice = queue.slice(i, i + chaptersPerDay);
+      readingList.push({ label: slice.join(' + '), books: slice });
+    }
+  }
+
+  readingList = readingList.slice(0, 180); // show up to 6 months
+  currentTotal = readingList.length;
+
+  // Load saved progress for this plan, or start fresh
+  const savedChecks = loadState(planKey);
+  checkStates = {};
+  readingList.forEach((_, i) => {
+    checkStates[i] = savedChecks[i] || false;
+  });
+
+  // Render
+  document.getElementById('planTitle').textContent = getStyleName(style) + ' Plan';
+  document.getElementById('planMeta').textContent =
+    `Starting ${startDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} · ${readingList.length} days`;
+
+  const container = document.getElementById('planDays');
+  container.innerHTML = '';
+
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  let currentWeek = -1;
+  let weekDiv = null;
+
+  readingList.forEach((item, i) => {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + i);
+    const week = Math.floor(i / 7);
+
+    if (week !== currentWeek) {
+      currentWeek = week;
+      weekDiv = document.createElement('div');
+      weekDiv.className = 'week-block';
+      const wh = document.createElement('div');
+      wh.className = 'week-header';
+      wh.textContent = `Week ${week + 1}`;
+      weekDiv.appendChild(wh);
+      container.appendChild(weekDiv);
+    }
+
+    const row = document.createElement('div');
+    row.className = 'day-row';
+    row.innerHTML = `
+      <div class="day-check" id="check-${i}" onclick="toggleCheck(${i}, ${readingList.length})"></div>
+      <div class="day-info">
+        <div class="day-label">${DAYS[d.getDay()]} · ${MONTHS[d.getMonth()]} ${d.getDate()}</div>
+        <div class="day-reading">${item.label}</div>
+      </div>
+    `;
+    weekDiv.appendChild(row);
+
+    // Restore saved check state
+    if (checkStates[i]) {
+      const checkEl = row.querySelector('.day-check');
+      if (checkEl) checkEl.classList.add('done');
+    }
+  });
+
+  updateProgress(readingList.length);
+  document.getElementById('planOutput').style.display = 'block';
+  if (!restoring) {
+    document.getElementById('planOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function toggleCheck(i, total) {
+  checkStates[i] = !checkStates[i];
+  const el = document.getElementById(`check-${i}`);
+  el.classList.toggle('done', checkStates[i]);
+  updateProgress(total);
+  saveState();
+  flashSaved();
+}
+
+function flashSaved() {
+  const badge = document.getElementById('saveBadge');
+  if (!badge) return;
+  badge.classList.add('visible');
+  clearTimeout(badge._timer);
+  badge._timer = setTimeout(() => badge.classList.remove('visible'), 1800);
+}
+
+function resetProgress() {
+  if (!confirm('Reset all checkboxes for this plan?')) return;
+  Object.keys(checkStates).forEach(k => { checkStates[k] = false; });
+  Object.keys(checkStates).forEach(k => {
+    const el = document.getElementById(`check-${k}`);
+    if (el) el.classList.remove('done');
+  });
+  updateProgress(currentTotal);
+  saveState();
+}
+
+function updateProgress(total) {
+  const done = Object.values(checkStates).filter(Boolean).length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${done} / ${total} days complete`;
+}
+
+function getStyleName(s) {
+  return {
+    book: 'Book-at-a-Time',
+    balanced: 'OT + NT Balanced',
+    chronological: 'Chronological',
+    'psalms-proverbs': 'Psalms & Proverbs',
+    gospels: 'Gospels',
+    epistles: "Paul's Epistles"
+  }[s] || s;
+}
+</script>
+</body>
+</html>
