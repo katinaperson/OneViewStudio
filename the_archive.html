@@ -1,0 +1,450 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+#app{padding:1.5rem 0}
+.header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.title{font-size:22px;font-weight:500;color:var(--color-text-primary);letter-spacing:-0.5px}
+.subtitle{font-size:13px;color:var(--color-text-secondary)}
+.toolbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.toolbar input[type=text]{flex:1;min-width:180px;font-size:14px}
+.toolbar select{font-size:14px;min-width:140px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:1.5rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.75rem 1rem}
+.stat-num{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.stat-label{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.btn{border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);border-radius:var(--border-radius-md);padding:6px 14px;font-size:13px;cursor:pointer}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.btn-primary:hover{opacity:0.85}
+.btn-sm{padding:4px 10px;font-size:12px}
+.record-list{display:flex;flex-direction:column;gap:8px}
+.record-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;cursor:pointer;transition:border-color 0.15s}
+.record-card:hover{border-color:var(--color-border-primary)}
+.record-card.open-item{border-left:2px solid #1D9E75}
+.record-card.done-item{opacity:0.6}
+.record-top{display:flex;align-items:flex-start;gap:10px}
+.record-check{width:18px;height:18px;border:0.5px solid var(--color-border-primary);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;cursor:pointer;background:var(--color-background-primary)}
+.record-check.checked{background:var(--color-text-primary);border-color:var(--color-text-primary)}
+.record-check i{font-size:12px;color:var(--color-background-primary)}
+.record-info{flex:1;min-width:0}
+.record-subject{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.record-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:var(--border-radius-md);font-weight:500}
+.badge-cat{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.badge-open{background:#E1F5EE;color:#0F6E56}
+.badge-done{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.record-date{font-size:12px;color:var(--color-text-secondary)}
+.record-preview{font-size:13px;color:var(--color-text-secondary);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.record-attachments{font-size:12px;color:var(--color-text-secondary);margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.empty{text-align:center;padding:3rem 1rem;color:var(--color-text-secondary);font-size:14px}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);width:100%;max-width:620px;padding:1.5rem}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.modal-title{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.form-group{margin-bottom:1rem}
+.form-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:4px;display:block}
+.form-group input,.form-group select,.form-group textarea{width:100%;font-size:14px}
+.form-group textarea{min-height:100px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+.link-item{display:flex;align-items:center;gap:6px;font-size:13px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:6px 10px;margin-top:4px}
+.link-item a{color:var(--color-text-info);text-decoration:none;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-item a:hover{text-decoration:underline}
+.link-item button{background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:14px;padding:0;line-height:1}
+.thread-entry{border-left:2px solid var(--color-border-secondary);padding-left:12px;margin-bottom:12px}
+.thread-date{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.thread-text{font-size:14px;color:var(--color-text-primary);white-space:pre-wrap;line-height:1.6}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1rem 0}
+.add-note-area{display:flex;gap:8px;margin-top:8px}
+.add-note-area textarea{flex:1;font-size:13px;min-height:60px}
+.cat-manager{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.cat-tag{display:inline-flex;align-items:center;gap:4px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:4px 10px;font-size:13px}
+.cat-tag button{background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:13px;padding:0;line-height:1}
+</style>
+
+<div id="app">
+  <div class="header">
+    <span class="title">The Archive</span>
+    <span class="subtitle" id="rec-count">0 records</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="s-open">0</div><div class="stat-label">Open</div></div>
+    <div class="stat"><div class="stat-num" id="s-done">0</div><div class="stat-label">Completed</div></div>
+    <div class="stat"><div class="stat-num" id="s-total">0</div><div class="stat-label">Total records</div></div>
+  </div>
+  <div class="toolbar">
+    <input type="text" id="search-input" placeholder="Search records..." oninput="renderList()">
+    <select id="filter-cat" onchange="renderList()"><option value="">All categories</option></select>
+    <select id="filter-status" onchange="renderList()">
+      <option value="open">Open first</option>
+      <option value="all">All records</option>
+      <option value="done">Completed</option>
+    </select>
+    <button class="btn btn-primary" onclick="openNew()"><i class="ti ti-plus" aria-hidden="true"></i> New record</button>
+    <button class="btn btn-sm" onclick="openCatManager()" title="Manage categories"><i class="ti ti-tag" aria-hidden="true"></i> Categories</button>
+  </div>
+  <div class="record-list" id="record-list"></div>
+</div>
+
+<div class="modal-backdrop" id="modal" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">New record</span>
+      <button class="btn btn-sm" onclick="closeModal()"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const STORE_KEY = 'archive_records';
+const CAT_KEY = 'archive_categories';
+
+let records = [];
+let categories = [];
+let editId = null;
+
+async function load() {
+  try {
+    const r = await window.storage.get(STORE_KEY);
+    if (r) records = JSON.parse(r.value);
+  } catch(e) { records = []; }
+  try {
+    const c = await window.storage.get(CAT_KEY);
+    if (c) categories = JSON.parse(c.value);
+  } catch(e) { categories = []; }
+  renderList();
+  populateCatSelects();
+}
+
+async function save() {
+  await window.storage.set(STORE_KEY, JSON.stringify(records));
+  await window.storage.set(CAT_KEY, JSON.stringify(categories));
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+}
+
+function populateCatSelects() {
+  const fc = document.getElementById('filter-cat');
+  const cur = fc.value;
+  fc.innerHTML = '<option value="">All categories</option>';
+  categories.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    if (c === cur) o.selected = true;
+    fc.appendChild(o);
+  });
+}
+
+function renderList() {
+  const q = (document.getElementById('search-input').value || '').toLowerCase();
+  const cat = document.getElementById('filter-cat').value;
+  const status = document.getElementById('filter-status').value;
+
+  let filtered = records.filter(r => {
+    if (cat && r.category !== cat) return false;
+    if (status === 'open' && r.done) return false;
+    if (status === 'done' && !r.done) return false;
+    if (q) {
+      const hay = [r.subject, r.category, r.notes, ...(r.thread||[]).map(t=>t.text), ...(r.links||[]).map(l=>l.label+l.url)].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (status === 'open' || status === 'all') {
+    filtered.sort((a,b) => {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      return new Date(b.date) - new Date(a.date);
+    });
+  } else {
+    filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+  }
+
+  const open = records.filter(r=>!r.done).length;
+  const done = records.filter(r=>r.done).length;
+  document.getElementById('s-open').textContent = open;
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-total').textContent = records.length;
+  document.getElementById('rec-count').textContent = records.length + ' record' + (records.length!==1?'s':'');
+
+  const list = document.getElementById('record-list');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty"><i class="ti ti-folder-open" style="font-size:32px;display:block;margin-bottom:8px" aria-hidden="true"></i>No records found</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => {
+    const preview = r.notes ? r.notes.slice(0,120) : (r.thread&&r.thread.length ? r.thread[r.thread.length-1].text.slice(0,120) : '');
+    const linkCount = (r.links||[]).length;
+    return `<div class="record-card ${r.done?'done-item':'open-item'}" onclick="openRecord('${r.id}')">
+      <div class="record-top">
+        <div class="record-check ${r.done?'checked':''}" onclick="event.stopPropagation();toggleDone('${r.id}')">
+          ${r.done?'<i class="ti ti-check" aria-hidden="true"></i>':''}
+        </div>
+        <div class="record-info">
+          <div class="record-subject">${escHtml(r.subject)}</div>
+          <div class="record-meta">
+            ${r.category?`<span class="badge badge-cat">${escHtml(r.category)}</span>`:''}
+            <span class="badge ${r.done?'badge-done':'badge-open'}">${r.done?'Completed':'Open'}</span>
+            <span class="record-date">${fmtDate(r.date)}</span>
+          </div>
+          ${preview?`<div class="record-preview">${escHtml(preview)}</div>`:''}
+          ${linkCount?`<div class="record-attachments"><i class="ti ti-link" style="font-size:13px" aria-hidden="true"></i>${linkCount} link${linkCount!==1?'s':''}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toggleDone(id) {
+  const r = records.find(x=>x.id===id);
+  if (r) { r.done = !r.done; save(); renderList(); }
+}
+
+function openNew() {
+  editId = null;
+  document.getElementById('modal-title').textContent = 'New record';
+  document.getElementById('modal-body').innerHTML = buildForm(null);
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function openRecord(id) {
+  const r = records.find(x=>x.id===id);
+  if (!r) return;
+  editId = id;
+  document.getElementById('modal-title').textContent = escHtml(r.subject);
+  document.getElementById('modal-body').innerHTML = buildDetailView(r);
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function buildForm(r) {
+  const catOptions = categories.map(c=>`<option ${r&&r.category===c?'selected':''}>${escHtml(c)}</option>`).join('');
+  const today = (r&&r.date ? r.date : new Date().toISOString().split('T')[0]);
+  return `
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Subject *</label>
+        <input type="text" id="f-subject" value="${r?escHtml(r.subject):''}" placeholder="Brief description">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date *</label>
+        <input type="date" id="f-date" value="${today}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="f-cat"><option value="">— none —</option>${catOptions}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="f-done">
+          <option value="0" ${r&&r.done?'':'selected'}>Open</option>
+          <option value="1" ${r&&r.done?'selected':''}>Completed</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea id="f-notes" placeholder="Context, details, key information...">${r?escHtml(r.notes||''):''}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Links / attachments</label>
+      <div id="f-links">${(r&&r.links||[]).map((l,i)=>`<div class="link-item" id="li-${i}"><a href="${escHtml(l.url)}" target="_blank">${escHtml(l.label||l.url)}</a><button onclick="removeLink(${i})" title="Remove"><i class="ti ti-x" aria-hidden="true"></i></button></div>`).join('')}</div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+        <input type="text" id="f-link-label" placeholder="Label (optional)" style="flex:1;min-width:100px;font-size:13px">
+        <input type="text" id="f-link-url" placeholder="Paste URL or Drive link" style="flex:2;min-width:160px;font-size:13px">
+        <button class="btn btn-sm" onclick="addLink()"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveForm()">${r?'Save changes':'Create record'}</button>
+    </div>
+  `;
+}
+
+let tempLinks = [];
+
+function openNewWithLinks() {
+  tempLinks = [];
+  openNew();
+}
+
+function addLink() {
+  const label = document.getElementById('f-link-label').value.trim();
+  const url = document.getElementById('f-link-url').value.trim();
+  if (!url) return;
+  const container = document.getElementById('f-links');
+  const idx = container.children.length;
+  const div = document.createElement('div');
+  div.className = 'link-item';
+  div.id = 'li-'+idx;
+  div.dataset.url = url;
+  div.dataset.label = label;
+  div.innerHTML = `<a href="${escHtml(url)}" target="_blank">${escHtml(label||url)}</a><button onclick="removeLink(${idx})" title="Remove"><i class="ti ti-x" aria-hidden="true"></i></button>`;
+  container.appendChild(div);
+  document.getElementById('f-link-label').value = '';
+  document.getElementById('f-link-url').value = '';
+}
+
+function removeLink(idx) {
+  const el = document.getElementById('li-'+idx);
+  if (el) el.remove();
+}
+
+function getLinksFromForm() {
+  const items = document.getElementById('f-links').children;
+  return Array.from(items).map(el => ({
+    label: el.dataset.label || el.querySelector('a').textContent,
+    url: el.dataset.url || el.querySelector('a').href
+  }));
+}
+
+function saveForm() {
+  const subject = document.getElementById('f-subject').value.trim();
+  const date = document.getElementById('f-date').value;
+  if (!subject) { alert('Subject is required'); return; }
+  const data = {
+    subject,
+    date,
+    category: document.getElementById('f-cat').value,
+    done: document.getElementById('f-done').value === '1',
+    notes: document.getElementById('f-notes').value.trim(),
+    links: getLinksFromForm()
+  };
+  if (editId) {
+    const r = records.find(x=>x.id===editId);
+    if (r) { Object.assign(r, data); r.updatedAt = new Date().toISOString(); }
+  } else {
+    data.id = uid();
+    data.thread = [];
+    data.createdAt = new Date().toISOString();
+    records.unshift(data);
+  }
+  save(); closeModal(); renderList();
+}
+
+function buildDetailView(r) {
+  const linkHtml = (r.links||[]).map(l=>`<div class="link-item"><a href="${escHtml(l.url)}" target="_blank"><i class="ti ti-external-link" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>${escHtml(l.label||l.url)}</a></div>`).join('');
+  const threadHtml = (r.thread||[]).map(t=>`<div class="thread-entry"><div class="thread-date">${fmtDate(t.date)} — ${escHtml(t.date)}</div><div class="thread-text">${escHtml(t.text)}</div></div>`).join('');
+  return `
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
+      ${r.category?`<span class="badge badge-cat">${escHtml(r.category)}</span>`:''}
+      <span class="badge ${r.done?'badge-done':'badge-open'}">${r.done?'Completed':'Open'}</span>
+      <span class="record-date" style="font-size:13px">${fmtDate(r.date)}</span>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn btn-sm" onclick="editRecord('${r.id}')"><i class="ti ti-edit" aria-hidden="true"></i> Edit</button>
+        <button class="btn btn-sm" onclick="deleteRecord('${r.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button>
+        <button class="btn btn-sm ${r.done?'':'btn-primary'}" onclick="toggleDone('${r.id}');openRecord('${r.id}')">${r.done?'Reopen':'Mark complete'}</button>
+      </div>
+    </div>
+    ${r.notes?`<div class="section-title">Notes</div><div style="font-size:14px;line-height:1.7;color:var(--color-text-primary);white-space:pre-wrap;margin-bottom:1rem">${escHtml(r.notes)}</div>`:''}
+    ${(r.links&&r.links.length)?`<div class="section-title">Links & attachments</div>${linkHtml}<hr class="divider">`:''}
+    <div class="section-title">Correspondence thread</div>
+    ${threadHtml||'<div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px">No thread entries yet.</div>'}
+    <div class="add-note-area">
+      <textarea id="thread-input" placeholder="Add email excerpt, call notes, update..."></textarea>
+      <button class="btn btn-primary" onclick="addThreadEntry('${r.id}')">Add</button>
+    </div>
+  `;
+}
+
+function addThreadEntry(id) {
+  const text = document.getElementById('thread-input').value.trim();
+  if (!text) return;
+  const r = records.find(x=>x.id===id);
+  if (!r) return;
+  if (!r.thread) r.thread = [];
+  r.thread.push({ date: new Date().toISOString().split('T')[0], text });
+  r.updatedAt = new Date().toISOString();
+  save();
+  openRecord(id);
+}
+
+function editRecord(id) {
+  const r = records.find(x=>x.id===id);
+  if (!r) return;
+  editId = id;
+  document.getElementById('modal-title').textContent = 'Edit record';
+  document.getElementById('modal-body').innerHTML = buildForm(r);
+  const linkContainer = document.getElementById('f-links');
+  linkContainer.innerHTML = (r.links||[]).map((l,i)=>{
+    const div = document.createElement('div');
+    div.className = 'link-item';
+    div.id = 'li-'+i;
+    div.dataset.url = l.url;
+    div.dataset.label = l.label||'';
+    div.innerHTML = `<a href="${escHtml(l.url)}" target="_blank">${escHtml(l.label||l.url)}</a><button onclick="removeLink(${i})" title="Remove"><i class="ti ti-x" aria-hidden="true"></i></button>`;
+    return div.outerHTML;
+  }).join('');
+}
+
+function deleteRecord(id) {
+  if (!confirm('Delete this record? This cannot be undone.')) return;
+  records = records.filter(x=>x.id!==id);
+  save(); closeModal(); renderList();
+}
+
+function openCatManager() {
+  editId = null;
+  document.getElementById('modal-title').textContent = 'Manage categories';
+  document.getElementById('modal-body').innerHTML = buildCatManager();
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function buildCatManager() {
+  const tags = categories.map((c,i)=>`<span class="cat-tag">${escHtml(c)}<button onclick="deleteCat(${i})" title="Remove"><i class="ti ti-x" aria-hidden="true"></i></button></span>`).join('');
+  return `
+    <div class="cat-manager" id="cat-list">${tags||'<span style="font-size:13px;color:var(--color-text-secondary)">No categories yet.</span>'}</div>
+    <div style="display:flex;gap:8px">
+      <input type="text" id="new-cat" placeholder="New category name" style="flex:1;font-size:14px" onkeydown="if(event.key==='Enter')addCat()">
+      <button class="btn btn-primary" onclick="addCat()"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>
+    </div>
+    <div class="form-actions"><button class="btn" onclick="closeModal()">Done</button></div>
+  `;
+}
+
+function addCat() {
+  const val = document.getElementById('new-cat').value.trim();
+  if (!val || categories.includes(val)) return;
+  categories.push(val);
+  save();
+  document.getElementById('modal-body').innerHTML = buildCatManager();
+  populateCatSelects();
+}
+
+function deleteCat(i) {
+  categories.splice(i,1);
+  save();
+  document.getElementById('modal-body').innerHTML = buildCatManager();
+  populateCatSelects();
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  editId = null;
+  renderList();
+}
+
+function closeModalOutside(e) {
+  if (e.target.id === 'modal') closeModal();
+}
+
+load();
+</script>
