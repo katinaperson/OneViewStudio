@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals & Accountability | Katina Clark</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #faf8f5;
+    --warm-white: #ffffff;
+    --beige: #f0ebe3;
+    --beige-dark: #e4ddd3;
+    --rose: #c9928a;
+    --rose-light: #e8c4bf;
+    --rose-pale: #f5ebe9;
+    --black: #1a1a1a;
+    --gray: #6b6b6b;
+    --gray-light: #9a9a9a;
+    --border: #e8e2da;
+    --green: #7aab8a;
+    --green-pale: #edf4f0;
+    --gold: #c9a96e;
+    --gold-pale: #f9f3e8;
+  }
+  body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--black); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 28px 40px 20px; text-align: center; }
+  .header-greeting { font-family: 'Cormorant Garamond', serif; font-size: 13px; letter-spacing: 0.14em; color: var(--gray); margin-bottom: 4px; min-height: 18px; }
+  .header-title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--black); line-height: 1; }
+  .header-title em { font-style: italic; color: var(--rose); }
+  .header-sub { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-light); margin-top: 10px; }
+
+  /* FILTER TABS */
+  .filter-bar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; gap: 0; overflow-x: auto; }
+  .filter-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 14px 20px; font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .filter-btn:hover { color: var(--rose); }
+  .filter-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  /* SECTION LABEL */
+  .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); margin-bottom: 16px; margin-top: 32px; }
+  .section-label:first-child { margin-top: 0; }
+
+  /* GOAL CARDS GRID */
+  .goals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+
+  /* GOAL CARD */
+  .goal-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 4px; padding: 24px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; }
+  .goal-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .goal-card.hidden { display: none; }
+
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .card-emoji { font-size: 22px; }
+  .card-meta { flex: 1; }
+  .card-category { font-size: 9px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray-light); margin-bottom: 4px; }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; color: var(--black); line-height: 1.2; }
+  .card-status { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; white-space: nowrap; }
+  .status-on-track { background: var(--green-pale); color: var(--green); }
+  .status-needs-attention { background: #fef3e8; color: #c9936e; }
+  .status-off-track { background: #fdecea; color: #c96a6a; }
+  .status-not-started { background: var(--beige); color: var(--gray); }
+  .status-complete { background: var(--green-pale); color: var(--green); }
+
+  /* PROGRESS BAR */
+  .progress-section { display: flex; flex-direction: column; gap: 6px; }
+  .progress-label { display: flex; justify-content: space-between; align-items: center; }
+  .progress-text { font-size: 11px; color: var(--gray); }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--rose); }
+  .progress-bar { height: 4px; background: var(--beige); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--rose-light); border-radius: 2px; transition: width 0.6s ease; }
+  .progress-fill.green { background: var(--green); }
+
+  /* MILESTONES */
+  .milestones { display: flex; flex-direction: column; gap: 8px; }
+  .milestone { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--gray); }
+  .milestone input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 2px; cursor: pointer; margin-top: 2px; flex-shrink: 0; transition: all 0.2s; }
+  .milestone input[type="checkbox"]:checked { background: var(--rose); border-color: var(--rose); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2.5 2.5L8 3' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-size: 10px; }
+  .milestone span.done { text-decoration: line-through; color: var(--gray-light); }
+  .milestone-text { cursor: pointer; }
+
+  /* CARD NOTE */
+  .card-note { font-size: 12px; color: var(--gray); font-style: italic; border-top: 1px solid var(--beige); padding-top: 12px; line-height: 1.5; }
+  .card-note textarea { width: 100%; background: var(--beige); border: none; border-radius: 2px; padding: 8px 10px; font-family: 'Jost', sans-serif; font-size: 12px; color: var(--black); resize: none; min-height: 56px; outline: none; }
+  .card-note textarea::placeholder { color: var(--gray-light); }
+
+  /* WEEKLY CHECK-IN SECTION */
+  .checkin-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 4px; padding: 28px; margin-bottom: 24px; }
+  .checkin-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; margin-bottom: 6px; }
+  .checkin-sub { font-size: 12px; color: var(--gray); margin-bottom: 24px; }
+  .checkin-questions { display: flex; flex-direction: column; gap: 20px; }
+  .checkin-q { display: flex; flex-direction: column; gap: 8px; }
+  .checkin-q label { font-size: 13px; font-weight: 500; color: var(--black); }
+  .checkin-q textarea { background: var(--beige); border: 1px solid var(--border); border-radius: 2px; padding: 10px 12px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--black); resize: vertical; min-height: 64px; outline: none; width: 100%; transition: border-color 0.2s; }
+  .checkin-q textarea:focus { border-color: var(--rose-light); }
+  .checkin-q textarea::placeholder { color: var(--gray-light); }
+
+  .checkin-btn { margin-top: 20px; background: var(--rose); color: white; border: none; padding: 12px 28px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background 0.2s; }
+  .checkin-btn:hover { background: #b87e76; }
+
+  /* COWORK PROMPT CARD */
+  .cowork-card { background: var(--rose-pale); border: 1px solid var(--rose-light); border-radius: 4px; padding: 24px; margin-bottom: 32px; }
+  .cowork-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; color: var(--rose); margin-bottom: 8px; }
+  .cowork-body { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 16px; }
+  .cowork-prompt { background: var(--warm-white); border: 1px solid var(--border); border-radius: 2px; padding: 14px 16px; font-size: 12px; color: var(--black); line-height: 1.7; font-family: 'Cormorant Garamond', serif; font-size: 15px; }
+  .copy-btn { margin-top: 12px; background: none; border: 1px solid var(--rose); color: var(--rose); padding: 8px 18px; font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+  .copy-btn:hover { background: var(--rose); color: white; }
+
+  /* ANNUAL VISION */
+  .vision-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 4px; padding: 28px; }
+  .vision-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; margin-bottom: 4px; }
+  .vision-title em { font-style: italic; color: var(--rose); }
+  .vision-sub { font-size: 12px; color: var(--gray); margin-bottom: 20px; }
+  .vision-textarea { width: 100%; background: var(--beige); border: none; border-radius: 2px; padding: 14px 16px; font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--black); resize: vertical; min-height: 100px; outline: none; line-height: 1.6; }
+  .vision-textarea::placeholder { color: var(--gray-light); font-style: italic; }
+
+  /* VERSE BANNER */
+  .verse-banner { text-align: center; padding: 20px 40px; }
+  .verse-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--gray); line-height: 1.6; }
+  .verse-ref { font-size: 11px; letter-spacing: 0.12em; color: var(--gray-light); margin-top: 4px; text-transform: uppercase; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--black); color: white; padding: 12px 20px; border-radius: 3px; font-size: 13px; opacity: 0; transform: translateY(8px); transition: all 0.3s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 640px) {
+    header { padding: 20px 20px 16px; }
+    .filter-bar { padding: 0 16px; }
+    .main { padding: 20px 16px 60px; }
+    .header-title { font-size: 32px; }
+    .goals-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-greeting" id="greeting"></div>
+  <div class="header-title">Goals & <em>Accountability</em></div>
+  <div class="header-sub">Where intention becomes action · 2026</div>
+</header>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCards('all', this)">All Goals</button>
+  <button class="filter-btn" onclick="filterCards('business', this)">Business</button>
+  <button class="filter-btn" onclick="filterCards('career', this)">Career</button>
+  <button class="filter-btn" onclick="filterCards('financial', this)">Financial</button>
+  <button class="filter-btn" onclick="filterCards('personal', this)">Personal</button>
+  <button class="filter-btn" onclick="filterCards('faith', this)">Faith</button>
+  <button class="filter-btn" onclick="filterCards('family', this)">Family</button>
+  <button class="filter-btn" onclick="filterCards('checkin', this)">Weekly Check-In</button>
+  <button class="filter-btn" onclick="filterCards('cowork', this)">Cowork Prompts</button>
+</div>
+
+<div class="main">
+
+  <!-- VERSE -->
+  <div class="verse-banner">
+    <div class="verse-text">"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."</div>
+    <div class="verse-ref">Jeremiah 29:11</div>
+  </div>
+
+  <!-- ANNUAL VISION -->
+  <div class="section-label">Your 2026 Vision Statement</div>
+  <div class="vision-card" data-category="all">
+    <div class="vision-title">In 2026, I am <em>becoming</em></div>
+    <div class="vision-sub">Write it in present tense — as if it's already true.</div>
+    <textarea class="vision-textarea" id="visionText" placeholder="I am a woman who builds with purpose and rests in peace. My business serves others and provides for my family. I honor God with my time, my money, and my gifts..."
+      oninput="saveLocal('vision', this.value)"></textarea>
+  </div>
+
+  <!-- BUSINESS GOALS -->
+  <div class="section-label" data-category="business">Business</div>
+  <div class="goals-grid">
+
+    <div class="goal-card" data-category="business">
+      <div class="card-top">
+        <div class="card-emoji">📰</div>
+        <div class="card-meta">
+          <div class="card-category">Business · Newsletter</div>
+          <div class="card-title">Launch Benefits Plain & Simple</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress</span>
+          <span class="progress-pct" id="pct-bp">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-bp" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('bp', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Domain secured & Beehiiv account set up</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First 3 issues written and scheduled</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">25 subscribers</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First paid sponsorship or offer</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-bp', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="business">
+      <div class="card-top">
+        <div class="card-emoji">💼</div>
+        <div class="card-meta">
+          <div class="card-category">Business · Freelance</div>
+          <div class="card-title">Freelance Business — Launch in 30 Days</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">30-day sprint</span>
+          <span class="progress-pct" id="pct-cc">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-cc" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('cc', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Business idea chosen & committed to</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Offerings defined & priced</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Business named & basic presence set up</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First client ready to pitch within 30 days</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="What's the idea? What's blocking you? Notes here..." oninput="saveLocal('note-cc', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="business">
+      <div class="card-top">
+        <div class="card-emoji">🧂</div>
+        <div class="card-meta">
+          <div class="card-category">Business · Commentary</div>
+          <div class="card-title">Salt & Sense — Build the Brand</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress</span>
+          <span class="progress-pct" id="pct-ss">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-ss" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('ss', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Substack set up under Tina Sisco</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First 3 pieces published</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Consistent publishing rhythm established</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First 50 subscribers</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-ss', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="business">
+      <div class="card-top">
+        <div class="card-emoji">🏫</div>
+        <div class="card-meta">
+          <div class="card-category">Business · Community</div>
+          <div class="card-title">Skool Community — Launch</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress</span>
+          <span class="progress-pct" id="pct-sk">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-sk" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('sk', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Community concept & niche defined</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Skool account set up & branded</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First 10 members</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First paid tier or offering live</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-sk', this.value)"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- CAREER GOALS -->
+  <div class="section-label" data-category="career">Career</div>
+  <div class="goals-grid">
+
+    <div class="goal-card" data-category="career">
+      <div class="card-top">
+        <div class="card-emoji">📜</div>
+        <div class="card-meta">
+          <div class="card-category">Career · Certification</div>
+          <div class="card-title">CLMS Certification</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress</span>
+          <span class="progress-pct" id="pct-clms">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-clms" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('clms', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Employer funding confirmed</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Enrolled in DMEC program</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Exam scheduled</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Certified ✓</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-clms', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="career">
+      <div class="card-top">
+        <div class="card-emoji">🎓</div>
+        <div class="card-meta">
+          <div class="card-category">Career · Education</div>
+          <div class="card-title">Master of Legal Studies — 2027</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Prep Progress</span>
+          <span class="progress-pct" id="pct-mls">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-mls" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('mls', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Programs researched & shortlist created</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Employer education benefit confirmed for MLS</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Application submitted</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Accepted & enrolled</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-mls', this.value)"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- FINANCIAL GOALS -->
+  <div class="section-label" data-category="financial">Financial</div>
+  <div class="goals-grid">
+
+    <div class="goal-card" data-category="financial">
+      <div class="card-top">
+        <div class="card-emoji">🏠</div>
+        <div class="card-meta">
+          <div class="card-category">Financial · Homeownership</div>
+          <div class="card-title">Home Purchase — Virginia 2027</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Preparation</span>
+          <span class="progress-pct" id="pct-home">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-home" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('home', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Credit score target reached</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Down payment savings goal set</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">NACA or first-time buyer program researched</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Pre-approval obtained</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-home', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="financial">
+      <div class="card-top">
+        <div class="card-emoji">💰</div>
+        <div class="card-meta">
+          <div class="card-category">Financial · Savings</div>
+          <div class="card-title">Emergency Fund & Debt Reduction</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress</span>
+          <span class="progress-pct" id="pct-ef">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-ef" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('ef', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Subscription audit complete, savings redirected</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">1-month emergency fund saved</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">3-month emergency fund saved</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">High-interest debt eliminated</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-ef', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="financial">
+      <div class="card-top">
+        <div class="card-emoji">📊</div>
+        <div class="card-meta">
+          <div class="card-category">Financial · Budgeting</div>
+          <div class="card-title">Weekly & Monthly Budget Accountability</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">This month's consistency</span>
+          <span class="progress-pct" id="pct-bud">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-bud" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('bud', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Weekly budget reviewed this week</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Monthly budget set before month begins</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Stayed within budget 3 weeks in a row</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Full month on budget — no surprises</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Budget wins, trouble spots, adjustments needed..." oninput="saveLocal('note-bud', this.value)"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- PERSONAL GOALS -->
+  <div class="section-label" data-category="personal">Personal Development</div>
+  <div class="goals-grid">
+
+    <div class="goal-card" data-category="personal">
+      <div class="card-top">
+        <div class="card-emoji">💪</div>
+        <div class="card-meta">
+          <div class="card-category">Personal · Health</div>
+          <div class="card-title">50-Pound Weight Loss Journey</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Lbs lost toward goal</span>
+          <span class="progress-pct" id="pct-wl">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill green" id="fill-wl" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('wl', this.value)" style="width:100%;accent-color:var(--green);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">First 10 lbs gone</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">25 lbs — halfway there 🎉</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">MaxiClimber to 2 full minutes sustained</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">50 lbs — goal reached 🏆</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-wl', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="personal">
+      <div class="card-top">
+        <div class="card-emoji">🧠</div>
+        <div class="card-meta">
+          <div class="card-category">Personal · Growth</div>
+          <div class="card-title">Logic, Rhetoric & Continuous Learning</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress</span>
+          <span class="progress-pct" id="pct-lg">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-lg" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('lg', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Hillsdale Classical Logic & Rhetoric completed</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">ARM designation progress made</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Toastmasters — next speaking level achieved</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-lg', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="personal">
+      <div class="card-top">
+        <div class="card-emoji">🎤</div>
+        <div class="card-meta">
+          <div class="card-category">Personal · Leadership</div>
+          <div class="card-title">Toastmasters — Level Up</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Progress toward next level</span>
+          <span class="progress-pct" id="pct-tm">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-tm" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('tm', this.value)" style="width:100%;accent-color:var(--rose);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Consistent meeting attendance maintained</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Next speech completed</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Leadership role taken on (timer, evaluator, TMOD)</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Next Pathways level achieved</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Speeches given, feedback received, what I'm working on..." oninput="saveLocal('note-tm', this.value)"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- FAITH GOALS -->
+  <div class="section-label" data-category="faith">Faith</div>
+  <div class="goals-grid">
+
+    <div class="goal-card" data-category="faith">
+      <div class="card-top">
+        <div class="card-emoji">🌱</div>
+        <div class="card-meta">
+          <div class="card-category">Faith · Recovery & Growth</div>
+          <div class="card-title">Recovery & Emotional Self-Work</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Attachment style patterns identified & named</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Emotional regulation practices being used consistently</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Professional support secured (therapist/coach)</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Pattern of doing it alone actively being interrupted</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes on what's shifting, what's hard, what's helping..." oninput="saveLocal('note-recovery', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="faith">
+      <div class="card-top">
+        <div class="card-emoji">📖</div>
+        <div class="card-meta">
+          <div class="card-category">Faith · Scripture</div>
+          <div class="card-title">Bible Reading Plan — Full Year</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span class="progress-text">Year complete</span>
+          <span class="progress-pct" id="pct-bible">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill green" id="fill-bible" style="width:0%"></div></div>
+        <input type="range" min="0" max="100" value="0" oninput="updateProgress('bible', this.value)" style="width:100%;accent-color:var(--green);margin-top:4px;">
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">January — March on track</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">April — June on track</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">July — September on track</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">October — December complete 🎉</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-bible', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="faith">
+      <div class="card-top">
+        <div class="card-emoji">🙏</div>
+        <div class="card-meta">
+          <div class="card-category">Faith · Prayer</div>
+          <div class="card-title">Consistent Prayer Life</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Set a consistent prayer time daily</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">7 days in a row without missing</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">30 days consistent</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Prayer has become a natural anchor, not a task</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="What I'm bringing to God right now... prayers answered, things I'm waiting on..." oninput="saveLocal('note-prayer', this.value)"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- FAMILY GOALS -->
+  <div class="section-label" data-category="family">Family & Caregiving</div>
+  <div class="goals-grid">
+
+    <div class="goal-card" data-category="family">
+      <div class="card-top">
+        <div class="card-emoji">🤍</div>
+        <div class="card-meta">
+          <div class="card-category">Family · Caregiving</div>
+          <div class="card-title">Parent Care — Peace & Advocacy</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Mom's Carroll Manor camera & monitoring set up</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">VA nursing facilities waitlisted (Dad)</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">DC Long-Term Care Ombudsman relationship established</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Self-care boundaries maintained through 2026</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-care', this.value)"></textarea></div>
+    </div>
+
+    <div class="goal-card" data-category="family">
+      <div class="card-top">
+        <div class="card-emoji">📍</div>
+        <div class="card-meta">
+          <div class="card-category">Family · Relocation</div>
+          <div class="card-title">Chesapeake/VA Beach Relocation — 2027</div>
+        </div>
+        <select class="card-status" onchange="updateStatus(this)" style="border:none;font-family:'Jost',sans-serif;cursor:pointer;">
+          <option value="not-started">Not Started</option>
+          <option value="on-track">On Track</option>
+          <option value="needs-attention">Needs Attention</option>
+          <option value="off-track">Off Track</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="milestones">
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Job market in Hampton Roads researched</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">VA nursing facility waitlists confirmed</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Relocation savings goal set</span></label>
+        <label class="milestone"><input type="checkbox" onchange="toggleMilestone(this)"><span class="milestone-text">Move date confirmed</span></label>
+      </div>
+      <div class="card-note"><textarea placeholder="Notes, wins, blockers..." oninput="saveLocal('note-reloc', this.value)"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- WEEKLY CHECK-IN -->
+  <div class="section-label" data-category="checkin" style="margin-top:40px;">Weekly Check-In</div>
+  <div class="checkin-card" data-category="checkin">
+    <div class="checkin-title">This Week's Accountability Check</div>
+    <div class="checkin-sub" id="checkin-date">Week of —</div>
+    <div class="checkin-questions">
+      <div class="checkin-q">
+        <label>What is the ONE most important thing I moved forward this week?</label>
+        <textarea placeholder="Be specific — name the goal and what you actually did..."></textarea>
+      </div>
+      <div class="checkin-q">
+        <label>What did I let slip, and why?</label>
+        <textarea placeholder="No judgment, just honesty..."></textarea>
+      </div>
+      <div class="checkin-q">
+        <label>What is one thing I'm proud of, beyond the goals?</label>
+        <textarea placeholder="Character, faith, relationships, self-care..."></textarea>
+      </div>
+      <div class="checkin-q">
+        <label>What does next week need from me most?</label>
+        <textarea placeholder="One focused intention..."></textarea>
+      </div>
+      <div class="checkin-q">
+        <label>Scripture or word I'm carrying into next week</label>
+        <textarea placeholder="A verse, a phrase, a prayer..." style="min-height:48px;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;"></textarea>
+      </div>
+    </div>
+    <button class="checkin-btn" onclick="saveCheckin()">Save This Week's Check-In</button>
+  </div>
+
+  <!-- COWORK PROMPTS -->
+  <div class="section-label" data-category="cowork">Cowork Daily Prompts</div>
+  <div class="cowork-card" data-category="cowork">
+    <div class="cowork-title">📎 Your Cowork Accountability Prompt</div>
+    <div class="cowork-body">Copy this prompt and paste it into Claude Cowork at the start of your session. It will keep your goals visible and hold you accountable every day.</div>
+    <div class="cowork-prompt" id="coworkPrompt">You are my daily accountability partner. My name is Katina. I am building a consulting business (Benefits Plain & Simple newsletter + Katina Clark Concierge Services), pursuing my CLMS certification, preparing to relocate to Chesapeake/Virginia Beach in 2027, and working toward a 50-pound weight loss goal. My faith is the foundation of everything I do.
+
+At the start of each session, ask me: "What goal are we moving forward today, and what's been in the way?" Hold me to specific actions, not vague intentions. If I start to drift or get distracted, gently redirect me back to my priorities. Celebrate real wins. Push back kindly when I'm making excuses.
+
+My goals tracker is at: [your GitHub Pages URL here]. Reference it when I need to see the big picture.</div>
+    <button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
+  </div>
+
+  <div class="cowork-card" data-category="cowork" style="background:var(--beige);border-color:var(--beige-dark);">
+    <div class="cowork-title" style="color:var(--gray);">📅 Morning Intention Prompt</div>
+    <div class="cowork-body">Use this shorter version for a quick daily check-in.</div>
+    <div class="cowork-prompt" style="font-size:14px;">Good morning, Katina. Before we start working: which of your 2026 goals needs your attention today? Name one specific action you will take before the day is over. I'll check in with you at the end of our session.</div>
+    <button class="copy-btn" onclick="copyPrompt2()">Copy Prompt</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // GREETING
+  function setGreeting() {
+    const hour = new Date().getHours();
+    let g = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('greeting').textContent = g + ', Katina.';
+  }
+  setGreeting();
+
+  // CHECK-IN DATE
+  const now = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('checkin-date').textContent = 'Week of ' + now.toLocaleDateString('en-US', opts);
+
+  // FILTER
+  function filterCards(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.goal-card, .checkin-card, .cowork-card, .vision-card').forEach(card => {
+      const c = card.dataset.category;
+      if (cat === 'all') {
+        card.classList.remove('hidden');
+      } else if (cat === 'checkin') {
+        card.classList.toggle('hidden', !card.classList.contains('checkin-card') && c !== 'checkin');
+      } else if (cat === 'cowork') {
+        card.classList.toggle('hidden', !card.classList.contains('cowork-card') && c !== 'cowork');
+      } else {
+        card.classList.toggle('hidden', c !== cat);
+      }
+    });
+    // Show/hide section labels
+    document.querySelectorAll('.section-label').forEach(label => {
+      if (cat === 'all') { label.style.display = ''; return; }
+      const labelCat = label.dataset.category;
+      label.style.display = labelCat === cat ? '' : 'none';
+    });
+  }
+
+  // PROGRESS
+  function updateProgress(id, val) {
+    document.getElementById('pct-' + id).textContent = val + '%';
+    document.getElementById('fill-' + id).style.width = val + '%';
+    saveLocal('progress-' + id, val);
+  }
+
+  // STATUS SELECT STYLING
+  function updateStatus(sel) {
+    const val = sel.value;
+    const classes = { 'on-track':'status-on-track','needs-attention':'status-needs-attention','off-track':'status-off-track','not-started':'status-not-started','complete':'status-complete' };
+    sel.className = 'card-status ' + (classes[val] || '');
+  }
+  document.querySelectorAll('select.card-status').forEach(s => updateStatus(s));
+
+  // MILESTONE TOGGLE
+  function toggleMilestone(cb) {
+    const span = cb.nextElementSibling;
+    span.classList.toggle('done', cb.checked);
+  }
+
+  // LOCAL STORAGE
+  function saveLocal(key, val) {
+    try { localStorage.setItem('goals_' + key, val); } catch(e) {}
+  }
+  function loadLocal(key) {
+    try { return localStorage.getItem('goals_' + key); } catch(e) { return null; }
+  }
+
+  // RESTORE VISION
+  const savedVision = loadLocal('vision');
+  if (savedVision) document.getElementById('visionText').value = savedVision;
+
+  // TOAST
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // COPY PROMPTS
+  function copyPrompt() {
+    navigator.clipboard.writeText(document.getElementById('coworkPrompt').textContent.trim())
+      .then(() => showToast('Prompt copied — paste it into Cowork ✓'))
+      .catch(() => showToast('Select and copy the prompt text manually'));
+  }
+  function copyPrompt2() {
+    const txt = 'Good morning, Katina. Before we start working: which of your 2026 goals needs your attention today? Name one specific action you will take before the day is over. I\'ll check in with you at the end of our session.';
+    navigator.clipboard.writeText(txt)
+      .then(() => showToast('Morning prompt copied ✓'))
+      .catch(() => showToast('Select and copy the prompt text manually'));
+  }
+
+  // SAVE CHECK-IN
+  function saveCheckin() {
+    const answers = [...document.querySelectorAll('.checkin-questions textarea')].map(t => t.value);
+    const key = 'checkin_' + new Date().toISOString().split('T')[0];
+    saveLocal(key, JSON.stringify(answers));
+    showToast('Check-in saved ✓');
+  }
+</script>
+</body>
+</html>
