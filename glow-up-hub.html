@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katina Glow Up Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf8f5;
+    --warm-white: #ffffff;
+    --beige: #f0ebe3;
+    --beige-dark: #e4ddd3;
+    --rose: #c9928a;
+    --rose-light: #e8c4bf;
+    --rose-pale: #f5ebe9;
+    --black: #1a1a1a;
+    --gray: #6b6b6b;
+    --gray-light: #9a9a9a;
+    --border: #e8e2da;
+  }
+
+  body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--black); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 28px 40px 20px; text-align: center; }
+  .header-greeting { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 400; letter-spacing: 0.14em; color: var(--gray); margin-bottom: 4px; min-height: 18px; }
+  .header-title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; letter-spacing: -0.01em; color: var(--black); line-height: 1; }
+  .header-title em { font-style: italic; color: var(--rose); }
+  .header-sub { font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-light); margin-top: 10px; }
+
+  /* FOCUS */
+  .focus-section { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 20px 40px; }
+  .focus-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .focus-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); }
+  .focus-edit-btn { background: none; border: 1px solid var(--border); border-radius: 2px; padding: 5px 12px; font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); cursor: pointer; transition: all 0.2s; }
+  .focus-edit-btn:hover { border-color: var(--rose); color: var(--rose); }
+  .focus-items { display: flex; flex-wrap: wrap; gap: 10px; }
+  .focus-item { background: var(--rose-pale); border: 1px solid var(--rose-light); border-radius: 2px; padding: 10px 16px; font-size: 13px; color: var(--black); line-height: 1.4; position: relative; flex: 1 1 200px; min-width: 160px; max-width: 320px; }
+  .focus-item-label { font-size: 9px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rose); margin-bottom: 3px; }
+  .focus-item-text { font-size: 13px; color: var(--black); }
+  .focus-remove { position: absolute; top: 6px; right: 8px; background: none; border: none; font-size: 14px; color: var(--rose-light); cursor: pointer; line-height: 1; display: none; }
+  .focus-editing .focus-remove { display: block; }
+  .focus-empty { font-size: 13px; color: var(--gray-light); font-style: italic; padding: 4px 0; }
+
+  /* FOCUS MODAL */
+  .focus-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+  .focus-modal-overlay.open { display: flex; }
+  .focus-modal { background: var(--warm-white); border-radius: 2px; width: 100%; max-width: 480px; padding: 28px; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+  .focus-modal-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; margin-bottom: 6px; }
+  .focus-modal-sub { font-size: 12px; color: var(--gray); margin-bottom: 20px; line-height: 1.5; }
+  .focus-form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .focus-form-row select, .focus-form-row input { border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--black); background: var(--cream); outline: none; transition: border-color 0.2s; }
+  .focus-form-row select { width: 130px; flex-shrink: 0; }
+  .focus-form-row input { flex: 1; }
+  .focus-form-row select:focus, .focus-form-row input:focus { border-color: var(--rose); }
+  .focus-add-btn { background: var(--black); color: #fff; border: none; border-radius: 2px; padding: 10px 18px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: background 0.2s; }
+  .focus-add-btn:hover { background: var(--rose); }
+  .focus-modal-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .focus-done-btn { background: var(--rose); color: #fff; border: none; border-radius: 2px; padding: 10px 24px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .focus-done-btn:hover { background: var(--black); }
+
+  /* MY NOTES SECTION */
+  .notes-section { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 20px 40px; }
+  .notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .notes-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); }
+  .notes-toggle-btn { background: none; border: 1px solid var(--border); border-radius: 2px; padding: 5px 12px; font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); cursor: pointer; transition: all 0.2s; }
+  .notes-toggle-btn:hover { border-color: var(--rose); color: var(--rose); }
+  .notes-grid { display: none; flex-wrap: wrap; gap: 14px; }
+  .notes-grid.open { display: flex; }
+  .note-card { background: var(--cream); border: 1px solid var(--border); border-radius: 2px; padding: 14px 16px; flex: 1 1 220px; min-width: 200px; max-width: 380px; position: relative; }
+  .note-card-category { font-size: 9px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rose); margin-bottom: 4px; }
+  .note-card-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 500; color: var(--black); margin-bottom: 8px; }
+  .note-card-text { font-size: 12px; color: var(--gray); line-height: 1.6; white-space: pre-wrap; }
+  .note-card-date { font-size: 10px; color: var(--gray-light); margin-top: 8px; }
+  .note-delete-btn { position: absolute; top: 8px; right: 10px; background: none; border: none; font-size: 14px; color: var(--rose-light); cursor: pointer; transition: color 0.2s; }
+  .note-delete-btn:hover { color: var(--rose); }
+  .note-copy-btn { background: none; border: 1px solid var(--border); border-radius: 2px; padding: 4px 10px; font-family: 'Jost', sans-serif; font-size: 10px; color: var(--gray); cursor: pointer; margin-top: 10px; transition: all 0.2s; display: inline-block; }
+  .note-copy-btn:hover { border-color: var(--rose); color: var(--rose); }
+  .notes-empty { font-size: 13px; color: var(--gray-light); font-style: italic; padding: 4px 0; }
+
+  /* FILTER BAR */
+  .filter-bar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 10; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 14px 18px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); cursor: pointer; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+  .filter-btn:hover { color: var(--black); }
+  .filter-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+  /* GRID */
+  .grid-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 40px 60px; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+  /* CARD */
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 2px; padding: 28px; cursor: pointer; transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s; display: flex; flex-direction: column; gap: 10px; }
+  .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-3px); border-color: var(--rose-light); }
+  .card:active { transform: translateY(-1px); }
+  .card-category { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rose); }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--black); line-height: 1.2; }
+  .card-desc { font-size: 13px; color: var(--gray); line-height: 1.65; flex: 1; }
+  .card-link { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--black); margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; transition: gap 0.2s, color 0.2s; }
+  .card:hover .card-link { gap: 10px; color: var(--rose); }
+
+  /* CHAT MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: flex-end; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--warm-white); width: 100%; max-width: 680px; border-radius: 2px 2px 0 0; max-height: 88vh; display: flex; flex-direction: column; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 500; color: var(--black); }
+  .modal-category { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rose); margin-bottom: 4px; }
+  .modal-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .save-note-btn { background: var(--rose-pale); border: 1px solid var(--rose-light); border-radius: 2px; padding: 6px 14px; font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .save-note-btn:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+  .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray); line-height: 1; padding: 2px; transition: color 0.2s; }
+  .close-btn:hover { color: var(--black); }
+  .modal-chat { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
+  .msg { max-width: 88%; padding: 13px 17px; border-radius: 2px; font-size: 14px; line-height: 1.65; animation: msgIn 0.2s ease; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.ai { background: var(--beige); color: var(--black); align-self: flex-start; border-left: 3px solid var(--rose); }
+  .msg.user { background: var(--black); color: #fff; align-self: flex-end; }
+  .typing { display: flex; gap: 5px; align-items: center; padding: 13px 17px; background: var(--beige); border-left: 3px solid var(--rose); align-self: flex-start; border-radius: 2px; }
+  .typing span { width: 7px; height: 7px; background: var(--rose-light); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
+  .modal-input-area { border-top: 1px solid var(--border); padding: 14px 24px; display: flex; gap: 10px; align-items: flex-end; }
+  .chat-input { flex: 1; border: 1px solid var(--border); border-radius: 2px; padding: 11px 15px; font-family: 'Jost', sans-serif; font-size: 14px; color: var(--black); resize: none; min-height: 44px; max-height: 120px; background: var(--cream); outline: none; transition: border-color 0.2s; line-height: 1.5; }
+  .chat-input:focus { border-color: var(--rose); }
+  .send-btn { background: var(--black); color: #fff; border: none; border-radius: 2px; padding: 11px 20px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
+  .send-btn:hover { background: var(--rose); }
+  .send-btn:disabled { background: var(--beige-dark); cursor: not-allowed; }
+
+  /* SAVE NOTE MODAL */
+  .save-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+  .save-modal-overlay.open { display: flex; }
+  .save-modal { background: var(--warm-white); border-radius: 2px; width: 100%; max-width: 500px; padding: 28px; animation: fadeIn 0.25s ease; }
+  .save-modal-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; margin-bottom: 6px; }
+  .save-modal-sub { font-size: 12px; color: var(--gray); margin-bottom: 18px; line-height: 1.5; }
+  .save-modal textarea { width: 100%; border: 1px solid var(--border); border-radius: 2px; padding: 12px 14px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--black); background: var(--cream); outline: none; resize: vertical; min-height: 140px; line-height: 1.6; transition: border-color 0.2s; }
+  .save-modal textarea:focus { border-color: var(--rose); }
+  .save-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+  .save-cancel-btn { background: none; border: 1px solid var(--border); border-radius: 2px; padding: 10px 18px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; color: var(--gray); cursor: pointer; transition: all 0.2s; }
+  .save-cancel-btn:hover { border-color: var(--rose); color: var(--rose); }
+  .save-confirm-btn { background: var(--rose); color: #fff; border: none; border-radius: 2px; padding: 10px 24px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .save-confirm-btn:hover { background: var(--black); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--black); color: #fff; padding: 12px 24px; border-radius: 2px; font-size: 13px; opacity: 0; transition: all 0.3s; z-index: 500; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* MOBILE */
+  @media (max-width: 640px) {
+    header { padding: 20px 20px 16px; }
+    .header-title { font-size: 34px; }
+    .focus-section, .notes-section { padding: 16px 20px; }
+    .focus-item { flex: 1 1 100%; max-width: 100%; }
+    .filter-bar { padding: 0 16px; }
+    .filter-btn { padding: 12px 12px; font-size: 11px; }
+    .grid-wrap { padding: 20px 16px 48px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+    .card { padding: 22px 20px; }
+    .modal { max-height: 92vh; }
+    .modal-header { padding: 16px 18px 14px; }
+    .modal-title { font-size: 22px; }
+    .modal-chat { padding: 16px 18px; }
+    .modal-input-area { padding: 12px 18px; gap: 8px; }
+    .send-btn { padding: 11px 14px; font-size: 11px; }
+    .focus-form-row { flex-wrap: wrap; }
+    .focus-form-row select { width: 100%; }
+    .note-card { flex: 1 1 100%; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-greeting" id="headerGreeting"></div>
+  <div class="header-title"><em>Glow Up Hub</em></div>
+  <div class="header-sub">Your whole life. Elevated.</div>
+</header>
+
+<!-- MY FOCUS -->
+<section class="focus-section">
+  <div class="focus-header">
+    <div class="focus-label">✦ My Focus</div>
+    <button class="focus-edit-btn" id="focusEditBtn">+ Edit Focus</button>
+  </div>
+  <div class="focus-items" id="focusItems"></div>
+</section>
+
+<!-- MY NOTES -->
+<section class="notes-section">
+  <div class="notes-header">
+    <div class="notes-label">📋 My Saved Notes</div>
+    <button class="notes-toggle-btn" id="notesToggleBtn">Show Notes</button>
+  </div>
+  <div class="notes-grid" id="notesGrid"></div>
+</section>
+
+<!-- FILTER BAR -->
+<nav class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="Personal">Personal</button>
+  <button class="filter-btn" data-filter="Faith">Faith</button>
+  <button class="filter-btn" data-filter="Financial">Financial</button>
+  <button class="filter-btn" data-filter="Goals">Goals</button>
+  <button class="filter-btn" data-filter="Homeownership">Homeownership</button>
+  <button class="filter-btn" data-filter="Career">Career</button>
+  <button class="filter-btn" data-filter="Business">Business</button>
+  <button class="filter-btn" data-filter="Dating & Social">Dating & Social</button>
+</nav>
+
+<!-- CARDS -->
+<main class="grid-wrap">
+  <div class="cards-grid" id="cardsGrid"></div>
+</main>
+
+<!-- CHAT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-category" id="modalCategory"></div>
+        <div class="modal-title" id="modalTitle"></div>
+      </div>
+      <div class="modal-header-actions">
+        <button class="save-note-btn" id="saveNoteBtn">💾 Save Note</button>
+        <button class="close-btn" id="closeBtn">×</button>
+      </div>
+    </div>
+    <div class="modal-chat" id="modalChat"></div>
+    <div class="modal-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="Type your message…" rows="1"></textarea>
+      <button class="send-btn" id="sendBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOCUS MODAL -->
+<div class="focus-modal-overlay" id="focusModalOverlay">
+  <div class="focus-modal">
+    <div class="focus-modal-title">My Focus</div>
+    <div class="focus-modal-sub">Pin up to 5 priorities that are top of mind. They'll show at the top of your hub every time you visit.</div>
+    <div class="focus-form-row">
+      <select id="focusCategorySelect">
+        <option value="Personal">Personal</option>
+        <option value="Faith">Faith</option>
+        <option value="Financial">Financial</option>
+        <option value="Goals">Goals</option>
+        <option value="Homeownership">Homeownership</option>
+        <option value="Career">Career</option>
+        <option value="Business">Business</option>
+        <option value="Dating & Social">Dating & Social</option>
+      </select>
+      <input type="text" id="focusTextInput" placeholder="e.g. Save $500 this month" maxlength="80" />
+      <button class="focus-add-btn" id="focusAddBtn">Add</button>
+    </div>
+    <div class="focus-modal-actions">
+      <button class="focus-done-btn" id="focusDoneBtn">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE NOTE MODAL -->
+<div class="save-modal-overlay" id="saveModalOverlay">
+  <div class="save-modal">
+    <div class="save-modal-title" id="saveModalTitle">Save a Note</div>
+    <div class="save-modal-sub">Jot down your key takeaways from this session. These will be saved to My Notes and persist between visits.</div>
+    <textarea id="saveNoteText" placeholder="e.g. My color season is Warm Autumn. Best lip shades: brick red, terracotta, warm nude. Avoid cool pinks and berry tones."></textarea>
+    <div class="save-modal-actions">
+      <button class="save-cancel-btn" id="saveCancelBtn">Cancel</button>
+      <button class="save-confirm-btn" id="saveConfirmBtn">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// GREETING
+function setGreeting() {
+  const hour = new Date().getHours();
+  let time = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('headerGreeting').textContent = `${time}, Katina ✦`;
+}
+setGreeting();
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// FOCUS
+let focusItems = [];
+try { focusItems = JSON.parse(localStorage.getItem('guh_focus') || '[]'); } catch(e) {}
+
+function saveFocus() { try { localStorage.setItem('guh_focus', JSON.stringify(focusItems)); } catch(e) {} }
+
+function renderFocus(editing = false) {
+  const container = document.getElementById('focusItems');
+  container.innerHTML = '';
+  if (editing) container.classList.add('focus-editing');
+  else container.classList.remove('focus-editing');
+  if (focusItems.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'focus-empty';
+    empty.textContent = editing ? 'No focus items yet — add one above.' : 'No focus items yet. Tap "Edit Focus" to add your priorities.';
+    container.appendChild(empty);
+    return;
+  }
+  focusItems.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'focus-item';
+    div.innerHTML = `<div class="focus-item-label">${item.category}</div><div class="focus-item-text">${item.text}</div><button class="focus-remove" data-i="${i}" title="Remove">×</button>`;
+    container.appendChild(div);
+  });
+  if (editing) {
+    container.querySelectorAll('.focus-remove').forEach(btn => {
+      btn.addEventListener('click', () => { focusItems.splice(parseInt(btn.dataset.i), 1); saveFocus(); renderFocus(true); });
+    });
+  }
+}
+
+document.getElementById('focusEditBtn').addEventListener('click', () => { renderFocus(true); document.getElementById('focusModalOverlay').classList.add('open'); });
+document.getElementById('focusAddBtn').addEventListener('click', () => {
+  const cat = document.getElementById('focusCategorySelect').value;
+  const txt = document.getElementById('focusTextInput').value.trim();
+  if (!txt) return;
+  if (focusItems.length >= 5) { alert('You can pin up to 5 focus items.'); return; }
+  focusItems.push({ category: cat, text: txt });
+  saveFocus();
+  document.getElementById('focusTextInput').value = '';
+  renderFocus(true);
+});
+document.getElementById('focusTextInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('focusAddBtn').click(); } });
+document.getElementById('focusDoneBtn').addEventListener('click', () => { document.getElementById('focusModalOverlay').classList.remove('open'); renderFocus(false); });
+document.getElementById('focusModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('focusModalOverlay')) document.getElementById('focusDoneBtn').click(); });
+renderFocus();
+
+// NOTES
+let savedNotes = [];
+try { savedNotes = JSON.parse(localStorage.getItem('guh_notes') || '[]'); } catch(e) {}
+
+function saveNotes() { try { localStorage.setItem('guh_notes', JSON.stringify(savedNotes)); } catch(e) {} }
+
+let notesVisible = false;
+document.getElementById('notesToggleBtn').addEventListener('click', () => {
+  notesVisible = !notesVisible;
+  document.getElementById('notesGrid').classList.toggle('open', notesVisible);
+  document.getElementById('notesToggleBtn').textContent = notesVisible ? 'Hide Notes' : 'Show Notes';
+  if (notesVisible) renderNotes();
+});
+
+function renderNotes() {
+  const grid = document.getElementById('notesGrid');
+  grid.innerHTML = '';
+  if (savedNotes.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'notes-empty';
+    empty.textContent = 'No saved notes yet. Open a tool and tap "Save Note" to capture your takeaways.';
+    grid.appendChild(empty);
+    return;
+  }
+  savedNotes.slice().reverse().forEach((note, ri) => {
+    const i = savedNotes.length - 1 - ri;
+    const div = document.createElement('div');
+    div.className = 'note-card';
+    div.innerHTML = `
+      <button class="note-delete-btn" data-i="${i}" title="Delete">×</button>
+      <div class="note-card-category">${note.category}</div>
+      <div class="note-card-title">${note.tool}</div>
+      <div class="note-card-text">${note.text}</div>
+      <div class="note-card-date">${note.date}</div>
+      <button class="note-copy-btn" data-i="${i}">Copy to clipboard</button>
+    `;
+    grid.appendChild(div);
+  });
+  grid.querySelectorAll('.note-delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      savedNotes.splice(parseInt(btn.dataset.i), 1);
+      saveNotes();
+      renderNotes();
+    });
+  });
+  grid.querySelectorAll('.note-copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const note = savedNotes[parseInt(btn.dataset.i)];
+      navigator.clipboard.writeText(`${note.tool} (${note.category})\n${note.date}\n\n${note.text}`).then(() => showToast('Copied to clipboard!'));
+    });
+  });
+}
+
+// TOOLS
+const TOOLS = [
+  { category:"Personal", title:"Style & Color Analysis", desc:"Discover your season, undertones, and power palette. Build a wardrobe that works for you.", prompt:"You are a personal style and color analysis coach. Start by warmly greeting Katina and asking about her current style challenges — what she feels is working, what isn't, and what her dream wardrobe looks like. Then guide her through discovering her color season, undertones, and signature palette. Be warm, encouraging, and specific." },
+  { category:"Personal", title:"Weight & Health Reset", desc:"Track goals, build sustainable habits, and get a personalized wellness plan that fits your life.", prompt:"You are a compassionate wellness coach. Start by greeting Katina and asking what health reset means to her right now — energy, weight, habits, or something else. Help her build a sustainable, realistic wellness plan around her actual life. Be encouraging, never shaming." },
+  { category:"Personal", title:"Personal Clarity", desc:"Get clear on what you want, what's blocking you, and your next most important step.", prompt:"You are a clarity coach. Greet Katina warmly and ask what area of life she's seeking clarity on right now. Help her uncover what she truly wants, identify what's getting in the way, and determine her single most important next step. Be thoughtful and ask good questions." },
+  { category:"Personal", title:"Beauty Protocol", desc:"Build a skincare, hair, and maintenance routine tailored to your lifestyle and budget.", prompt:"You are a beauty and self-care coach. Greet Katina and ask about her current routine — what she loves, what she skips, and what she wishes she had time for. Help her build a realistic skincare, hair, and maintenance protocol that fits her lifestyle and budget. Be practical and empowering." },
+  { category:"Personal", title:"Personal Development", desc:"Grow into your fullest self. Mindset work, habit stacking, and the version of you you're becoming.", prompt:"You are a personal development coach. Greet Katina and ask where she feels she's growing and where she feels stuck. Help her identify growth edges, design mindset practices, and build habits that align with who she's becoming. Be motivating, insightful, and grounded." },
+  { category:"Faith", title:"Bible Study Guide", desc:"Go deeper into any passage, book, or theme. Get context, reflection questions, and application.", prompt:"You are a thoughtful Bible study guide. Greet Katina and ask what passage, book, or theme she wants to explore today. Provide rich historical context, theological insight, reflection questions, and practical application. Be scholarly but accessible, and honor her faith." },
+  { category:"Faith", title:"Prayer & Reflection", desc:"Work through what's on your heart. Get scripture-grounded perspective and guided prayer prompts.", prompt:"You are a gentle, scripture-grounded prayer and reflection guide. Ask Katina what's on her heart today — a concern, a gratitude, a struggle, or a celebration. Offer scripture-grounded perspective and guide her through reflection and prayer. Be compassionate and spiritually sensitive." },
+  { category:"Financial", title:"Money Reset", desc:"A shame-free conversation about your finances. Build a budget that actually fits your real life.", prompt:"You are a compassionate, shame-free financial coach. Greet Katina and ask how she's feeling about her finances right now — no judgment, just honesty. Help her assess where she is, where she wants to be, and build a budget and money system that fits her actual life. Be warm, practical, and empowering." },
+  { category:"Financial", title:"Financial Goals", desc:"Map out your savings goals, debt payoff, and financial milestones with a clear action plan.", prompt:"You are a financial planning coach. Greet Katina and ask what financial goals are most important to her right now. Help her map savings targets, debt payoff strategies, and key financial milestones into a clear, achievable action plan. Be specific and encouraging." },
+  { category:"Financial", title:"Retirement Planning", desc:"Build a retirement vision that works for your timeline, income, and the life you want to live.", prompt:"You are a retirement planning guide. Greet Katina warmly and ask about her vision for retirement — when she'd like to retire, what that life looks like, and where she currently stands. Help her think through 401k strategy, savings rates, income streams, and realistic milestones. Be practical, forward-looking, and empowering." },
+  { category:"Goals", title:"Short-Term Goals", desc:"Set and track your 1, 3, and 6 month goals with clarity, accountability, and real action steps.", prompt:"You are a goal-setting coach focused on short-term wins. Greet Katina and ask what she wants to accomplish in the next 1, 3, and 6 months across all areas of her life. Help her get specific, prioritize, and map out the first action step for each goal. Be energizing and practical." },
+  { category:"Goals", title:"Long-Term Vision", desc:"Map your 1, 3, and 5 year goals. See the full picture of where you're going and how to get there.", prompt:"You are a long-term vision and life strategy coach. Greet Katina and invite her to think big — where does she want to be in 1 year, 3 years, and 5 years? Help her craft a compelling vision across life areas: career, business, finances, real estate, personal growth, relationships, and legacy. Turn that vision into a strategic roadmap with milestones. Be inspiring and strategic." },
+  { category:"Homeownership", title:"Home Buying Journey", desc:"From first steps to closing day — get a personalized roadmap for buying your first home.", prompt:"You are a home buying guide and coach. Greet Katina and ask where she is in her home buying journey right now. She is interested in the NACA program but open to other paths. Help her understand her options, what she needs to prepare, and what her next step is. Be thorough, clear, and encouraging." },
+  { category:"Homeownership", title:"Mortgage Prep", desc:"Get your credit, savings, and finances ready to qualify for the best mortgage possible.", prompt:"You are a mortgage readiness coach. Greet Katina and ask about her current financial picture — credit score, savings, debt, and income. Help her understand exactly what she needs to do to get mortgage-ready and give her a concrete preparation checklist. Be practical and specific." },
+  { category:"Homeownership", title:"Building Equity", desc:"Understand how equity works, how to build it faster, and how to use it strategically over time.", prompt:"You are a homeownership and equity strategy coach. Greet Katina and explain how home equity works in clear, plain language. Help her understand how to build equity faster, protect it, and use it strategically. Be educational, practical, and forward-thinking." },
+  { category:"Homeownership", title:"Real Estate Investment", desc:"Build a strategy for investing in manufactured homes and senior housing on your land.", prompt:"You are a real estate investment strategist. Greet Katina and ask about her vision for her land and real estate investment goals. She is interested in purchasing manufactured homes to place on her land for senior housing. Help her think through the strategy: financing, regulations, management, rental income, and timeline. Be thorough, creative, and strategic." },
+  { category:"Career", title:"Workplace Navigation", desc:"Handle difficult managers, office politics, and tough situations with strategy and confidence.", prompt:"You are a career strategy and workplace navigation coach. Greet Katina and ask what workplace situation she's trying to navigate. Help her think through it strategically and respond with confidence. Be direct, thoughtful, and empowering." },
+  { category:"Career", title:"Negotiation Script", desc:"Salary, promotion, contracts — get what you're worth with a personalized negotiation playbook.", prompt:"You are a negotiation coach. Greet Katina and ask what she's preparing to negotiate. Help her build a personalized negotiation playbook including key talking points, how to handle pushback, and how to close confidently. Be strategic and empowering." },
+  { category:"Career", title:"Professional Development", desc:"Map your credentials, certifications, and skills to where you want to go next in your career.", prompt:"You are a professional development strategist. Greet Katina and ask where she wants to go in her career over the next 1–3 years. She has 15+ years in employee benefits and insurance, holds a CAPM certification, an insurance license, and is pursuing her ARM designation. She's also building AI and Copilot expertise. Help her identify the right credentials, skills, and experiences to pursue next. Be strategic, specific, and encouraging." },
+  { category:"Business", title:"Benefits Plain & Simple", desc:"Content ideas, newsletter strategy, webinar planning, and compliance positioning support.", prompt:"You are a strategic advisor for Benefits Plain and Simple, Katina's newsletter for small business owners needing plain-language benefits and HR compliance guidance. Help with content planning, webinar strategy, newsletter growth, and positioning. Be strategic and specific." },
+  { category:"Business", title:"Simply Katina", desc:"Build your personal brand. Content ideas, audience growth, and authentic storytelling strategy.", prompt:"You are a personal brand strategist for Simply Katina. Help her develop content ideas, grow her audience authentically, and tell her story in a way that builds connection and trust. Be creative, encouraging, and audience-focused." },
+  { category:"Business", title:"Salt & Sense", desc:"Commentary angles, Substack strategy, and political analysis framing as Tina Sisco.", prompt:"You are a content strategist for Salt & Sense, Katina's Substack written under the pen name Tina Sisco for US political commentary. Help her develop sharp, well-reasoned commentary angles and grow her Substack. Keep the pen name identity separate from her professional identity." },
+  { category:"Business", title:"Katina Clark Consulting", desc:"AI readiness assessments, client proposals, service packaging, and workflow strategy.", prompt:"You are a business development advisor for Katina Clark Consulting, a B2B consulting practice focused on AI readiness and workflow strategy. Help develop service packages, craft client proposals, prepare for discovery calls, and position Katina as an expert. She targets small-to-mid-sized companies. Be strategic and business-savvy." },
+  { category:"Dating & Social", title:"Dating Readiness", desc:"Clarify what you want, what you won't settle for, and how to show up ready when the time is right.", prompt:"You are a dating and relationship readiness coach. Greet Katina warmly and ask where she is with dating and relationships right now. Help her clarify what she genuinely wants, her non-negotiables, and how to show up as her best self. Be warm, empowering, and real." },
+  { category:"Dating & Social", title:"Social Strategy", desc:"Work a room, expand your circle, reconnect with people, and build meaningful relationships.", prompt:"You are a social confidence and networking coach. Greet Katina and ask what social situation or goal she's working on. Help her with a practical social strategy and real scripts she can use. Be encouraging and specific." }
+];
+
+function renderCards(filter = 'all') {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+  TOOLS.forEach(tool => {
+    if (filter !== 'all' && tool.category !== filter) return;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<div class="card-category">${tool.category}</div><div class="card-title">${tool.title}</div><div class="card-desc">${tool.desc}</div><div class="card-link">Open tool →</div>`;
+    card.addEventListener('click', () => openModal(tool));
+    grid.appendChild(card);
+  });
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(btn.dataset.filter);
+  });
+});
+
+// CHAT MODAL
+let currentHistory = [];
+let currentTool = null;
+let isLoading = false;
+
+function openModal(tool) {
+  currentTool = tool;
+  currentHistory = [];
+  document.getElementById('modalCategory').textContent = tool.category;
+  document.getElementById('modalTitle').textContent = tool.title;
+  document.getElementById('modalChat').innerHTML = '';
+  document.getElementById('chatInput').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  sendToAPI('Hello', true);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+
+function addMessage(text, role) {
+  const chat = document.getElementById('modalChat');
+  const div = document.createElement('div');
+  div.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('modalChat');
+  const div = document.createElement('div');
+  div.className = 'typing'; div.id = 'typingIndicator';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() { const t = document.getElementById('typingIndicator'); if (t) t.remove(); }
+
+async function sendToAPI(userMessage, isOpener = false) {
+  if (isLoading) return;
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  if (!isOpener) addMessage(userMessage, 'user');
+  currentHistory.push({ role: 'user', content: userMessage });
+  showTyping();
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: currentTool.prompt, messages: currentHistory })
+    });
+    const data = await response.json();
+    removeTyping();
+    const reply = data.content?.find(b => b.type === 'text')?.text || 'Something went wrong. Please try again.';
+    currentHistory.push({ role: 'assistant', content: reply });
+    addMessage(reply, 'ai');
+  } catch (err) {
+    removeTyping();
+    addMessage('Connection error. Please try again.', 'ai');
+  }
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+document.getElementById('sendBtn').addEventListener('click', () => {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg || isLoading) return;
+  input.value = '';
+  input.style.height = 'auto';
+  sendToAPI(msg);
+});
+
+document.getElementById('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('sendBtn').click(); } });
+document.getElementById('chatInput').addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
+
+// SAVE NOTE
+document.getElementById('saveNoteBtn').addEventListener('click', () => {
+  if (!currentTool) return;
+  document.getElementById('saveModalTitle').textContent = `Save Note — ${currentTool.title}`;
+  document.getElementById('saveNoteText').value = '';
+  document.getElementById('saveModalOverlay').classList.add('open');
+});
+
+document.getElementById('saveCancelBtn').addEventListener('click', () => { document.getElementById('saveModalOverlay').classList.remove('open'); });
+document.getElementById('saveModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('saveModalOverlay')) document.getElementById('saveModalOverlay').classList.remove('open'); });
+
+document.getElementById('saveConfirmBtn').addEventListener('click', () => {
+  const text = document.getElementById('saveNoteText').value.trim();
+  if (!text) return;
+  const note = {
+    category: currentTool.category,
+    tool: currentTool.title,
+    text: text,
+    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  };
+  savedNotes.push(note);
+  saveNotes();
+  document.getElementById('saveModalOverlay').classList.remove('open');
+  showToast('Note saved! ✦');
+  if (notesVisible) renderNotes();
+});
+
+renderCards();
+</script>
+</body>
+</html>
