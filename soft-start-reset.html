@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soft Start Reset</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --bg: #F8F6F3;
+  --card: #FFFFFF;
+  --border: #E8E2DA;
+  --border-lt: #F0EBE4;
+  --ink: #2A2420;
+  --ink-md: #6B5E56;
+  --ink-lt: #A0928A;
+  --rose: #C4879A;
+  --rose-lt: #E8C5CF;
+  --gold: #B8975A;
+  --tab-active: #C4879A;
+  --label: #A0928A;
+}
+[data-theme="dark"] {
+  --white: #1A1614;
+  --bg: #141210;
+  --card: #1E1A18;
+  --border: #2E2620;
+  --border-lt: #261E1A;
+  --ink: #F0E8E0;
+  --ink-md: #C8B8A8;
+  --ink-lt: #8A7870;
+  --rose: #D4A0B0;
+  --rose-lt: #3A2030;
+  --gold: #C9A96E;
+  --tab-active: #D4A0B0;
+  --label: #8A7870;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-weight: 300;
+}
+
+/* ── SITE HEADER ── */
+.site-header {
+  background: var(--white);
+  text-align: center;
+  padding: 36px 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+.header-greeting {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ink-lt);
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.header-title em {
+  font-style: italic;
+  color: var(--rose);
+  font-weight: 300;
+}
+.header-sub {
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-lt);
+  margin-bottom: 24px;
+}
+.header-actions {
+  position: absolute;
+  top: 20px; right: 24px;
+  display: flex; gap: 8px;
+}
+.site-header { position: relative; }
+.hdr-btn {
+  background: none; border: 1px solid var(--border);
+  border-radius: 20px; padding: 5px 14px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.7rem; color: var(--ink-lt);
+  cursor: pointer; transition: all 0.2s;
+  letter-spacing: 0.06em;
+}
+.hdr-btn:hover { border-color: var(--rose); color: var(--rose); }
+
+/* ── PROGRESS STRIP ── */
+.progress-strip {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 40px;
+  display: flex; align-items: center; gap: 16px;
+}
+.progress-track {
+  flex: 1; height: 2px;
+  background: var(--border);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rose), var(--gold));
+  transition: width 0.5s;
+}
+.progress-txt {
+  font-size: 0.68rem;
+  color: var(--ink-lt);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── NAV TABS ── */
+.nav-tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 0;
+  padding: 0 32px;
+  overflow-x: auto;
+}
+.nav-tab {
+  padding: 14px 20px;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-lt);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-weight: 400;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'Jost', sans-serif;
+}
+.nav-tab:hover { color: var(--ink-md); }
+.nav-tab.active {
+  color: var(--tab-active);
+  border-bottom-color: var(--tab-active);
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 200px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  gap: 48px;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+}
+.sidebar-block { margin-bottom: 36px; }
+.sidebar-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-lt);
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+/* MINI CAL */
+.cal-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.cal-month-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-weight: 500; color: var(--ink);
+}
+.cal-arr {
+  background: none; border: none; cursor: pointer;
+  color: var(--ink-lt); font-size: 1rem; padding: 2px 6px;
+  transition: color 0.2s;
+}
+.cal-arr:hover { color: var(--rose); }
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+.cal-dl {
+  font-size: 0.58rem; text-align: center; color: var(--ink-lt);
+  padding: 4px 0; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.cal-d {
+  font-size: 0.72rem; text-align: center;
+  padding: 5px 2px; cursor: pointer;
+  border-radius: 50%; color: var(--ink-md);
+  border: none; background: none;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  margin: auto; transition: all 0.15s;
+  font-family: 'Jost', sans-serif;
+}
+.cal-d:hover { background: var(--border-lt); color: var(--rose); }
+.cal-d.today { color: var(--rose); font-weight: 500; }
+.cal-d.selected { background: var(--rose); color: white !important; border-radius: 50%; }
+.cal-d.has-entry { position: relative; }
+.cal-d.has-entry::after {
+  content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: var(--gold);
+}
+.cal-d.in-range { background: rgba(196,135,154,0.06); }
+.cal-d.out { color: var(--border); cursor: default; pointer-events: none; }
+
+/* SIDEBAR PILLARS */
+.pillar-list { display: flex; flex-direction: column; gap: 4px; }
+.pillar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; cursor: pointer;
+  border-bottom: 1px solid var(--border-lt);
+  transition: color 0.15s;
+  font-size: 0.8rem; color: var(--ink-md);
+}
+.pillar-item:hover { color: var(--rose); }
+.pillar-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.pillar-name { flex: 1; }
+
+.add-pillar-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; margin-top: 8px;
+  background: none; border: none; cursor: pointer;
+  color: var(--ink-lt); font-size: 0.75rem;
+  font-family: 'Jost', sans-serif;
+  transition: color 0.2s;
+}
+.add-pillar-btn:hover { color: var(--rose); }
+
+/* SEARCH */
+.search-box {
+  width: 100%; padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--white);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.78rem; color: var(--ink);
+  outline: none; transition: border-color 0.2s;
+}
+.search-box:focus { border-color: var(--rose); }
+.search-box::placeholder { color: var(--ink-lt); }
+
+/* ── CONTENT ── */
+.content { flex: 1; min-width: 0; }
+
+/* ENTRY HEADER */
+.entry-date-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem; font-weight: 400; color: var(--ink);
+  margin-bottom: 4px;
+}
+.entry-day-line {
+  font-size: 0.65rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-lt);
+  margin-bottom: 20px;
+}
+.divider-line {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, var(--rose), var(--gold));
+  margin-bottom: 28px;
+}
+
+/* PILLAR SECTIONS */
+.pillar-section { margin-bottom: 32px; }
+.pillar-section-hdr {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.pillar-section-label {
+  font-size: 0.62rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--label);
+  font-weight: 400;
+}
+.reflect-ta {
+  width: 100%;
+  min-height: 110px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem; font-weight: 300;
+  color: var(--ink); line-height: 1.75;
+  resize: vertical; outline: none;
+  transition: border-color 0.2s;
+}
+.reflect-ta:focus { border-color: var(--rose); }
+.reflect-ta::placeholder { color: var(--ink-lt); font-style: italic; }
+
+/* ATTACHMENTS */
+.attach-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.attach-card-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px;
+}
+.attach-card-title {
+  font-size: 0.62rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--label);
+}
+.attach-link-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem; color: var(--rose);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+.attach-link-btn:hover { opacity: 0.7; }
+.attach-items { display: flex; flex-direction: column; gap: 6px; }
+.attach-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  background: var(--bg);
+  border-radius: 3px;
+  font-size: 0.78rem;
+}
+.attach-ico { font-size: 0.9rem; }
+.attach-nm { flex: 1; color: var(--ink-md); }
+.attach-sz { color: var(--ink-lt); font-size: 0.7rem; }
+.attach-x {
+  background: none; border: none; cursor: pointer;
+  color: var(--ink-lt); font-size: 0.78rem;
+  transition: color 0.2s;
+}
+.attach-x:hover { color: var(--rose); }
+.attach-empty {
+  font-size: 0.78rem; color: var(--ink-lt);
+  font-style: italic; padding: 6px 0;
+}
+
+/* SAVE ROW */
+.save-row {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding-top: 8px;
+}
+.btn-primary {
+  background: var(--rose); color: white;
+  border: none; border-radius: 3px;
+  padding: 10px 28px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px; padding: 10px 20px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem; color: var(--ink-lt);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--rose); color: var(--rose); }
+
+/* EMPTY STATE */
+.empty-state {
+  padding: 60px 0; text-align: center;
+}
+.empty-icon { font-size: 2rem; opacity: 0.3; margin-bottom: 16px; }
+.empty-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 400; color: var(--ink-md);
+  margin-bottom: 8px;
+}
+.empty-sub { font-size: 0.8rem; color: var(--ink-lt); font-style: italic; }
+
+/* ONBOARDING */
+.onboard-overlay {
+  position: fixed; inset: 0;
+  background: rgba(40,30,20,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 300; padding: 20px;
+  backdrop-filter: blur(3px);
+}
+.onboard-box {
+  background: var(--white);
+  border-radius: 4px;
+  padding: 44px 48px;
+  max-width: 500px; width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.ob-greeting { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-style: italic; color: var(--ink-lt); margin-bottom: 4px; }
+.ob-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; color: var(--ink); margin-bottom: 4px; }
+.ob-title em { font-style: italic; color: var(--rose); }
+.ob-sub { font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 32px; }
+.form-label { display: block; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 8px; font-weight: 400; }
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 3px; background: var(--white); font-family: 'Jost', sans-serif; font-size: 0.85rem; color: var(--ink); outline: none; transition: border-color 0.2s; margin-bottom: 20px; }
+.form-input:focus { border-color: var(--rose); }
+.pillar-setup { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.ps-row { display: flex; align-items: center; gap: 8px; }
+.ps-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ps-input { flex: 1; padding: 7px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--white); font-family: 'Jost', sans-serif; font-size: 0.82rem; color: var(--ink); outline: none; transition: border-color 0.2s; }
+.ps-input:focus { border-color: var(--rose); }
+.ps-remove { background: none; border: none; cursor: pointer; color: var(--ink-lt); font-size: 0.85rem; transition: color 0.2s; }
+.ps-remove:hover { color: var(--rose); }
+.add-ps-btn { background: none; border: none; cursor: pointer; color: var(--ink-lt); font-family: 'Jost', sans-serif; font-size: 0.75rem; text-align: left; padding: 4px 0; transition: color 0.2s; letter-spacing: 0.06em; }
+.add-ps-btn:hover { color: var(--rose); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(40,30,20,0.5); display: flex; align-items: center; justify-content: center; z-index: 400; padding: 20px; backdrop-filter: blur(2px); }
+.modal-box { background: var(--white); border-radius: 4px; padding: 32px 36px; max-width: 400px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,0.15); }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--ink); margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.modal-sub { font-size: 0.8rem; color: var(--ink-lt); line-height: 1.65; font-style: italic; }
+
+/* SEARCH PANEL */
+.search-panel { background: var(--white); border-bottom: 1px solid var(--border); padding: 20px 32px; }
+.search-results-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.sr-item { padding: 14px 18px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: border-color 0.2s; }
+.sr-item:hover { border-color: var(--rose); }
+.sr-date { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold); margin-bottom: 3px; }
+.sr-preview { font-size: 0.78rem; color: var(--ink-lt); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+mark { background: rgba(196,135,154,0.2); border-radius: 2px; padding: 0 2px; }
+
+/* ── BY PILLAR VIEW ── */
+.pillar-view-panel { padding: 40px 32px; max-width: 1200px; margin: 0 auto; }
+.pillar-picker { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+.pillar-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--white);
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-md);
+  transition: all 0.2s;
+}
+.pillar-pill:hover { border-color: var(--rose); color: var(--rose); }
+.pillar-pill.active { background: var(--rose); border-color: var(--rose); color: white; }
+.pillar-pill.active .pp-dot { background: white !important; }
+.pp-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+.pv-header { margin-bottom: 28px; }
+.pv-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem; font-weight: 400; color: var(--ink);
+  margin-bottom: 4px;
+}
+.pv-title em { font-style: italic; color: var(--rose); }
+.pv-count { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-lt); }
+
+.pv-entries { display: flex; flex-direction: column; gap: 16px; }
+
+.pv-entry {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 22px 28px;
+  transition: border-color 0.2s;
+}
+.pv-entry:hover { border-color: var(--rose-lt); }
+
+.pv-entry-hdr {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 10px;
+}
+.pv-entry-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 500; color: var(--ink);
+}
+.pv-entry-day {
+  font-size: 0.62rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-lt);
+}
+.pv-entry-body {
+  font-size: 0.85rem; font-weight: 300; color: var(--ink-md);
+  line-height: 1.75; white-space: pre-wrap;
+}
+.pv-entry-link {
+  display: inline-block; margin-top: 10px;
+  font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--rose);
+  cursor: pointer; background: none; border: none;
+  font-family: 'Jost', sans-serif;
+  transition: opacity 0.2s;
+}
+.pv-entry-link:hover { opacity: 0.7; }
+
+.pv-empty {
+  text-align: center; padding: 48px 20px;
+  font-size: 0.85rem; color: var(--ink-lt); font-style: italic;
+}
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #F5EDE4; padding: 11px 24px; border-radius: 3px; font-size: 0.78rem; letter-spacing: 0.06em; z-index: 500; transition: transform 0.3s; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.hidden { display: none !important; }
+
+@media (max-width: 680px) {
+  .sidebar { display: none; }
+  .layout { padding: 24px 20px; }
+  .header-actions { top: 12px; right: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div class="onboard-overlay" id="onboarding">
+  <div class="onboard-box">
+    <div class="ob-greeting">Welcome.</div>
+    <div class="ob-title">Soft Start <em>Reset</em></div>
+    <div class="ob-sub">90 days of intention</div>
+    <label class="form-label">Name Your Reset</label>
+    <input class="form-input" id="ob-name" placeholder="e.g. My 90-Day Renewal" />
+    <label class="form-label">Start Date</label>
+    <input class="form-input" id="ob-date" type="date" />
+    <label class="form-label" style="margin-bottom:10px">Your Pillars</label>
+    <div class="pillar-setup" id="ob-pillars"></div>
+    <button class="add-ps-btn" onclick="addOBPillar()">+ Add a pillar</button>
+    <button class="btn-primary" style="width:100%;margin-top:24px" onclick="beginReset()">Begin My 90 Days</button>
+  </div>
+</div>
+
+<!-- SITE HEADER -->
+<div class="site-header">
+  <div class="header-actions">
+    <button class="hdr-btn" id="dark-toggle" onclick="toggleDark()">Dark mode</button>
+    <button class="hdr-btn" onclick="exportData()">Export ↓</button>
+    <button class="hdr-btn" onclick="document.getElementById('imp').click()">Import ↑</button>
+    <input type="file" id="imp" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+  <div class="header-greeting" id="hdr-greeting">Your 90-day journal</div>
+  <div class="header-title">Soft Start <em>Reset</em></div>
+  <div class="header-sub" id="hdr-sub">90-Day Reflection Journal</div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-strip">
+  <div class="progress-txt" id="prog-label">Day 0 of 90</div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="progress-txt" id="prog-pct">0%</div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs" id="nav-tabs">
+  <button class="nav-tab active" onclick="showTab('journal',this)">Journal</button>
+  <button class="nav-tab" onclick="showTab('search',this)">Search</button>
+  <button class="nav-tab" onclick="showTab('pillar',this)">By Pillar</button>
+  <button class="nav-tab" onclick="openPillarModal()">Manage Pillars</button>
+  <button class="nav-tab" onclick="openNewResetModal()">New Reset</button>
+</div>
+
+<!-- SEARCH PANEL -->
+<div class="search-panel hidden" id="search-panel">
+  <input class="search-box" id="search-input" placeholder="Search your reflections…" oninput="doSearch()" style="max-width:500px" />
+  <div class="search-results-list" id="search-results"></div>
+</div>
+
+<!-- BY PILLAR PANEL -->
+<div class="pillar-view-panel hidden" id="pillar-panel">
+  <div class="pillar-picker" id="pillar-picker"></div>
+  <div id="pillar-view-content">
+    <div class="pv-empty">Select a pillar above to see all your reflections for it.</div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout" id="journal-panel">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-label">Navigate</div>
+      <div class="cal-hdr">
+        <button class="cal-arr" onclick="calPrev()">‹</button>
+        <div class="cal-month-name" id="cal-title"></div>
+        <button class="cal-arr" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Quick Search</div>
+      <input class="search-box" placeholder="Search…" oninput="quickSearch(this.value)" />
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Pillars</div>
+      <div class="pillar-list" id="sidebar-pillars"></div>
+      <button class="add-pillar-btn" onclick="openPillarModal()">+ Add pillar</button>
+    </div>
+    <div class="sidebar-block">
+      <button class="btn-ghost" style="width:100%" onclick="goToday()">Go to Today</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">✦</div>
+      <div class="empty-title">Choose a day to reflect</div>
+      <div class="empty-sub">Select a date from the calendar to begin writing.</div>
+    </div>
+
+    <div id="entry-form" class="hidden">
+      <div class="entry-date-line" id="entry-date-line"></div>
+      <div class="entry-day-line" id="entry-day-line"></div>
+      <div class="divider-line"></div>
+      <div id="pillar-sections"></div>
+      <div class="attach-card">
+        <div class="attach-card-hdr">
+          <div class="attach-card-title">Attachments</div>
+          <button class="attach-link-btn" onclick="document.getElementById('attach-input').click()">+ Attach file</button>
+          <input type="file" id="attach-input" multiple style="display:none" onchange="handleAttach(event)">
+        </div>
+        <div id="attach-items" class="attach-items">
+          <div class="attach-empty">No attachments — add photos, notes, or documents.</div>
+        </div>
+      </div>
+      <div class="save-row">
+        <button class="btn-ghost" onclick="clearForm()">Clear</button>
+        <button class="btn-primary" onclick="saveEntry()">Save Reflection</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PILLAR MODAL -->
+<div class="modal-overlay hidden" id="pillar-modal">
+  <div class="modal-box">
+    <div class="modal-title">Your Pillars</div>
+    <div class="pillar-setup" id="pm-list"></div>
+    <button class="add-ps-btn" onclick="addPMPillar()" style="margin-top:6px">+ Add pillar</button>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closePillarModal()">Cancel</button>
+      <button class="btn-primary" onclick="savePillars()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW RESET MODAL -->
+<div class="modal-overlay hidden" id="new-reset-modal">
+  <div class="modal-box">
+    <div class="modal-title">Start a New Reset?</div>
+    <div class="modal-sub">This will clear your current reset and all entries. Export your journal first if you want to keep it.</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeNewResetModal()">Cancel</button>
+      <button class="btn-primary" onclick="confirmNewReset()">Start Fresh</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const COLORS = ['#C4879A','#B8975A','#8BA8C4','#8BB89A','#B08BC4','#C4A87E','#88B8B0','#C47A7A'];
+let S = { name:'', startDate:null, pillars:[], entries:{}, dark:false };
+let curKey = null, curAttach = [];
+let calY, calM;
+
+function init() {
+  const raw = localStorage.getItem('ssr2');
+  if (raw) {
+    try {
+      S = JSON.parse(raw);
+      if (S.dark) applyDark();
+      hide('onboarding');
+      renderAll(); goToday();
+    } catch(e) { showOB(); }
+  } else { showOB(); }
+}
+
+function showOB() {
+  document.getElementById('ob-date').value = new Date().toISOString().split('T')[0];
+  ['Health','Faith','Finances','Relationships'].forEach((n,i) => addOBPillar(n, COLORS[i]));
+  show('onboarding');
+}
+
+function addOBPillar(name='', color=null) {
+  const list = document.getElementById('ob-pillars');
+  const i = list.children.length;
+  const c = color || COLORS[i % COLORS.length];
+  const d = document.createElement('div'); d.className = 'ps-row';
+  d.innerHTML = `<div class="ps-dot" style="background:${c}"></div>
+    <input class="ps-input" value="${name}" placeholder="Pillar name" />
+    <button class="ps-remove" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(d);
+}
+
+function beginReset() {
+  const name = document.getElementById('ob-name').value.trim();
+  const date = document.getElementById('ob-date').value;
+  if (!date) { toast('Please set a start date'); return; }
+  const pillars = [];
+  document.querySelectorAll('#ob-pillars .ps-row').forEach((r,i) => {
+    const n = r.querySelector('input').value.trim();
+    if (n) pillars.push({ id: Date.now()+i, name:n, color: r.querySelector('.ps-dot').style.background });
+  });
+  if (!pillars.length) { toast('Add at least one pillar'); return; }
+  S = { name: name||'My 90-Day Reset', startDate:date, pillars, entries:{}, dark:S.dark };
+  save(); hide('onboarding'); renderAll(); goToday();
+}
+
+function renderAll() {
+  if (calY === undefined) { const t = new Date(); calY = t.getFullYear(); calM = t.getMonth(); }
+  document.getElementById('hdr-greeting').textContent = S.name || 'Your 90-day journal';
+  document.getElementById('hdr-sub').textContent = S.startDate ? formatDateLong(new Date(S.startDate + 'T12:00:00')) + ' — 90 days' : '90-Day Reflection Journal';
+  updateProgress(); renderCal(); renderSidebarPillars();
+}
+
+function updateProgress() {
+  if (!S.startDate) return;
+  const today = midnight(new Date());
+  const start = midnight(new Date(S.startDate + 'T12:00:00'));
+  const day = Math.max(1, Math.min(90, Math.floor((today-start)/86400000)+1));
+  const pct = Math.round((day/90)*100);
+  document.getElementById('prog-label').textContent = `Day ${day} of 90`;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+// CALENDAR
+function renderCal() {
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-title').textContent = `${MONTHS[calM]} ${calY}`;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+    const el = document.createElement('div'); el.className='cal-dl'; el.textContent=d; grid.appendChild(el);
+  });
+  const first = new Date(calY,calM,1).getDay();
+  const dcount = new Date(calY,calM+1,0).getDate();
+  const today = midnight(new Date());
+  const start = S.startDate ? midnight(new Date(S.startDate+'T12:00:00')) : null;
+  const end = start ? new Date(start.getTime()+89*86400000) : null;
+  for (let i=0;i<first;i++) grid.appendChild(document.createElement('div'));
+  for (let d=1;d<=dcount;d++) {
+    const dt = new Date(calY,calM,d); dt.setHours(0,0,0,0);
+    const key = dk(dt);
+    const btn = document.createElement('button'); btn.className='cal-d'; btn.textContent=d;
+    if (dt.getTime()===today.getTime()) btn.classList.add('today');
+    if (S.entries[key]) btn.classList.add('has-entry');
+    if (start && end && dt>=start && dt<=end) btn.classList.add('in-range');
+    if (start && (dt<start||dt>end)) btn.classList.add('out');
+    if (key===curKey) btn.classList.add('selected');
+    btn.onclick = () => openEntry(dt);
+    grid.appendChild(btn);
+  }
+}
+function calPrev() { calM--; if(calM<0){calM=11;calY--;} renderCal(); }
+function calNext() { calM++; if(calM>11){calM=0;calY++;} renderCal(); }
+function goToday() {
+  const t = new Date(); calY=t.getFullYear(); calM=t.getMonth();
+  renderCal(); openEntry(t);
+}
+
+// ENTRY
+function openEntry(date) {
+  const dt = midnight(date);
+  curKey = dk(dt);
+  curAttach = S.entries[curKey]?.attachments ? [...S.entries[curKey].attachments] : [];
+  hide('empty-state'); show('entry-form');
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('entry-date-line').textContent =
+    `${DAYS[dt.getDay()]}, ${MONTHS[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
+  if (S.startDate) {
+    const start = midnight(new Date(S.startDate+'T12:00:00'));
+    const day = Math.floor((dt-start)/86400000)+1;
+    document.getElementById('entry-day-line').textContent =
+      (day>=1&&day<=90) ? `Day ${day} of your 90-day reset` : '';
+  }
+  renderPillarSections(); renderAttach(); renderCal();
+}
+
+function renderPillarSections() {
+  const entry = S.entries[curKey] || {};
+  const c = document.getElementById('pillar-sections'); c.innerHTML='';
+  S.pillars.forEach(p => {
+    const sec = document.createElement('div'); sec.className='pillar-section';
+    sec.innerHTML = `<div class="pillar-section-hdr">
+      <div class="pillar-dot" style="background:${p.color}"></div>
+      <div class="pillar-section-label">${p.name}</div>
+    </div>
+    <textarea class="reflect-ta" id="r-${p.id}" placeholder="Reflect on ${p.name.toLowerCase()} today…">${entry[p.id]||''}</textarea>`;
+    c.appendChild(sec);
+  });
+}
+
+function renderSidebarPillars() {
+  const list = document.getElementById('sidebar-pillars'); list.innerHTML='';
+  S.pillars.forEach(p => {
+    const d = document.createElement('div'); d.className='pillar-item';
+    d.innerHTML = `<div class="pillar-dot" style="background:${p.color}"></div><span class="pillar-name">${p.name}</span>`;
+    list.appendChild(d);
+  });
+}
+
+function renderAttach() {
+  const c = document.getElementById('attach-items');
+  if (!curAttach.length) { c.innerHTML='<div class="attach-empty">No attachments — add photos, notes, or documents.</div>'; return; }
+  c.innerHTML='';
+  curAttach.forEach((a,i) => {
+    const ext = a.name.split('.').pop().toLowerCase();
+    const ico = ['jpg','jpeg','png','gif','webp'].includes(ext)?'🖼️':ext==='pdf'?'📄':'📎';
+    const r = document.createElement('div'); r.className='attach-row';
+    r.innerHTML=`<span class="attach-ico">${ico}</span><span class="attach-nm">${a.name}</span><span class="attach-sz">${a.size}</span><button class="attach-x" onclick="removeAttach(${i})">✕</button>`;
+    c.appendChild(r);
+  });
+}
+
+function handleAttach(e) {
+  Array.from(e.target.files).forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => { curAttach.push({name:f.name,size:fmtSz(f.size),type:f.type,data:ev.target.result}); renderAttach(); };
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+function removeAttach(i) { curAttach.splice(i,1); renderAttach(); }
+function fmtSz(b) { if(b<1024)return b+'B'; if(b<1048576)return Math.round(b/1024)+'KB'; return (b/1048576).toFixed(1)+'MB'; }
+
+function saveEntry() {
+  if (!curKey) return;
+  const refs = {}; let hasContent = false;
+  S.pillars.forEach(p => { const el=document.getElementById(`r-${p.id}`); if(el){refs[p.id]=el.value; if(el.value.trim())hasContent=true;} });
+  if (curAttach.length) hasContent=true;
+  if (hasContent) { S.entries[curKey]={...refs,attachments:curAttach}; } else { delete S.entries[curKey]; }
+  save(); renderCal(); toast('Reflection saved ✦');
+}
+function clearForm() {
+  S.pillars.forEach(p => { const el=document.getElementById(`r-${p.id}`); if(el)el.value=''; });
+  curAttach=[]; renderAttach();
+}
+
+// PILLARS MODAL
+let tmpPillars=[];
+function openPillarModal() {
+  tmpPillars=S.pillars.map(p=>({...p})); renderPM();
+  show('pillar-modal');
+}
+function renderPM() {
+  const list=document.getElementById('pm-list'); list.innerHTML='';
+  tmpPillars.forEach((p,i)=>{
+    const d=document.createElement('div'); d.className='ps-row';
+    d.innerHTML=`<div class="ps-dot" style="background:${p.color}"></div>
+      <input class="ps-input" value="${p.name}" onchange="tmpPillars[${i}].name=this.value"/>
+      <button class="ps-remove" onclick="tmpPillars.splice(${i},1);renderPM()">✕</button>`;
+    list.appendChild(d);
+  });
+}
+function addPMPillar() { tmpPillars.push({id:Date.now(),name:'',color:COLORS[tmpPillars.length%COLORS.length]}); renderPM(); }
+function closePillarModal() { hide('pillar-modal'); }
+function savePillars() {
+  document.querySelectorAll('#pm-list .ps-row').forEach((r,i)=>{ if(tmpPillars[i]) tmpPillars[i].name=r.querySelector('input').value.trim(); });
+  S.pillars=tmpPillars.filter(p=>p.name); save(); closePillarModal();
+  renderAll(); if(curKey) renderPillarSections(); toast('Pillars updated');
+}
+
+// NEW RESET
+function openNewResetModal() { show('new-reset-modal'); }
+function closeNewResetModal() { hide('new-reset-modal'); }
+function confirmNewReset() { closeNewResetModal(); S={name:'',startDate:null,pillars:[],entries:{},dark:S.dark}; save(); showOB(); }
+
+// TABS
+function showTab(tab, btn) {
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  hide('journal-panel'); hide('search-panel'); hide('pillar-panel');
+  if (tab==='journal') { show('journal-panel'); }
+  else if (tab==='search') { show('search-panel'); document.getElementById('search-input').focus(); }
+  else if (tab==='pillar') { show('pillar-panel'); renderPillarPicker(); }
+}
+
+// BY PILLAR VIEW
+let activePillarId = null;
+
+function renderPillarPicker() {
+  const picker = document.getElementById('pillar-picker');
+  picker.innerHTML = '';
+  S.pillars.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'pillar-pill' + (activePillarId===p.id ? ' active' : '');
+    btn.innerHTML = `<div class="pp-dot" style="background:${p.color}"></div>${p.name}`;
+    btn.onclick = () => { activePillarId = p.id; renderPillarPicker(); renderPillarView(); };
+    picker.appendChild(btn);
+  });
+  if (activePillarId && !S.pillars.find(p=>p.id===activePillarId)) activePillarId=null;
+}
+
+function renderPillarView() {
+  const container = document.getElementById('pillar-view-content');
+  if (!activePillarId) { container.innerHTML='<div class="pv-empty">Select a pillar above to see all your reflections for it.</div>'; return; }
+  const pillar = S.pillars.find(p=>p.id===activePillarId);
+  if (!pillar) return;
+
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const start = S.startDate ? midnight(new Date(S.startDate+'T12:00:00')) : null;
+
+  const entries = Object.entries(S.entries)
+    .filter(([k,e]) => e[activePillarId] && e[activePillarId].trim())
+    .sort((a,b) => a[0].localeCompare(b[0]));
+
+  if (!entries.length) {
+    container.innerHTML=`<div class="pv-header"><div class="pv-title">Your <em>${pillar.name}</em> reflections</div></div><div class="pv-empty">No reflections yet for ${pillar.name}. Start writing to see them here.</div>`;
+    return;
+  }
+
+  const html = [`<div class="pv-header">
+    <div class="pv-title">Your <em>${pillar.name}</em> reflections</div>
+    <div class="pv-count">${entries.length} entr${entries.length===1?'y':'ies'} across your 90-day reset</div>
+    <div class="divider-line" style="margin-top:12px"></div>
+  </div><div class="pv-entries">`];
+
+  entries.forEach(([k,e]) => {
+    const d = new Date(k+'T12:00:00');
+    const dateLabel = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    let dayLabel = '';
+    if (start) {
+      const dayNum = Math.floor((midnight(d)-start)/86400000)+1;
+      if (dayNum>=1&&dayNum<=90) dayLabel = `Day ${dayNum}`;
+    }
+    html.push(`<div class="pv-entry">
+      <div class="pv-entry-hdr">
+        <div class="pv-entry-date">${dateLabel}</div>
+        <div class="pv-entry-day">${dayLabel}</div>
+      </div>
+      <div class="pv-entry-body">${e[activePillarId].replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <button class="pv-entry-link" onclick="showTab('journal',document.querySelector('.nav-tab'));openEntry(new Date('${k}T12:00:00'))">Open full entry →</button>
+    </div>`);
+  });
+
+  html.push('</div>');
+  container.innerHTML = html.join('');
+}
+
+// SEARCH
+function doSearch() {
+  const q=document.getElementById('search-input').value.trim().toLowerCase();
+  const res=document.getElementById('search-results');
+  if (!q) { res.innerHTML=''; return; }
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const matches=Object.entries(S.entries).filter(([k,e])=>{
+    return S.pillars.some(p=>String(e[p.id]||'').toLowerCase().includes(q));
+  }).sort((a,b)=>b[0].localeCompare(a[0]));
+  if (!matches.length) { res.innerHTML='<div style="font-size:0.8rem;color:var(--ink-lt);padding:8px 0;font-style:italic">No results found.</div>'; return; }
+  res.innerHTML=matches.map(([k,e])=>{
+    const d=new Date(k+'T12:00:00');
+    const label=`${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    const text=S.pillars.map(p=>e[p.id]||'').join(' ');
+    const preview=text.slice(0,200).replace(new RegExp(q,'gi'),s=>`<mark>${s}</mark>`);
+    return `<div class="sr-item" onclick="showTab('journal',document.querySelector('.nav-tab'));openEntry(new Date('${k}T12:00:00'))">
+      <div class="sr-date">${label}</div><div class="sr-preview">${preview}</div></div>`;
+  }).join('');
+}
+function quickSearch(v) {
+  if (!v.trim()) return;
+  document.getElementById('search-input').value=v;
+  showTab('search', document.querySelectorAll('.nav-tab')[1]);
+  doSearch();
+}
+
+// DARK
+function toggleDark() { S.dark=!S.dark; if(S.dark) applyDark(); else document.documentElement.removeAttribute('data-theme'); document.getElementById('dark-toggle').textContent=S.dark?'Light mode':'Dark mode'; save(); }
+function applyDark() { document.documentElement.setAttribute('data-theme','dark'); document.getElementById('dark-toggle').textContent='Light mode'; }
+
+// EXPORT/IMPORT
+function exportData() {
+  const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download=`soft-start-reset-${new Date().toISOString().split('T')[0]}.json`; a.click();
+  toast('Journal exported');
+}
+function importData(e) {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>{
+    try { const imp=JSON.parse(ev.target.result); S={...imp,dark:S.dark}; save(); hide('onboarding'); renderAll(); goToday(); toast('Journal imported ✦'); }
+    catch(err){ toast('Could not read file'); }
+  }; r.readAsText(f); e.target.value='';
+}
+
+// UTILS
+function save() { try { localStorage.setItem('ssr2',JSON.stringify(S)); } catch(e){} }
+function midnight(d) { const n=new Date(d); n.setHours(0,0,0,0); return n; }
+function dk(d) { return d.toISOString().split('T')[0]; }
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+function formatDateLong(d) { return ['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()]+' '+d.getDate()+', '+d.getFullYear(); }
+function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+init();
+</script>
+</body>
+</html>
