@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sacred Study — Bible Study Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --bg: #F8F6F3;
+  --bg2: #F2EDE7;
+  --border: #E8E2DA;
+  --border-lt: #F0EBE4;
+  --ink: #2A2420;
+  --ink-md: #6B5E56;
+  --ink-lt: #A0928A;
+  --rose: #C4879A;
+  --rose-lt: #EDD5DC;
+  --rose-pale: #F9F1F4;
+  --gold: #B8975A;
+  --gold-lt: #E8D9B8;
+  --gold-pale: #FAF6EE;
+  --label: #A0928A;
+  --success: #8BB89A;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Jost', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; font-weight: 300; }
+
+/* ─── HEADER ─── */
+.site-header {
+  background: var(--white);
+  text-align: center;
+  padding: 36px 40px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.header-ornament { color: var(--rose); font-size: 0.8rem; letter-spacing: 14px; opacity: 0.5; margin-bottom: 10px; }
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.header-title em { font-style: italic; color: var(--rose); font-weight: 300; }
+.header-sub { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 0; }
+.header-actions { position: absolute; top: 20px; right: 24px; display: flex; gap: 8px; }
+.hdr-btn {
+  background: none; border: 1px solid var(--border); border-radius: 20px;
+  padding: 5px 14px; font-family: 'Jost', sans-serif; font-size: 0.68rem;
+  color: var(--ink-lt); cursor: pointer; transition: all 0.2s; letter-spacing: 0.06em;
+}
+.hdr-btn:hover { border-color: var(--rose); color: var(--rose); }
+
+/* ─── NAV ─── */
+.nav-tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; padding: 0 32px; overflow-x: auto;
+}
+.nav-tab {
+  padding: 16px 22px; font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-lt); cursor: pointer; border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all 0.2s; font-weight: 400;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'Jost', sans-serif;
+}
+.nav-tab:hover { color: var(--ink-md); }
+.nav-tab.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+/* ─── LAYOUT ─── */
+.layout {
+  display: flex; min-height: calc(100vh - 170px);
+  max-width: 1200px; margin: 0 auto; padding: 40px 32px; gap: 48px;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar { width: 210px; min-width: 210px; flex-shrink: 0; }
+.sidebar-block { margin-bottom: 30px; }
+.sidebar-label {
+  font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--ink-lt); margin-bottom: 12px; font-weight: 400;
+}
+
+/* Calendar */
+.cal-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cal-month-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500; color: var(--ink); }
+.cal-arr { background: none; border: none; cursor: pointer; color: var(--ink-lt); font-size: 1rem; padding: 2px 6px; transition: color 0.2s; }
+.cal-arr:hover { color: var(--rose); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+.cal-dl { font-size: 0.56rem; text-align: center; color: var(--ink-lt); padding: 4px 0; letter-spacing: 0.06em; text-transform: uppercase; }
+.cal-d {
+  font-size: 0.7rem; text-align: center; cursor: pointer; border-radius: 50%;
+  color: var(--ink-md); border: none; background: none;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  margin: auto; transition: all 0.15s; font-family: 'Jost', sans-serif;
+}
+.cal-d:hover { background: var(--rose-lt); color: var(--rose); }
+.cal-d.today { color: var(--rose); font-weight: 500; }
+.cal-d.selected { background: var(--rose); color: white !important; }
+.cal-d.has-note { position: relative; }
+.cal-d.has-note::after {
+  content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: var(--gold);
+}
+
+/* Tag filter */
+.tag-filter-list { display: flex; flex-direction: column; gap: 2px; }
+.tag-filter-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px;
+  border-radius: 4px; cursor: pointer; font-size: 0.76rem; color: var(--ink-md);
+  transition: all 0.15s; border: none; background: none;
+  font-family: 'Jost', sans-serif; width: 100%; text-align: left;
+}
+.tag-filter-item:hover { background: var(--rose-pale); color: var(--rose); }
+.tag-filter-item.active { background: var(--rose-pale); color: var(--rose); }
+.tag-dot-sm { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.tag-count { margin-left: auto; font-size: 0.63rem; color: var(--ink-lt); }
+
+/* Search */
+.search-box {
+  width: 100%; padding: 8px 14px; border: 1px solid var(--border); border-radius: 4px;
+  background: var(--white); font-family: 'Jost', sans-serif; font-size: 0.77rem;
+  color: var(--ink); outline: none; transition: border-color 0.2s;
+}
+.search-box:focus { border-color: var(--rose); }
+.search-box::placeholder { color: var(--ink-lt); }
+
+/* ─── CONTENT ─── */
+.content { flex: 1; min-width: 0; }
+
+/* ─── NOTES LIST VIEW ─── */
+.entries-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+.entries-title { font-family: 'Cormorant Garamond', serif; font-size: 1.65rem; font-weight: 400; color: var(--ink); }
+.entries-title em { font-style: italic; color: var(--rose); }
+.new-entry-btn {
+  background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif;
+  font-size: 0.7rem; color: var(--rose); letter-spacing: 0.12em; text-transform: uppercase; transition: opacity 0.2s;
+}
+.new-entry-btn:hover { opacity: 0.7; }
+.divider-line { width: 40px; height: 1px; background: linear-gradient(90deg, var(--rose), var(--gold)); margin-bottom: 22px; }
+
+/* Note cards */
+.note-cards { display: flex; flex-direction: column; gap: 10px; }
+.note-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 4px;
+  padding: 18px 22px; cursor: pointer; transition: border-color 0.2s;
+}
+.note-card:hover { border-color: var(--rose-lt); }
+.note-card-hdr { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 12px; }
+.note-card-ref { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.note-card-date { font-size: 0.68rem; color: var(--ink-lt); white-space: nowrap; }
+.note-card-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+.note-tag {
+  font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 2px 9px; border-radius: 20px; border: 1px solid var(--border); color: var(--ink-lt);
+}
+.note-card-preview {
+  font-size: 0.8rem; color: var(--ink-lt); line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: italic;
+}
+.note-card-plan-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.6rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.note-card-plan-badge::before { content: '✦'; font-size: 0.5rem; }
+
+/* Empty state */
+.empty-state { padding: 60px 0; text-align: center; }
+.empty-icon { font-size: 1.8rem; opacity: 0.25; margin-bottom: 16px; }
+.empty-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--ink-md); margin-bottom: 8px; }
+.empty-sub { font-size: 0.79rem; color: var(--ink-lt); font-style: italic; margin-bottom: 20px; }
+
+/* ─── NOTE FORM ─── */
+.note-form-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 32px 36px; }
+.note-form-date { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--ink); margin-bottom: 3px; }
+.note-form-sub { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 20px; }
+
+/* Plan-linked badge on form */
+.plan-link-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold-pale); border: 1px solid var(--gold-lt);
+  border-radius: 3px; padding: 6px 14px; font-size: 0.72rem;
+  color: var(--gold); letter-spacing: 0.08em; margin-bottom: 22px;
+}
+.plan-link-badge::before { content: '✦'; font-size: 0.6rem; }
+
+/* Form labels */
+.form-label { display: block; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-lt); margin-bottom: 8px; font-weight: 400; }
+
+/* Book/chapter row */
+.ref-row { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px; margin-bottom: 20px; }
+.form-select {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 3px;
+  background: var(--bg); font-family: 'Jost', sans-serif; font-size: 0.82rem;
+  color: var(--ink); outline: none; transition: border-color 0.2s; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23A0928A'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  cursor: pointer;
+}
+.form-select:focus { border-color: var(--rose); }
+.form-input {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 3px;
+  background: var(--bg); font-family: 'Jost', sans-serif; font-size: 0.82rem;
+  color: var(--ink); outline: none; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--rose); background: var(--white); }
+.form-input::placeholder { color: var(--ink-lt); font-style: italic; }
+
+/* Tag pills */
+.tag-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
+.tag-pill {
+  display: flex; align-items: center; gap: 5px; padding: 5px 14px;
+  border-radius: 20px; border: 1px solid var(--border); background: var(--white);
+  cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.7rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-lt); transition: all 0.2s;
+}
+.tag-pill:hover { border-color: var(--rose); color: var(--rose); }
+.tag-pill.selected { border-color: var(--rose); background: var(--rose); color: white; }
+.tp-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.tag-pill.selected .tp-dot { background: rgba(255,255,255,0.7) !important; }
+
+/* Textarea */
+.reflect-ta {
+  width: 100%; min-height: 220px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: 16px 18px; font-family: 'Jost', sans-serif;
+  font-size: 0.87rem; font-weight: 300; color: var(--ink); line-height: 1.85;
+  resize: vertical; outline: none; transition: border-color 0.2s;
+}
+.reflect-ta:focus { border-color: var(--rose); background: var(--white); }
+.reflect-ta::placeholder { color: var(--ink-lt); font-style: italic; }
+
+/* Attachments */
+.attach-section { margin-top: 20px; }
+.attach-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.attach-btn { background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.7rem; color: var(--rose); letter-spacing: 0.06em; text-transform: uppercase; transition: opacity 0.2s; }
+.attach-btn:hover { opacity: 0.7; }
+.attach-list { display: flex; flex-direction: column; gap: 6px; }
+.attach-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border-radius: 3px; font-size: 0.77rem; }
+.attach-ico { font-size: 0.88rem; }
+.attach-nm { flex: 1; color: var(--ink-md); }
+.attach-sz { color: var(--ink-lt); font-size: 0.68rem; }
+.attach-x { background: none; border: none; cursor: pointer; color: var(--ink-lt); font-size: 0.76rem; transition: color 0.2s; }
+.attach-x:hover { color: var(--rose); }
+.attach-empty { font-size: 0.77rem; color: var(--ink-lt); font-style: italic; }
+
+/* Save row */
+.save-row { display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-lt); }
+.save-row-right { display: flex; gap: 10px; }
+.btn-primary { background: var(--rose); color: white; border: none; border-radius: 3px; padding: 10px 28px; font-family: 'Jost', sans-serif; font-size: 0.74rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost { background: none; border: 1px solid var(--border); border-radius: 3px; padding: 10px 20px; font-family: 'Jost', sans-serif; font-size: 0.74rem; color: var(--ink-lt); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btn-ghost:hover { border-color: var(--rose); color: var(--rose); }
+.btn-danger { background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.7rem; color: var(--ink-lt); letter-spacing: 0.08em; transition: color 0.2s; }
+.btn-danger:hover { color: #C47A7A; }
+
+/* ─── READING PLAN TAB ─── */
+#plan-panel { max-width: 760px; margin: 0 auto; padding: 40px 32px 60px; }
+
+.verse-strip {
+  background: linear-gradient(135deg, var(--rose-pale) 0%, var(--gold-pale) 100%);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 24px 28px; text-align: center; margin-bottom: 28px;
+}
+.verse-strip p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--ink-md); line-height: 1.7; margin-bottom: 8px; }
+.verse-strip cite { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-style: normal; }
+
+/* Setup card */
+.setup-card { background: var(--white); border-radius: 4px; padding: 30px; margin-bottom: 24px; border: 1px solid var(--border); box-shadow: 0 2px 16px rgba(196,135,154,0.06); }
+.card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--ink); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.plan-select, .plan-input {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 3px;
+  padding: 9px 12px; font-family: 'Jost', sans-serif; font-size: 0.83rem;
+  color: var(--ink); appearance: none; cursor: pointer; transition: border-color 0.2s; width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23A0928A'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.plan-input { background-image: none; }
+.plan-select:focus, .plan-input:focus { outline: none; border-color: var(--rose); }
+.gen-btn {
+  display: block; width: 100%; padding: 13px; background: var(--rose); color: white;
+  border: none; border-radius: 3px; font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-style: italic; letter-spacing: 0.5px; cursor: pointer;
+  margin-top: 18px; transition: opacity 0.2s;
+}
+.gen-btn:hover { opacity: 0.88; }
+
+/* Plan output */
+#plan-output { display: none; }
+.plan-header {
+  background: linear-gradient(135deg, var(--rose-pale), var(--gold-pale));
+  border-radius: 4px 4px 0 0; padding: 22px 26px;
+  border: 1px solid var(--border); border-bottom: none;
+}
+.plan-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--ink); margin-bottom: 3px; }
+.plan-meta { color: var(--ink-lt); font-size: 0.8rem; letter-spacing: 0.08em; }
+
+.progress-bar-wrap {
+  background: var(--white); border: 1px solid var(--border); border-top: none;
+  padding: 14px 22px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.progress-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 80px; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--rose), var(--gold)); border-radius: 3px; transition: width 0.4s ease; }
+.progress-text { font-size: 0.78rem; color: var(--ink-lt); white-space: nowrap; }
+.save-badge { font-size: 0.72rem; color: var(--rose); letter-spacing: 0.08em; opacity: 0; transition: opacity 0.4s; white-space: nowrap; }
+.save-badge.visible { opacity: 1; }
+.reset-btn { font-size: 0.72rem; color: var(--ink-lt); background: none; border: 1px solid var(--border); border-radius: 3px; padding: 4px 10px; cursor: pointer; font-family: 'Jost', sans-serif; transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
+.reset-btn:hover { color: var(--ink); border-color: var(--rose); }
+
+.week-block { background: var(--white); border: 1px solid var(--border); border-top: none; overflow: hidden; }
+.week-block:last-child { border-radius: 0 0 4px 4px; }
+.week-header { background: var(--bg2); padding: 9px 20px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-lt); border-bottom: 1px solid var(--border); font-weight: 400; }
+.day-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 20px; border-bottom: 1px solid var(--border-lt); transition: background 0.15s; }
+.day-row:last-child { border-bottom: none; }
+.day-row:hover { background: var(--rose-pale); }
+
+.day-check {
+  flex-shrink: 0; width: 18px; height: 18px; border: 1.5px solid var(--rose);
+  border-radius: 50%; margin-top: 3px; cursor: pointer; position: relative; transition: all 0.2s;
+}
+.day-check.done { background: var(--rose); }
+.day-check.done::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: white; font-size: 10px; line-height: 1; }
+
+.day-info { flex: 1; }
+.day-label { font-size: 0.68rem; color: var(--ink-lt); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
+.day-reading { font-size: 1rem; font-family: 'Cormorant Garamond', serif; color: var(--ink); font-weight: 500; line-height: 1.4; }
+
+.note-day-btn {
+  flex-shrink: 0; background: none; border: 1px solid var(--border);
+  border-radius: 3px; padding: 4px 10px; font-family: 'Jost', sans-serif;
+  font-size: 0.63rem; color: var(--ink-lt); letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.note-day-btn:hover { border-color: var(--rose); color: var(--rose); }
+.note-day-btn.has-note { border-color: var(--gold); color: var(--gold); }
+
+/* ─── SEARCH PANEL ─── */
+.search-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 32px; }
+.search-panel-input {
+  width: 100%; max-width: 480px; padding: 10px 16px; border: 1px solid var(--border);
+  border-radius: 4px; background: var(--white); font-family: 'Jost', sans-serif;
+  font-size: 0.85rem; color: var(--ink); outline: none; transition: border-color 0.2s; margin-bottom: 24px;
+}
+.search-panel-input:focus { border-color: var(--rose); }
+.sr-item { background: var(--white); padding: 16px 20px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: border-color 0.2s; margin-bottom: 8px; }
+.sr-item:hover { border-color: var(--rose); }
+.sr-ref { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--rose); margin-bottom: 3px; }
+.sr-preview { font-size: 0.79rem; color: var(--ink-lt); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+mark { background: rgba(196,135,154,0.18); border-radius: 2px; padding: 0 2px; }
+
+/* ─── MODAL ─── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(42,36,32,0.4); display: flex; align-items: center; justify-content: center; z-index: 400; padding: 20px; backdrop-filter: blur(2px); }
+.modal-box { background: var(--white); border-radius: 4px; padding: 32px 36px; max-width: 380px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,0.12); }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--ink); margin-bottom: 10px; }
+.modal-sub { font-size: 0.79rem; color: var(--ink-lt); line-height: 1.65; font-style: italic; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* ─── TOAST ─── */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #F5EDE4; padding: 10px 22px; border-radius: 3px; font-size: 0.76rem; letter-spacing: 0.06em; z-index: 500; transition: transform 0.3s; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.hidden { display: none !important; }
+
+@media(max-width: 700px) {
+  .sidebar { display: none; }
+  .layout { padding: 20px; }
+  .ref-row { grid-template-columns: 1fr 1fr; }
+  .note-form-wrap { padding: 20px; }
+  #plan-panel { padding: 20px; }
+  .header-actions { top: 12px; right: 12px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="site-header">
+  <div class="header-actions">
+    <button class="hdr-btn" onclick="exportData()">Export</button>
+    <button class="hdr-btn" onclick="document.getElementById('imp').click()">Import</button>
+    <input type="file" id="imp" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+  <div class="header-ornament">✦ ✦ ✦</div>
+  <div class="header-title">Sacred <em>Study</em></div>
+  <div class="header-sub" style="padding-bottom:22px">Your Word · Your Notes · Every Day</div>
+</div>
+
+<!-- NAV -->
+<div class="nav-tabs">
+  <button class="nav-tab active" id="tab-plan" onclick="showTab('plan',this)">Reading Plan</button>
+  <button class="nav-tab" id="tab-notes" onclick="showTab('notes',this)">My Notes</button>
+  <button class="nav-tab" id="tab-search" onclick="showTab('search',this)">Search</button>
+</div>
+
+<!-- ══════════════ NOTES PANEL ══════════════ -->
+<div id="notes-panel" class="hidden">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-label">Navigate</div>
+        <div class="cal-hdr">
+          <button class="cal-arr" onclick="calPrev()">‹</button>
+          <div class="cal-month-name" id="cal-title"></div>
+          <button class="cal-arr" onclick="calNext()">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Filter by Tag</div>
+        <div class="tag-filter-list" id="tag-filter-list"></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Quick Search</div>
+        <input class="search-box" placeholder="Search notes…" oninput="quickSearch(this.value)" />
+      </div>
+      <div class="sidebar-block">
+        <button class="btn-ghost" style="width:100%;font-size:0.7rem" onclick="goToday()">Today</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <!-- LIST VIEW -->
+      <div id="list-view">
+        <div class="entries-header">
+          <div class="entries-title" id="list-title">All <em>Notes</em></div>
+          <button class="new-entry-btn" onclick="openNewNote()">+ New Note</button>
+        </div>
+        <div class="divider-line"></div>
+        <div class="note-cards" id="note-cards">
+          <div class="empty-state">
+            <div class="empty-icon">✦</div>
+            <div class="empty-title">Your study space is ready</div>
+            <div class="empty-sub">Write your first note to begin — or set up a reading plan to get started.</div>
+            <button class="btn-primary" onclick="openNewNote()">Write First Note</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM VIEW -->
+      <div id="form-view" class="hidden">
+        <div style="margin-bottom:14px">
+          <button class="btn-ghost" onclick="backToList()" style="font-size:0.68rem;padding:6px 14px">← Back to Notes</button>
+        </div>
+        <div class="note-form-wrap">
+          <div class="note-form-date" id="form-date-display"></div>
+          <div class="note-form-sub">Personal Bible Study Note</div>
+          <div class="divider-line"></div>
+
+          <!-- Plan-linked badge (shown when opened from plan) -->
+          <div class="plan-link-badge hidden" id="plan-link-badge"></div>
+
+          <!-- Scripture Reference -->
+          <div style="margin-bottom:20px">
+            <div class="form-label">Scripture Reference</div>
+            <div class="ref-row">
+              <div>
+                <div class="form-label" style="margin-bottom:4px">Book</div>
+                <select class="form-select" id="ref-book" onchange="populateChapters()">
+                  <option value="">Select book…</option>
+                </select>
+              </div>
+              <div>
+                <div class="form-label" style="margin-bottom:4px">Chapter</div>
+                <select class="form-select" id="ref-chapter">
+                  <option value="">Ch.</option>
+                </select>
+              </div>
+              <div>
+                <div class="form-label" style="margin-bottom:4px">Verse(s)</div>
+                <input class="form-input" id="ref-verse" placeholder="e.g. 3–5 or 3, 7, 12" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div style="margin-bottom:20px">
+            <div class="form-label">Tag this note</div>
+            <div class="tag-pills" id="tag-pills"></div>
+          </div>
+
+          <!-- Notes textarea -->
+          <div style="margin-bottom:0">
+            <div class="form-label">Notes & Reflection</div>
+            <textarea class="reflect-ta" id="reflect-ta" placeholder="Write freely — observations, questions, what God is speaking, how it applies to your life…"></textarea>
+          </div>
+
+          <!-- Attachments -->
+          <div class="attach-section">
+            <div class="attach-hdr">
+              <div class="form-label" style="margin-bottom:0">Attachments</div>
+              <button class="attach-btn" onclick="document.getElementById('attach-input').click()">+ Attach file</button>
+              <input type="file" id="attach-input" multiple style="display:none" onchange="handleAttach(event)">
+            </div>
+            <div id="attach-list" class="attach-list">
+              <div class="attach-empty">No attachments yet.</div>
+            </div>
+          </div>
+
+          <!-- Save row -->
+          <div class="save-row">
+            <button class="btn-danger" id="delete-btn" onclick="deleteNote()" style="display:none">Delete note</button>
+            <div class="save-row-right">
+              <button class="btn-ghost" onclick="backToList()">Cancel</button>
+              <button class="btn-primary" onclick="saveNote()">Save Note</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ READING PLAN PANEL ══════════════ -->
+<div id="plan-panel">
+  <div class="verse-strip">
+    <p>"Your word is a lamp to my feet and a light to my path."</p>
+    <cite>Psalm 119:105</cite>
+  </div>
+
+  <div class="setup-card">
+    <div class="card-title">Build Your Reading Plan</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Reading Style</label>
+        <select class="plan-select" id="p-style">
+          <option value="book">Book-at-a-Time</option>
+          <option value="balanced">OT + NT Daily</option>
+          <option value="chronological">Chronological</option>
+          <option value="psalms-proverbs">Psalms + Proverbs Daily</option>
+          <option value="gospels">Gospels Focus</option>
+          <option value="epistles">Epistles (Paul's Letters)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Chapters Per Day</label>
+        <select class="plan-select" id="p-chapters">
+          <option value="1">1 chapter</option>
+          <option value="2" selected>2 chapters</option>
+          <option value="3">3 chapters</option>
+          <option value="4">4 chapters</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="plan-select" id="p-start" style="background-image:none">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Starting Book</label>
+        <select class="plan-select" id="p-book"></select>
+      </div>
+    </div>
+    <button class="gen-btn" onclick="generatePlan()">✦ Generate My Reading Plan</button>
+  </div>
+
+  <div id="plan-output">
+    <div class="plan-header">
+      <div class="plan-title" id="plan-title">My Reading Plan</div>
+      <div class="plan-meta" id="plan-meta"></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-text" id="progress-text">0 / 0 days complete</div>
+      <span class="save-badge" id="save-badge">✦ Saved</span>
+      <button class="reset-btn" onclick="resetProgress()">Reset</button>
+    </div>
+    <div id="plan-days"></div>
+  </div>
+
+  <div style="margin-top:28px;background:var(--white);border:1px solid var(--border);border-radius:4px;padding:22px 26px;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--ink);margin-bottom:12px;">Study Tips</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:0.84rem;color:var(--ink-lt);line-height:1.65;">
+      <div><span style="color:var(--rose)">✦</span> <strong style="color:var(--ink-md)">Pray before you open.</strong> Even 30 seconds of asking God to speak changes the experience completely.</div>
+      <div><span style="color:var(--rose)">✦</span> <strong style="color:var(--ink-md)">Write one thing.</strong> Tap the note button on any day to capture what God is saying. One verse, one question, one application.</div>
+      <div><span style="color:var(--rose)">✦</span> <strong style="color:var(--ink-md)">Don't guilt-skip.</strong> If you miss a day, just pick up where you left off. The goal is a lifestyle, not a streak.</div>
+      <div><span style="color:var(--rose)">✦</span> <strong style="color:var(--ink-md)">Pair translations.</strong> Read the same passage in two versions — the differences illuminate meaning beautifully.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SEARCH PANEL ══════════════ -->
+<div id="search-panel" class="hidden">
+  <div class="search-wrap">
+    <div class="entries-title" style="font-family:'Cormorant Garamond',serif;font-size:1.65rem;margin-bottom:20px;">Search <em style="font-style:italic;color:var(--rose)">Notes</em></div>
+    <div class="divider-line"></div>
+    <input class="search-panel-input" id="search-input" placeholder="Search by reference, keyword, or tag…" oninput="doSearch()" />
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay hidden" id="delete-modal">
+  <div class="modal-box">
+    <div class="modal-title">Delete this note?</div>
+    <div class="modal-sub">This cannot be undone. Export your notes first if you want a backup.</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" style="background:#C47A7A" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────
+const BOOKS = [
+  {name:"Genesis",chapters:50,t:"OT"},{name:"Exodus",chapters:40,t:"OT"},{name:"Leviticus",chapters:27,t:"OT"},
+  {name:"Numbers",chapters:36,t:"OT"},{name:"Deuteronomy",chapters:34,t:"OT"},{name:"Joshua",chapters:24,t:"OT"},
+  {name:"Judges",chapters:21,t:"OT"},{name:"Ruth",chapters:4,t:"OT"},{name:"1 Samuel",chapters:31,t:"OT"},
+  {name:"2 Samuel",chapters:24,t:"OT"},{name:"1 Kings",chapters:22,t:"OT"},{name:"2 Kings",chapters:25,t:"OT"},
+  {name:"1 Chronicles",chapters:29,t:"OT"},{name:"2 Chronicles",chapters:36,t:"OT"},{name:"Ezra",chapters:10,t:"OT"},
+  {name:"Nehemiah",chapters:13,t:"OT"},{name:"Esther",chapters:10,t:"OT"},{name:"Job",chapters:42,t:"OT"},
+  {name:"Psalms",chapters:150,t:"OT"},{name:"Proverbs",chapters:31,t:"OT"},{name:"Ecclesiastes",chapters:12,t:"OT"},
+  {name:"Song of Solomon",chapters:8,t:"OT"},{name:"Isaiah",chapters:66,t:"OT"},{name:"Jeremiah",chapters:52,t:"OT"},
+  {name:"Lamentations",chapters:5,t:"OT"},{name:"Ezekiel",chapters:48,t:"OT"},{name:"Daniel",chapters:12,t:"OT"},
+  {name:"Hosea",chapters:14,t:"OT"},{name:"Joel",chapters:3,t:"OT"},{name:"Amos",chapters:9,t:"OT"},
+  {name:"Obadiah",chapters:1,t:"OT"},{name:"Jonah",chapters:4,t:"OT"},{name:"Micah",chapters:7,t:"OT"},
+  {name:"Nahum",chapters:3,t:"OT"},{name:"Habakkuk",chapters:3,t:"OT"},{name:"Zephaniah",chapters:3,t:"OT"},
+  {name:"Haggai",chapters:2,t:"OT"},{name:"Zechariah",chapters:14,t:"OT"},{name:"Malachi",chapters:4,t:"OT"},
+  {name:"Matthew",chapters:28,t:"NT"},{name:"Mark",chapters:16,t:"NT"},{name:"Luke",chapters:24,t:"NT"},
+  {name:"John",chapters:21,t:"NT"},{name:"Acts",chapters:28,t:"NT"},{name:"Romans",chapters:16,t:"NT"},
+  {name:"1 Corinthians",chapters:16,t:"NT"},{name:"2 Corinthians",chapters:13,t:"NT"},{name:"Galatians",chapters:6,t:"NT"},
+  {name:"Ephesians",chapters:6,t:"NT"},{name:"Philippians",chapters:4,t:"NT"},{name:"Colossians",chapters:4,t:"NT"},
+  {name:"1 Thessalonians",chapters:5,t:"NT"},{name:"2 Thessalonians",chapters:3,t:"NT"},{name:"1 Timothy",chapters:6,t:"NT"},
+  {name:"2 Timothy",chapters:4,t:"NT"},{name:"Titus",chapters:3,t:"NT"},{name:"Philemon",chapters:1,t:"NT"},
+  {name:"Hebrews",chapters:13,t:"NT"},{name:"James",chapters:5,t:"NT"},{name:"1 Peter",chapters:5,t:"NT"},
+  {name:"2 Peter",chapters:3,t:"NT"},{name:"1 John",chapters:5,t:"NT"},{name:"2 John",chapters:1,t:"NT"},
+  {name:"3 John",chapters:1,t:"NT"},{name:"Jude",chapters:1,t:"NT"},{name:"Revelation",chapters:22,t:"NT"}
+];
+
+const STYLE_BOOKS = {
+  book: null,
+  balanced: null,
+  chronological: ["Genesis","Job","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth","1 Samuel","2 Samuel","Psalms","1 Kings","1 Chronicles","2 Chronicles","Proverbs","Ecclesiastes","Song of Solomon","2 Kings","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk","Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude","Revelation"],
+  "psalms-proverbs": ["Psalms","Proverbs"],
+  gospels: ["Matthew","Mark","Luke","John"],
+  epistles: ["Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude"]
+};
+
+const OT = BOOKS.filter(b=>b.t==="OT"), NT = BOOKS.filter(b=>b.t==="NT");
+
+const TAGS = [
+  {id:'bible-study', name:'Bible Study', color:'#C4879A'},
+  {id:'devotion',    name:'Devotion',    color:'#B8975A'},
+  {id:'sermon',      name:'Sermon',      color:'#8BA8C4'},
+  {id:'prayer',      name:'Prayer',      color:'#8BB89A'},
+  {id:'gratitude',   name:'Gratitude',   color:'#B08BC4'}
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────────
+let S = { notes: {}, plan: null, checks: {}, dark: false };
+let curNoteKey = null, curAttach = [], filterTag = null;
+let calY, calM;
+let planReadingList = [], currentTotal = 0;
+
+function loadState() {
+  try { const r = localStorage.getItem('sacred-study-v1'); if (r) S = JSON.parse(r); } catch(e) {}
+}
+function saveState() {
+  try { localStorage.setItem('sacred-study-v1', JSON.stringify(S)); } catch(e) {}
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────
+function init() {
+  loadState();
+  const t = new Date(); calY = t.getFullYear(); calM = t.getMonth();
+  populateBookDropdowns();
+  renderCal();
+  renderTagFilter();
+  renderNoteList();
+  renderTagPills();
+  // Restore plan if saved
+  if (S.plan) restorePlan();
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────
+function showTab(tab, btn) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  hide('notes-panel'); hide('plan-panel'); hide('search-panel');
+  show(tab + '-panel');
+  if (tab === 'search') { document.getElementById('search-input').focus(); doSearch(); }
+  if (tab === 'notes') { renderCal(); }
+}
+
+// ─── BOOK DROPDOWNS ─────────────────────────────────────────────────────
+function populateBookDropdowns() {
+  // Plan start book
+  const pb = document.getElementById('p-book');
+  BOOKS.forEach(b => { const o = document.createElement('option'); o.value = b.name; o.textContent = b.name; pb.appendChild(o); });
+
+  // Note reference book — all books
+  populateRefBook(BOOKS.map(b => b.name));
+
+  // Default start date
+  document.getElementById('p-start').valueAsDate = new Date();
+}
+
+function populateRefBook(bookNames) {
+  const sel = document.getElementById('ref-book');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select book…</option>';
+  bookNames.forEach(n => {
+    const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o);
+  });
+  if (cur && bookNames.includes(cur)) sel.value = cur;
+}
+
+function populateChapters() {
+  const book = document.getElementById('ref-book').value;
+  const sel = document.getElementById('ref-chapter');
+  sel.innerHTML = '<option value="">Ch.</option>';
+  if (!book) return;
+  const b = BOOKS.find(x => x.name === book);
+  if (!b) return;
+  for (let i = 1; i <= b.chapters; i++) {
+    const o = document.createElement('option'); o.value = i; o.textContent = i; sel.appendChild(o);
+  }
+}
+
+// ─── CALENDAR ────────────────────────────────────────────────────────────
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+function renderCal() {
+  document.getElementById('cal-title').textContent = `${MONTHS[calM]} ${calY}`;
+  const grid = document.getElementById('cal-grid'); grid.innerHTML = '';
+  DAYS_SHORT.forEach(d => { const el = document.createElement('div'); el.className='cal-dl'; el.textContent=d; grid.appendChild(el); });
+  const first = new Date(calY, calM, 1).getDay();
+  const dcount = new Date(calY, calM+1, 0).getDate();
+  const today = midnight(new Date());
+  for (let i = 0; i < first; i++) grid.appendChild(document.createElement('div'));
+  for (let d = 1; d <= dcount; d++) {
+    const dt = new Date(calY, calM, d); dt.setHours(0,0,0,0);
+    const key = dk(dt);
+    const btn = document.createElement('button'); btn.className='cal-d'; btn.textContent=d;
+    if (dt.getTime() === today.getTime()) btn.classList.add('today');
+    if (S.notes[key]) btn.classList.add('has-note');
+    if (key === curNoteKey) btn.classList.add('selected');
+    btn.onclick = () => openNoteForDate(dt);
+    grid.appendChild(btn);
+  }
+}
+function calPrev() { calM--; if(calM<0){calM=11;calY--;} renderCal(); }
+function calNext() { calM++; if(calM>11){calM=0;calY++;} renderCal(); }
+function goToday() { const t=new Date(); calY=t.getFullYear(); calM=t.getMonth(); hide('form-view'); show('list-view'); renderCal(); }
+
+// ─── TAG FILTER ──────────────────────────────────────────────────────────
+function renderTagFilter() {
+  const list = document.getElementById('tag-filter-list'); list.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'tag-filter-item' + (!filterTag ? ' active' : '');
+  allBtn.innerHTML = `<span style="font-size:0.78rem;color:var(--rose)">✦</span> All Notes <span class="tag-count">${Object.keys(S.notes).length}</span>`;
+  allBtn.onclick = () => { filterTag=null; renderTagFilter(); renderNoteList(); };
+  list.appendChild(allBtn);
+  TAGS.forEach(t => {
+    const count = Object.values(S.notes).filter(n => n.tags && n.tags.includes(t.id)).length;
+    if (!count) return;
+    const btn = document.createElement('button');
+    btn.className = 'tag-filter-item' + (filterTag===t.id ? ' active' : '');
+    btn.innerHTML = `<div class="tag-dot-sm" style="background:${t.color}"></div>${t.name}<span class="tag-count">${count}</span>`;
+    btn.onclick = () => { filterTag=t.id; renderTagFilter(); renderNoteList(); };
+    list.appendChild(btn);
+  });
+}
+
+// ─── NOTE LIST ────────────────────────────────────────────────────────────
+function renderNoteList() {
+  const cards = document.getElementById('note-cards');
+  const title = document.getElementById('list-title');
+  let entries = Object.entries(S.notes).sort((a,b) => b[0].localeCompare(a[0]));
+  if (filterTag) {
+    entries = entries.filter(([k,n]) => n.tags && n.tags.includes(filterTag));
+    const t = TAGS.find(x => x.id===filterTag);
+    title.innerHTML = `<em>${t.name}</em> Notes`;
+  } else {
+    title.innerHTML = `All <em>Notes</em>`;
+  }
+  if (!entries.length) {
+    cards.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-title">${filterTag ? 'No notes with this tag yet' : 'Your study space is ready'}</div><div class="empty-sub">${filterTag ? 'Write a note and tag it to see it here.' : 'Write your first note to begin.'}</div><button class="btn-primary" onclick="openNewNote()">Write First Note</button></div>`;
+    return;
+  }
+  cards.innerHTML = '';
+  entries.forEach(([key, note]) => {
+    const d = new Date(key+'T12:00:00');
+    const dateLabel = `${DAYS_FULL[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    const tagsHtml = (note.tags||[]).map(id => { const t=TAGS.find(x=>x.id===id); return t ? `<span class="note-tag" style="border-color:${t.color};color:${t.color}">${t.name}</span>` : ''; }).join('');
+    const refLabel = buildRefLabel(note.book, note.chapter, note.verse);
+    const preview = (note.text||'').slice(0,160);
+    const card = document.createElement('div'); card.className='note-card';
+    card.innerHTML = `
+      ${note.planReading ? `<div class="note-card-plan-badge">${note.planReading}</div>` : ''}
+      <div class="note-card-hdr">
+        <div class="note-card-ref">${refLabel || dateLabel}</div>
+        <div class="note-card-date">${refLabel ? dateLabel : ''}</div>
+      </div>
+      ${tagsHtml ? `<div class="note-card-tags">${tagsHtml}</div>` : ''}
+      <div class="note-card-preview">${preview || '<em>No text written yet.</em>'}</div>
+      ${note.attachments && note.attachments.length ? `<div style="font-size:0.68rem;color:var(--ink-lt);margin-top:6px">📎 ${note.attachments.length} attachment${note.attachments.length>1?'s':''}</div>` : ''}
+    `;
+    card.onclick = () => openNoteForDate(new Date(key+'T12:00:00'));
+    cards.appendChild(card);
+  });
+}
+
+function buildRefLabel(book, ch, verse) {
+  if (!book) return '';
+  let r = book;
+  if (ch) r += ' ' + ch;
+  if (verse) r += ':' + verse;
+  return r;
+}
+
+// ─── NOTE FORM ────────────────────────────────────────────────────────────
+function openNewNote() { openNoteForDate(new Date()); }
+
+function openNoteForDate(date, planReading) {
+  const dt = midnight(date);
+  curNoteKey = dk(dt);
+  const existing = S.notes[curNoteKey] || {};
+  curAttach = existing.attachments ? [...existing.attachments] : [];
+
+  document.getElementById('form-date-display').textContent = `${DAYS_FULL[dt.getDay()]}, ${MONTHS[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`;
+
+  // Plan link badge
+  const badge = document.getElementById('plan-link-badge');
+  const reading = planReading || existing.planReading;
+  if (reading) { badge.textContent = reading; badge.classList.remove('hidden'); }
+  else { badge.classList.add('hidden'); }
+
+  // Reference fields
+  const refBook = document.getElementById('ref-book');
+  refBook.value = existing.book || '';
+  if (existing.book) populateChapters();
+  document.getElementById('ref-chapter').value = existing.chapter || '';
+  document.getElementById('ref-verse').value = existing.verse || '';
+
+  document.getElementById('reflect-ta').value = existing.text || '';
+  renderTagPills(existing.tags || []);
+  renderAttach();
+  document.getElementById('delete-btn').style.display = S.notes[curNoteKey] ? 'block' : 'none';
+
+  // If opening from plan, store planReading on note
+  if (planReading && !existing.planReading) {
+    S.notes[curNoteKey] = { ...existing, planReading };
+  }
+
+  calY = dt.getFullYear(); calM = dt.getMonth();
+  hide('list-view'); show('form-view');
+  renderCal();
+}
+
+function openNoteFromPlan(dateStr, reading) {
+  // Switch to notes tab first
+  showTab('notes', document.getElementById('tab-notes'));
+  openNoteForDate(new Date(dateStr + 'T12:00:00'), reading);
+}
+
+function renderTagPills(selected = []) {
+  const container = document.getElementById('tag-pills'); container.innerHTML = '';
+  TAGS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tag-pill' + (selected.includes(t.id) ? ' selected' : '');
+    btn.innerHTML = `<div class="tp-dot" style="background:${t.color}"></div>${t.name}`;
+    btn.onclick = () => btn.classList.toggle('selected');
+    container.appendChild(btn);
+  });
+}
+
+function getSelectedTags() {
+  return Array.from(document.querySelectorAll('#tag-pills .tag-pill.selected')).map((btn, i) => TAGS[i].id);
+}
+
+function saveNote() {
+  if (!curNoteKey) return;
+  const text = document.getElementById('reflect-ta').value;
+  const tags = getSelectedTags();
+  const book = document.getElementById('ref-book').value;
+  const chapter = document.getElementById('ref-chapter').value;
+  const verse = document.getElementById('ref-verse').value;
+  const existing = S.notes[curNoteKey] || {};
+  const hasContent = text.trim() || tags.length || book || curAttach.length;
+  if (hasContent) {
+    S.notes[curNoteKey] = { text, tags, book, chapter, verse, attachments: curAttach, planReading: existing.planReading, updated: new Date().toISOString() };
+  } else { delete S.notes[curNoteKey]; }
+  saveState();
+  renderTagFilter(); renderNoteList(); renderCal();
+  updatePlanNoteBadges();
+  backToList();
+  toast('Note saved ✦');
+}
+
+function deleteNote() { show('delete-modal'); }
+function confirmDelete() {
+  closeModal();
+  delete S.notes[curNoteKey];
+  saveState(); renderTagFilter(); renderNoteList(); renderCal();
+  updatePlanNoteBadges();
+  backToList(); toast('Note deleted');
+}
+
+function backToList() { curNoteKey = null; hide('form-view'); show('list-view'); renderCal(); }
+
+// ─── ATTACHMENTS ──────────────────────────────────────────────────────────
+function renderAttach() {
+  const c = document.getElementById('attach-list');
+  if (!curAttach.length) { c.innerHTML='<div class="attach-empty">No attachments yet.</div>'; return; }
+  c.innerHTML = '';
+  curAttach.forEach((a, i) => {
+    const ext = a.name.split('.').pop().toLowerCase();
+    const ico = ['jpg','jpeg','png','gif','webp'].includes(ext) ? '🖼️' : ext==='pdf' ? '📄' : '📎';
+    const r = document.createElement('div'); r.className='attach-row';
+    r.innerHTML = `<span class="attach-ico">${ico}</span><span class="attach-nm">${a.name}</span><span class="attach-sz">${a.size}</span><button class="attach-x" onclick="removeAttach(${i})">✕</button>`;
+    c.appendChild(r);
+  });
+}
+function handleAttach(e) {
+  Array.from(e.target.files).forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => { curAttach.push({name:f.name,size:fmtSz(f.size),type:f.type,data:ev.target.result}); renderAttach(); };
+    r.readAsDataURL(f);
+  });
+  e.target.value = '';
+}
+function removeAttach(i) { curAttach.splice(i, 1); renderAttach(); }
+function fmtSz(b) { if(b<1024)return b+'B'; if(b<1048576)return Math.round(b/1024)+'KB'; return(b/1048576).toFixed(1)+'MB'; }
+
+// ─── SEARCH ───────────────────────────────────────────────────────────────
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const res = document.getElementById('search-results');
+  if (!q) { res.innerHTML=''; return; }
+  const matches = Object.entries(S.notes).filter(([k,n]) =>
+    (n.text||'').toLowerCase().includes(q) ||
+    (n.book||'').toLowerCase().includes(q) ||
+    (n.tags||[]).some(t => t.includes(q)) ||
+    (n.planReading||'').toLowerCase().includes(q)
+  ).sort((a,b) => b[0].localeCompare(a[0]));
+  if (!matches.length) { res.innerHTML='<div style="font-size:0.8rem;color:var(--ink-lt);font-style:italic;padding:8px 0">No results found.</div>'; return; }
+  res.innerHTML = matches.map(([k,n]) => {
+    const d = new Date(k+'T12:00:00');
+    const ref = buildRefLabel(n.book, n.chapter, n.verse) || `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    const preview = (n.text||'').slice(0,200).replace(new RegExp(q,'gi'), s=>`<mark>${s}</mark>`);
+    return `<div class="sr-item" onclick="showTab('notes',document.getElementById('tab-notes'));openNoteForDate(new Date('${k}T12:00:00'))"><div class="sr-ref">${ref}</div><div class="sr-preview">${preview}</div></div>`;
+  }).join('');
+}
+function quickSearch(v) { if(!v.trim()) return; document.getElementById('search-input').value=v; showTab('search',document.getElementById('tab-search')); doSearch(); }
+
+// ─── READING PLAN ─────────────────────────────────────────────────────────
+function generatePlan(restoring=false) {
+  const style = document.getElementById('p-style').value;
+  const chaptersPerDay = parseInt(document.getElementById('p-chapters').value);
+  const startDateStr = document.getElementById('p-start').value;
+  const startDate = new Date(startDateStr + 'T00:00:00');
+  const startBook = document.getElementById('p-book').value;
+
+  // Save plan settings
+  S.plan = { style, chaptersPerDay, startDate: startDateStr, startBook };
+
+  let readingList = [];
+
+  if (style === 'balanced') {
+    let otIdx=0,otCh=1,ntIdx=0,ntCh=1;
+    let days = Math.min(Math.ceil((OT.reduce((a,b)=>a+b.chapters,0)+NT.reduce((a,b)=>a+b.chapters,0))/2),365);
+    for (let i=0;i<days;i++) {
+      const ob=OT[otIdx],nb=NT[ntIdx]; if(!ob||!nb) break;
+      readingList.push(`${ob.name} ${otCh} + ${nb.name} ${ntCh}`);
+      otCh++; if(otCh>ob.chapters){otIdx++;otCh=1;}
+      ntCh++; if(ntCh>nb.chapters){ntIdx++;ntCh=1;}
+    }
+  } else {
+    let bookList;
+    if (style === 'book') { const idx=BOOKS.findIndex(b=>b.name===startBook); bookList=BOOKS.slice(idx); }
+    else if (style === 'chronological') { bookList=STYLE_BOOKS.chronological.map(n=>BOOKS.find(b=>b.name===n)).filter(Boolean); }
+    else { bookList=STYLE_BOOKS[style].map(n=>BOOKS.find(b=>b.name===n)).filter(Boolean); }
+    let queue=[]; bookList.forEach(book=>{ for(let ch=1;ch<=book.chapters;ch++) queue.push(`${book.name} ${ch}`); });
+    for (let i=0;i<queue.length;i+=chaptersPerDay) readingList.push(queue.slice(i,i+chaptersPerDay).join(' + '));
+  }
+
+  readingList = readingList.slice(0, 180);
+  planReadingList = readingList;
+  currentTotal = readingList.length;
+
+  // Restore checks from saved state if they exist, otherwise init
+  if (!S.checks || !restoring) S.checks = {};
+  readingList.forEach((_, i) => { if (S.checks[i] === undefined) S.checks[i] = false; });
+
+  // Render
+  const styleNames = {book:'Book-at-a-Time',balanced:'OT + NT Balanced',chronological:'Chronological','psalms-proverbs':'Psalms & Proverbs',gospels:'Gospels Focus',epistles:"Paul's Epistles"};
+  document.getElementById('plan-title').textContent = styleNames[style] + ' Plan';
+  document.getElementById('plan-meta').textContent = `Starting ${startDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} · ${readingList.length} days`;
+
+  const container = document.getElementById('plan-days'); container.innerHTML='';
+  const DAY_LABELS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let currentWeek=-1, weekDiv=null;
+
+  readingList.forEach((reading, i) => {
+    const d = new Date(startDate); d.setDate(d.getDate()+i);
+    const week = Math.floor(i/7);
+    const dateStr = dk(d);
+
+    if (week !== currentWeek) {
+      currentWeek=week;
+      weekDiv=document.createElement('div'); weekDiv.className='week-block';
+      const wh=document.createElement('div'); wh.className='week-header'; wh.textContent=`Week ${week+1}`;
+      weekDiv.appendChild(wh); container.appendChild(weekDiv);
+    }
+
+    const hasNote = !!S.notes[dateStr];
+    const row=document.createElement('div'); row.className='day-row';
+    row.innerHTML=`
+      <div class="day-check${S.checks[i]?' done':''}" id="chk-${i}" onclick="toggleCheck(${i})"></div>
+      <div class="day-info">
+        <div class="day-label">${DAY_LABELS[d.getDay()]} · ${MONTHS[d.getMonth()]} ${d.getDate()}</div>
+        <div class="day-reading">${reading}</div>
+      </div>
+      <button class="note-day-btn${hasNote?' has-note':''}" id="nbtn-${i}" onclick="openNoteFromPlan('${dateStr}','${reading.replace(/'/g,"\\'")}')">
+        ${hasNote ? '📝 View Note' : '+ Note'}
+      </button>
+    `;
+    weekDiv.appendChild(row);
+  });
+
+  updateProgress();
+  document.getElementById('plan-output').style.display='block';
+  if (!restoring) document.getElementById('plan-output').scrollIntoView({behavior:'smooth',block:'start'});
+  saveState();
+}
+
+function restorePlan() {
+  const p = S.plan;
+  document.getElementById('p-style').value = p.style;
+  document.getElementById('p-chapters').value = p.chaptersPerDay;
+  document.getElementById('p-start').value = p.startDate;
+  document.getElementById('p-book').value = p.startBook;
+  generatePlan(true);
+}
+
+function toggleCheck(i) {
+  S.checks[i] = !S.checks[i];
+  const el = document.getElementById(`chk-${i}`);
+  if (el) el.classList.toggle('done', S.checks[i]);
+  updateProgress();
+  saveState();
+  flashSaved();
+}
+
+function updateProgress() {
+  const done = Object.values(S.checks).filter(Boolean).length;
+  const pct = currentTotal > 0 ? Math.round((done/currentTotal)*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = `${done} / ${currentTotal} days complete`;
+}
+
+function resetProgress() {
+  if (!confirm('Reset all checkboxes?')) return;
+  Object.keys(S.checks).forEach(k => S.checks[k]=false);
+  document.querySelectorAll('.day-check').forEach(el => el.classList.remove('done'));
+  updateProgress(); saveState();
+}
+
+function flashSaved() {
+  const badge = document.getElementById('save-badge'); if(!badge) return;
+  badge.classList.add('visible');
+  clearTimeout(badge._t);
+  badge._t = setTimeout(() => badge.classList.remove('visible'), 1800);
+}
+
+function updatePlanNoteBadges() {
+  planReadingList.forEach((_, i) => {
+    const p = S.plan;
+    if (!p) return;
+    const startDate = new Date(p.startDate+'T00:00:00');
+    const d = new Date(startDate); d.setDate(d.getDate()+i);
+    const dateStr = dk(d);
+    const btn = document.getElementById(`nbtn-${i}`);
+    if (!btn) return;
+    const hasNote = !!S.notes[dateStr];
+    btn.className = 'note-day-btn' + (hasNote ? ' has-note' : '');
+    btn.textContent = hasNote ? '📝 View Note' : '+ Note';
+  });
+}
+
+// ─── EXPORT / IMPORT ──────────────────────────────────────────────────────
+function exportData() {
+  const b = new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download=`sacred-study-${new Date().toISOString().split('T')[0]}.json`; a.click();
+  toast('Exported ✦');
+}
+function importData(e) {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>{
+    try { S=JSON.parse(ev.target.result); saveState(); renderTagFilter(); renderNoteList(); renderCal(); if(S.plan) restorePlan(); toast('Data imported ✦'); }
+    catch(err) { toast('Could not read file'); }
+  }; r.readAsText(f); e.target.value='';
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────
+function midnight(d) { const n=new Date(d); n.setHours(0,0,0,0); return n; }
+function dk(d) { return d.toISOString().split('T')[0]; }
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+function closeModal() { hide('delete-modal'); }
+function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+init();
+</script>
+</body>
+</html>
