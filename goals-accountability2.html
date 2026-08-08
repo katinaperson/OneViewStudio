@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals & Accountability | Katina Clark</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:#f5f2ee;color:#1a1a1a;min-height:100vh;font-size:14px}
+
+.focus-strip{background:#fff;border-bottom:1px solid #e8e2da;padding:14px 48px}
+.focus-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.focus-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#c9928a}
+.focus-edit-btn{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a;background:none;border:1px solid #e8e2da;padding:5px 12px;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s}
+.focus-edit-btn:hover{border-color:#c9928a;color:#c9928a}
+.focus-items{display:flex;flex-wrap:wrap;gap:8px;min-height:22px}
+.focus-item{font-family:'Cormorant Garamond',serif;font-size:15px;color:#4a4a4a;display:flex;align-items:center;gap:6px}
+.focus-item::before{content:'—';color:#c9928a;font-size:12px}
+.focus-remove{background:none;border:none;color:#c9b8b5;cursor:pointer;font-size:14px;padding:0 2px;line-height:1;display:none}
+.focus-editing .focus-remove{display:inline}
+.focus-empty{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:#b0a89e}
+.focus-input-row{display:none;gap:8px;margin-top:8px;align-items:center}
+.focus-editing .focus-input-row{display:flex}
+.focus-input{font-family:'Cormorant Garamond',serif;font-size:15px;background:#f5f2ee;border:none;border-bottom:1px solid #e8e2da;padding:4px 8px;outline:none;color:#1a1a1a;flex:1;max-width:300px}
+.focus-input:focus{border-bottom-color:#c9928a}
+.focus-add-btn{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#c9928a;background:none;border:1px solid #e8c4bf;padding:5px 12px;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s}
+.focus-add-btn:hover{background:#c9928a;color:#fff}
+
+.foundation{background:#fff;border-bottom:1px solid #e8e2da;padding:22px 48px 18px}
+.foundation-inner{display:grid;grid-template-columns:auto auto 1fr;gap:0;align-items:start}
+.f-field{display:flex;flex-direction:column;gap:4px;padding-right:40px}
+.f-label{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#b0a89e}
+.f-value{font-family:'Cormorant Garamond',serif;font-size:17px;color:#1a1a1a;background:none;border:none;border-bottom:1px solid transparent;outline:none;padding:2px 0;transition:border-color .2s;font-weight:400;min-width:140px}
+.f-value:hover{border-bottom-color:#e8e2da}
+.f-value:focus{border-bottom-color:#c9928a}
+.f-value::placeholder{color:#c9b8b5;font-style:italic}
+.f-value.scripture{font-style:italic}
+.f-vision-wrap{border-left:1px solid #e8e2da;padding-left:32px}
+.f-vision{font-family:'Cormorant Garamond',serif;font-size:16px;color:#4a4a4a;background:none;border:none;outline:none;resize:none;width:100%;min-height:52px;line-height:1.6;padding:2px 0}
+.f-vision::placeholder{color:#c9b8b5;font-style:italic}
+
+.nav-bar{background:#fff;border-bottom:1px solid #e8e2da;padding:0 48px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;padding:14px 18px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a;cursor:pointer;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:#c9928a}
+.nav-btn.active{color:#c9928a;border-bottom-color:#c9928a}
+.nav-spacer{flex:1}
+.nav-add{font-size:10px;padding:10px 14px;color:#b0a89e;border-bottom:none}
+.nav-add:hover{color:#c9928a;background:none}
+
+.year-sel{font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;background:none;border:none;border-bottom:1px solid #e8e2da;color:#9a9a9a;cursor:pointer;padding:2px 4px;outline:none;margin-left:16px}
+.year-sel:focus{border-bottom-color:#c9928a}
+
+.main{max-width:1180px;margin:0 auto;padding:40px 40px 80px}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2px;background:#e8e2da}
+.goal-card{background:#fff;padding:32px 28px;display:flex;flex-direction:column;gap:0;cursor:default;transition:background .15s;position:relative}
+.goal-card:hover{background:#faf8f5}
+.card-cat{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#c9928a;margin-bottom:10px}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:#1a1a1a;line-height:1.15;margin-bottom:12px}
+.card-desc{font-size:13px;color:#6b6b6b;line-height:1.65;margin-bottom:18px;min-height:36px}
+
+.card-status-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.status-pill{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:2px}
+.sp-none{background:#f0ebe3;color:#9a9a9a}
+.sp-on{background:#edf4f0;color:#7aab8a}
+.sp-needs{background:#fef3e8;color:#c9936e}
+.sp-off{background:#fdecea;color:#c96a6a}
+.sp-done{background:#edf4f0;color:#7aab8a}
+.status-sel{font-family:'Jost',sans-serif;font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:none;border:none;cursor:pointer;color:#9a9a9a;padding:0}
+
+.card-due{font-size:11px;color:#b0a89e;display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.card-due input[type=date]{font-family:'Jost',sans-serif;font-size:11px;color:#9a9a9a;background:none;border:none;border-bottom:1px dashed #e8e2da;outline:none;cursor:pointer;padding:1px 0}
+.card-due input[type=date]:focus{border-bottom-color:#c9928a}
+
+.prog-wrap{margin-bottom:16px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b0a89e}
+.prog-pct{font-size:11px;font-weight:600;color:#c9928a}
+.prog-bar{height:3px;background:#f0ebe3;border-radius:2px;overflow:hidden;margin-bottom:5px}
+.prog-fill{height:100%;background:#e8c4bf;border-radius:2px;transition:width .4s}
+.prog-range{width:100%;accent-color:#c9928a;height:2px}
+
+.milestones{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.milestone{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#6b6b6b}
+.milestone input[type=checkbox]{appearance:none;-webkit-appearance:none;width:13px;height:13px;border:1px solid #d8d0c8;border-radius:2px;cursor:pointer;margin-top:2px;flex-shrink:0;transition:all .2s}
+.milestone input[type=checkbox]:checked{background:#c9928a;border-color:#c9928a;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2.5 2.5L8 3' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-size:9px}
+.ms-row{display:flex;align-items:center;gap:4px;flex:1}
+.ms-txt{flex:1;cursor:pointer;line-height:1.5}
+.ms-txt.done{text-decoration:line-through;color:#b0a89e}
+.ms-due{font-size:10px;color:#b0a89e}
+.ms-due input[type=date]{font-size:10px;color:#b0a89e;background:none;border:none;border-bottom:1px dashed #e8e2da;outline:none;width:96px;cursor:pointer}
+.ms-del{background:none;border:none;color:#d8d0c8;cursor:pointer;font-size:13px;padding:0 2px;opacity:0;transition:opacity .15s}
+.milestone:hover .ms-del{opacity:1}
+.ms-del:hover{color:#c96a6a}
+.ms-add-btn{background:none;border:none;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#b0a89e;cursor:pointer;padding:0;text-align:left;transition:color .2s}
+.ms-add-btn:hover{color:#c9928a}
+
+.card-note-lbl{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#b0a89e;margin-bottom:5px;margin-top:4px}
+.card-note textarea{width:100%;background:#f5f2ee;border:none;padding:10px 12px;font-family:'Jost',sans-serif;font-size:12px;color:#4a4a4a;resize:none;min-height:56px;outline:none;line-height:1.5}
+.card-note textarea::placeholder{color:#c9b8b5}
+
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid #f0ebe3}
+.card-del{background:none;border:none;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#d8d0c8;cursor:pointer;font-family:'Jost',sans-serif;transition:color .2s}
+.card-del:hover{color:#c96a6a}
+
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:28px 0 16px}
+.sec-hdr-label{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.06em;color:#9a9a9a;font-style:italic}
+.sec-hdr-actions{display:flex;gap:10px}
+.sec-rename-btn,.sec-del-btn{background:none;border:none;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#b0a89e;cursor:pointer;transition:color .2s}
+.sec-rename-btn:hover{color:#c9928a}
+.sec-del-btn:hover{color:#c96a6a}
+
+.add-goal-card{background:#faf8f5;border:1px dashed #e8e2da;padding:32px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;min-height:180px}
+.add-goal-card:hover{border-color:#c9928a;background:#fff}
+.add-goal-label{font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#b0a89e}
+.add-goal-card:hover .add-goal-label{color:#c9928a}
+
+.overlay{position:fixed;inset:0;background:rgba(26,26,26,.4);z-index:300;display:flex;align-items:center;justify-content:center}
+.overlay.hidden{display:none}
+.modal{background:#fff;width:min(500px,92vw);max-height:88vh;overflow-y:auto;padding:36px 32px;display:flex;flex-direction:column;gap:18px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400}
+.mf{display:flex;flex-direction:column;gap:5px}
+.mf label{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a}
+.mf input,.mf select,.mf textarea{font-family:'Jost',sans-serif;font-size:13px;background:#f5f2ee;border:none;padding:10px 12px;color:#1a1a1a;outline:none;width:100%}
+.mf textarea{resize:vertical;min-height:60px;line-height:1.5}
+.mf input[type=date]{cursor:pointer}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:4px}
+.btn-save{background:#c9928a;color:#fff;border:none;padding:11px 26px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.btn-save:hover{background:#b87e76}
+.btn-cancel{background:none;border:1px solid #e8e2da;color:#9a9a9a;padding:11px 20px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-cancel:hover{border-color:#9a9a9a}
+
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;padding:11px 18px;font-family:'Jost',sans-serif;font-size:12px;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:640px){
+.focus-strip,.foundation,.nav-bar{padding-left:20px;padding-right:20px}
+.main{padding:24px 16px 60px}
+.foundation-inner{grid-template-columns:1fr;gap:14px}
+.f-vision-wrap{border-left:none;padding-left:0;border-top:1px solid #e8e2da;padding-top:14px}
+.cards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="focus-strip" id="focusStrip">
+  <div class="focus-top">
+    <span class="focus-label">+ My Focus</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <select class="year-sel" id="yearSel" onchange="setYear(this.value)"></select>
+      <button class="focus-edit-btn" onclick="toggleFocusEdit()">+ Edit Focus</button>
+    </div>
+  </div>
+  <div class="focus-items" id="focusItems"></div>
+  <div class="focus-input-row" id="focusInputRow">
+    <input class="focus-input" id="focusInput" type="text" placeholder="Add a priority..." onkeydown="if(event.key==='Enter')addFocusItem()">
+    <button class="focus-add-btn" onclick="addFocusItem()">Add</button>
+  </div>
+</div>
+
+<div class="foundation">
+  <div class="foundation-inner">
+    <div class="f-field">
+      <span class="f-label">Word for the Year</span>
+      <input class="f-value" id="fWord" type="text" placeholder="e.g. Grounded..." oninput="sl('fWord',this.value)">
+    </div>
+    <div class="f-field">
+      <span class="f-label">Anchor Scripture</span>
+      <input class="f-value scripture" id="fScripture" type="text" placeholder="e.g. Jeremiah 29:11" oninput="sl('fScripture',this.value)">
+    </div>
+    <div class="f-vision-wrap">
+      <div class="f-label" style="margin-bottom:5px">Vision Statement</div>
+      <textarea class="f-vision" id="fVision" placeholder="Write it in present tense — as if it's already true..." oninput="sl('fVision',this.value)"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar" id="navBar">
+  <button class="nav-btn active" onclick="filterTo('all',this)">All</button>
+  <div id="sectionTabs"></div>
+  <span class="nav-spacer"></span>
+  <button class="nav-btn nav-add" onclick="openAddSection()">+ Section</button>
+</div>
+
+<div class="main" id="mainArea"></div>
+
+<div class="overlay hidden" id="goalModal">
+  <div class="modal">
+    <div class="modal-title" id="goalModalTitle">Add Goal</div>
+    <div class="mf"><label>Goal Title</label><input type="text" id="gTitle" placeholder="What are you working toward?"></div>
+    <div class="mf"><label>Short Description</label><textarea id="gDesc" placeholder="One or two lines about this goal..."></textarea></div>
+    <div class="mf"><label>Due Date</label><input type="date" id="gDue"></div>
+    <div class="mf"><label>Status</label>
+      <select id="gStatus">
+        <option value="none">Not Started</option>
+        <option value="on">On Track</option>
+        <option value="needs">Needs Attention</option>
+        <option value="off">Off Track</option>
+        <option value="done">Complete</option>
+      </select>
+    </div>
+    <div class="mf"><label>First Milestone (optional)</label><input type="text" id="gMs1" placeholder="First key step..."></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('goalModal')">Cancel</button>
+      <button class="btn-save" onclick="saveGoal()">Save Goal</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="sectionModal">
+  <div class="modal">
+    <div class="modal-title">Add Section</div>
+    <div class="mf"><label>Section Name</label><input type="text" id="secName" placeholder="e.g. Relationships, Health..."></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('sectionModal')">Cancel</button>
+      <button class="btn-save" onclick="addSection()">Add Section</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="renameModal">
+  <div class="modal">
+    <div class="modal-title">Rename Section</div>
+    <div class="mf"><label>Section Name</label><input type="text" id="renameInput"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('renameModal')">Cancel</button>
+      <button class="btn-save" onclick="doRename()">Rename</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var year=parseInt(gl('year'))||new Date().getFullYear();
+var sections=gl('sections')?JSON.parse(gl('sections')):[
+  {id:'s1',name:'Business'},{id:'s2',name:'Personal & Professional Development'},
+  {id:'s3',name:'Career'},{id:'s4',name:'Financial'},
+  {id:'s5',name:'Health'},{id:'s6',name:'Lifestyle'},{id:'s7',name:'Faith'}
+];
+var goals=gl('goals')?JSON.parse(gl('goals')):{};
+var focusItems=gl('focusItems')?JSON.parse(gl('focusItems')):[];
+var focusEditing=false;
+var activeFilter='all';
+var targetSec=null;
+var renamingSec=null;
+
+function gl(k){try{return localStorage.getItem('goa_'+k)}catch(e){return null}}
+function sl(k,v){try{localStorage.setItem('goa_'+k,typeof v==='string'?v:JSON.stringify(v))}catch(e){}}
+function save(){sl('sections',sections);sl('goals',goals);sl('focusItems',focusItems)}
+
+(function init(){
+  var yp=document.getElementById('yearSel');
+  var cy=new Date().getFullYear();
+  for(var y=cy-2;y<=cy+4;y++){var o=document.createElement('option');o.value=y;o.textContent=y;if(y===year)o.selected=true;yp.appendChild(o);}
+  ['fWord','fScripture','fVision'].forEach(function(k){var v=gl(k);if(v){document.getElementById(k).value=v;}});
+  renderFocusItems();
+  renderTabs();
+  renderMain();
+})();
+
+function setYear(y){year=parseInt(y);sl('year',y);}
+
+function toggleFocusEdit(){
+  focusEditing=!focusEditing;
+  document.getElementById('focusStrip').classList.toggle('focus-editing',focusEditing);
+  document.querySelector('.focus-edit-btn').textContent=focusEditing?'Done':'+ Edit Focus';
+}
+function renderFocusItems(){
+  var c=document.getElementById('focusItems');c.innerHTML='';
+  if(focusItems.length===0){
+    var e=document.createElement('span');e.className='focus-empty';
+    e.textContent='No focus items yet. Tap "Edit Focus" to add your priorities.';c.appendChild(e);return;
+  }
+  focusItems.forEach(function(item,i){
+    var d=document.createElement('span');d.className='focus-item';
+    d.innerHTML='<span style="font-family:\'Cormorant Garamond\',serif;font-size:15px;color:#4a4a4a">'+escHtml(item)+'</span>';
+    var rb=document.createElement('button');rb.className='focus-remove';rb.textContent='×';rb.title='Remove';
+    rb.onclick=function(){focusItems.splice(i,1);save();renderFocusItems();};
+    d.appendChild(rb);c.appendChild(d);
+  });
+}
+function addFocusItem(){
+  var inp=document.getElementById('focusInput');var t=inp.value.trim();if(!t)return;
+  focusItems.push(t);save();renderFocusItems();inp.value='';
+}
+
+function renderTabs(){
+  var tabs=document.getElementById('sectionTabs');tabs.innerHTML='';
+  sections.forEach(function(s){
+    var b=document.createElement('button');b.className='nav-btn';b.textContent=s.name;b.dataset.sid=s.id;
+    b.onclick=function(){filterTo(s.id,b);};
+    if(activeFilter===s.id)b.classList.add('active');
+    tabs.appendChild(b);
+  });
+}
+
+function filterTo(cat,btn){
+  activeFilter=cat;
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  renderMain();
+}
+
+function renderMain(){
+  var area=document.getElementById('mainArea');area.innerHTML='';
+  var toShow=activeFilter==='all'?sections:sections.filter(function(s){return s.id===activeFilter;});
+  toShow.forEach(function(s){
+    var sec=document.createElement('div');sec.dataset.section=s.id;
+    var hdr=document.createElement('div');hdr.className='sec-hdr';
+    var lbl=document.createElement('span');lbl.className='sec-hdr-label';lbl.textContent=s.name;
+    var acts=document.createElement('div');acts.className='sec-hdr-actions';
+    var renBtn=document.createElement('button');renBtn.className='sec-rename-btn';renBtn.textContent='Rename';
+    renBtn.onclick=function(){renamingSec=s;document.getElementById('renameInput').value=s.name;document.getElementById('renameModal').classList.remove('hidden');};
+    var delBtn=document.createElement('button');delBtn.className='sec-del-btn';delBtn.textContent='Remove Section';
+    delBtn.onclick=function(){
+      if(!confirm('Remove "'+s.name+'" and all its goals?'))return;
+      sections=sections.filter(function(x){return x.id!==s.id;});
+      delete goals[s.id];save();
+      if(activeFilter===s.id)activeFilter='all';
+      renderTabs();renderMain();
+    };
+    acts.appendChild(renBtn);acts.appendChild(delBtn);
+    hdr.appendChild(lbl);hdr.appendChild(acts);sec.appendChild(hdr);
+    var grid=document.createElement('div');grid.className='cards-grid';
+    (goals[s.id]||[]).forEach(function(g,i){grid.appendChild(buildCard(g,s.id,i));});
+    var addCard=document.createElement('div');addCard.className='add-goal-card';
+    addCard.innerHTML='<span class="add-goal-label">+ Add Goal</span>';
+    addCard.onclick=function(){openAddGoal(s.id);};
+    grid.appendChild(addCard);
+    sec.appendChild(grid);area.appendChild(sec);
+  });
+}
+
+function buildCard(g,sid,idx){
+  var card=document.createElement('div');card.className='goal-card';
+  var statusMap={none:{cls:'sp-none',lbl:'Not Started'},on:{cls:'sp-on',lbl:'On Track'},needs:{cls:'sp-needs',lbl:'Needs Attention'},off:{cls:'sp-off',lbl:'Off Track'},done:{cls:'sp-done',lbl:'Complete'}};
+  var sm=statusMap[g.status||'none'];
+
+  var cat=document.createElement('div');cat.className='card-cat';cat.textContent=g.section||'Goal';
+  var title=document.createElement('div');title.className='card-title';title.textContent=g.title;
+  var desc=document.createElement('div');desc.className='card-desc';desc.textContent=g.desc||'';
+
+  var srow=document.createElement('div');srow.className='card-status-row';
+  var pill=document.createElement('span');pill.className='status-pill '+sm.cls;pill.textContent=sm.lbl;
+  var sel=document.createElement('select');sel.className='status-sel';
+  Object.keys(statusMap).forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=statusMap[v].lbl;if(g.status===v)o.selected=true;sel.appendChild(o);});
+  sel.onchange=function(){g.status=sel.value;var ns=statusMap[sel.value];pill.className='status-pill '+ns.cls;pill.textContent=ns.lbl;save();};
+  srow.appendChild(pill);srow.appendChild(sel);
+
+  var dueRow=document.createElement('div');dueRow.className='card-due';
+  dueRow.innerHTML='<span style="font-size:9px;letter-spacing:.14em;text-transform:uppercase">Due</span>';
+  var din=document.createElement('input');din.type='date';din.value=g.due||'';
+  din.onchange=function(){g.due=din.value;save();};dueRow.appendChild(din);
+
+  var pw=document.createElement('div');pw.className='prog-wrap';
+  var pct=g.pct||0;
+  pw.innerHTML='<div class="prog-top"><span class="prog-lbl">Progress</span><span class="prog-pct" id="pp-'+sid+'-'+idx+'">'+pct+'%</span></div><div class="prog-bar"><div class="prog-fill" id="pf-'+sid+'-'+idx+'" style="width:'+pct+'%"></div></div>';
+  var rng=document.createElement('input');rng.type='range';rng.className='prog-range';rng.min=0;rng.max=100;rng.step=1;rng.value=pct;
+  rng.oninput=function(){g.pct=parseInt(rng.value);var pe=document.getElementById('pp-'+sid+'-'+idx);var pf=document.getElementById('pf-'+sid+'-'+idx);if(pe)pe.textContent=rng.value+'%';if(pf)pf.style.width=rng.value+'%';save();};
+  pw.appendChild(rng);
+
+  var mss=document.createElement('div');mss.className='milestones';
+  (g.milestones||[]).forEach(function(m,mi){mss.appendChild(buildMs(m,mi,g,sid));});
+  var msadd=document.createElement('button');msadd.className='ms-add-btn';msadd.textContent='+ Add Milestone';
+  msadd.onclick=function(){var t=prompt('Milestone:');if(!t||!t.trim())return;if(!g.milestones)g.milestones=[];g.milestones.push({text:t.trim(),done:false,due:''});save();renderMain();};
+  mss.appendChild(msadd);
+
+  var noteLbl=document.createElement('div');noteLbl.className='card-note-lbl';noteLbl.textContent='Notes';
+  var noteWrap=document.createElement('div');noteWrap.className='card-note';
+  var nta=document.createElement('textarea');nta.placeholder='Wins, blockers, next steps...';nta.value=g.note||'';
+  nta.oninput=function(){g.note=nta.value;save();};noteWrap.appendChild(nta);
+
+  var footer=document.createElement('div');footer.className='card-footer';
+  var delB=document.createElement('button');delB.className='card-del';delB.textContent='Remove Goal';
+  delB.onclick=function(){if(!confirm('Remove this goal?'))return;goals[sid].splice(idx,1);save();renderMain();};
+  footer.appendChild(delB);
+
+  card.appendChild(cat);card.appendChild(title);card.appendChild(desc);card.appendChild(srow);card.appendChild(dueRow);card.appendChild(pw);card.appendChild(mss);card.appendChild(noteLbl);card.appendChild(noteWrap);card.appendChild(footer);
+  return card;
+}
+
+function buildMs(m,mi,g,sid){
+  var row=document.createElement('label');row.className='milestone';
+  var cb=document.createElement('input');cb.type='checkbox';cb.checked=m.done;
+  cb.onchange=function(){m.done=cb.checked;span.classList.toggle('done',m.done);save();};
+  var mrow=document.createElement('div');mrow.className='ms-row';
+  var span=document.createElement('span');span.className='ms-txt'+(m.done?' done':'');span.textContent=m.text;
+  span.onclick=function(e){e.preventDefault();var t=prompt('Edit milestone:',m.text);if(t&&t.trim()){m.text=t.trim();save();renderMain();}};
+  var dw=document.createElement('span');dw.className='ms-due';
+  var din=document.createElement('input');din.type='date';din.value=m.due||'';din.title='Milestone due date';
+  din.onchange=function(){m.due=din.value;save();};dw.appendChild(din);
+  var del=document.createElement('button');del.className='ms-del';del.textContent='×';
+  del.onclick=function(e){e.preventDefault();e.stopPropagation();g.milestones.splice(mi,1);save();renderMain();};
+  mrow.appendChild(span);mrow.appendChild(dw);mrow.appendChild(del);
+  row.appendChild(cb);row.appendChild(mrow);
+  return row;
+}
+
+function openAddGoal(sid){
+  targetSec=sid;
+  document.getElementById('goalModalTitle').textContent='Add Goal';
+  ['gTitle','gDue','gMs1'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('gDesc').value='';
+  document.getElementById('gStatus').value='none';
+  document.getElementById('goalModal').classList.remove('hidden');
+}
+function saveGoal(){
+  var t=document.getElementById('gTitle').value.trim();if(!t){toast('Please add a title');return;}
+  var sec=sections.find(function(s){return s.id===targetSec;})||{};
+  var g={title:t,desc:document.getElementById('gDesc').value.trim(),due:document.getElementById('gDue').value,status:document.getElementById('gStatus').value,pct:0,milestones:[],note:'',section:sec.name||''};
+  var ms=document.getElementById('gMs1').value.trim();if(ms)g.milestones.push({text:ms,done:false,due:''});
+  if(!goals[targetSec])goals[targetSec]=[];goals[targetSec].push(g);save();renderMain();closeModal('goalModal');toast('Goal added');
+}
+
+function openAddSection(){document.getElementById('secName').value='';document.getElementById('sectionModal').classList.remove('hidden');}
+function addSection(){
+  var n=document.getElementById('secName').value.trim();if(!n)return;
+  var id='s'+Date.now();sections.push({id:id,name:n});save();renderTabs();renderMain();closeModal('sectionModal');toast('Section added');
+}
+function doRename(){
+  var n=document.getElementById('renameInput').value.trim();if(!n||!renamingSec)return;
+  renamingSec.name=n;save();renderTabs();renderMain();closeModal('renameModal');toast('Section renamed');
+}
+
+function closeModal(id){document.getElementById(id).classList.add('hidden');}
+document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.add('hidden');});});
+
+function escHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2600);}
+</script>
+</body>
+</html>
